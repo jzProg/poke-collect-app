@@ -6,9 +6,7 @@
          @click.prevent = "postBook">
       <i class = "fas fa-plus"></i>
     </div>
-    <!--Modal v-if = "showModal"
-           @close = "onClose">
-    </Modal-->
+  <router-link :to="{ name: 'Game', params: {} }">Play</router-link>
   </div>
 </template>
 
@@ -32,7 +30,7 @@
           this.storeUsername(username);
         });
       } else {
-        this.fetchBooks(this.getLoginUsername);
+        //this.fetchBooks(this.getLoginUsername); // todo change [Fetch pokemon]
       }
     },
     methods: {
