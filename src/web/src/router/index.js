@@ -7,10 +7,11 @@ import Profile from '@/components/Profile';
 import GetStarted from '@/components/GetStarted';
 import Reward from '@/components/Reward';
 import Battle from '@/components/Battle';
+import Game from '@/components/Game';
 
 Vue.use(Router);
 
-export default new Router({
+const router =  new Router({
   mode: 'history',
   routes: [
     {
@@ -31,6 +32,17 @@ export default new Router({
       path: '/home',
       name: 'Home',
       component: Home,
+      meta: { hasProfileHeader: true },
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem('token')) next();
+        else next('/');
+      }
+    },
+    {
+      path: '/game',
+      name: 'Game',
+      component: Game,
+      meta: { hasProfileHeader: false },
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem('token')) next();
         else next('/');
@@ -45,6 +57,7 @@ export default new Router({
       path: '/getStarted',
       name: 'GetStarted',
       component: GetStarted,
+      meta: { hasProfileHeader: true },
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem('token')) next();
         else next('/');
@@ -53,6 +66,7 @@ export default new Router({
     {
       path: '/reward',
       name: 'Reward',
+      meta: { hasProfileHeader: false },
       component: Reward,
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem('token')) next();
@@ -69,4 +83,6 @@ export default new Router({
       }
     },
   ]
-})
+});
+
+export default router;
