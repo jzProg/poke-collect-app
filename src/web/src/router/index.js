@@ -6,6 +6,7 @@ import Home from '@/components/Home';
 import Profile from '@/components/Profile';
 import GetStarted from '@/components/GetStarted';
 import Reward from '@/components/Reward';
+import Battle from '@/components/Battle';
 
 Vue.use(Router);
 
@@ -53,6 +54,15 @@ export default new Router({
       path: '/reward',
       name: 'Reward',
       component: Reward,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem('token')) next();
+        else next('/');
+      }
+    },
+    {
+      path: '/battle',
+      name: 'Battle',
+      component: Battle,
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem('token')) next();
         else next('/');
