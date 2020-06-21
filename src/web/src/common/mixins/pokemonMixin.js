@@ -4,7 +4,7 @@ const P = new Pokedex.Pokedex();
 const pokemonMixin = {
   data() {
     return {
-      totalPokemon: 300,
+      totalPokemon: 300, // to do map by region
       imageAPI: 'https://pokeres.bastionbot.org/images/pokemon/',
       startersInfo: {
         NUM_OF_STARTERS: 4,
@@ -34,18 +34,16 @@ const pokemonMixin = {
     getItem(itemName) {
       return P.getItemByName(itemName);
     },
-    getPokemonInfoFromList(listOfPokemon) {
-      var pokeList = [];
+    getPokemonInfoFromList(listOfPokemon, listToFill) {
       listOfPokemon.forEach((item, i) => {
         this.getPokemon(item).then((response) => {
           this.getPokemonSpecies(item).then((res) => {
             const image = this.getPokemonImage(response.id);
             Object.assign(response, { color: res.color.name, pokeImage: image });
-            pokeList.push(response);
+            listToFill.push(response);
           });
         });
       });
-      return pokeList;
     }
   }
 };

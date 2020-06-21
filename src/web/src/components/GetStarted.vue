@@ -31,7 +31,7 @@
       });
     },
     created(){
-      this.list = this.getPokemonInfoFromList(this.startersInfo.STANDARD_STARTERS);
+      this.getPokemonInfoFromList(this.startersInfo.STANDARD_STARTERS, this.list);
     },
     methods: {
       ...mapMutations([
@@ -46,7 +46,8 @@
         for(var i=1; i < this.startersInfo.NUM_OF_STARTERS; i++) {
           listOfStarters.push(this.getRandomInt(0, this.totalPokemon));
         };
-        var randomPokeList =  this.getPokemonInfoFromList(listOfStarters);
+        var randomPokeList =  [];
+        this.getPokemonInfoFromList(listOfStarters, randomPokeList);
         this.setCurrentReward({ type: this.prizes.PACK, value:  randomPokeList});
         this.storePokemon({ list: randomPokeList , ids: listOfStarters });
         this.$router.push('reward');
