@@ -1,7 +1,7 @@
 <template>
   <div id = "app">
     <img v-if = "(!isLoggedIn() || notAuthPage()) &&  !isExcludedPage()" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png" style="width: 100px; height:100px">
-    <button v-if="isLoggedIn() && $route.meta.hasProfileHeader" @click="logout" class="btn btn-danger"Logout</button>
+    <button v-if="isLoggedIn() && $route.meta.hasProfileHeader" @click="logout" class="btn btn-danger">Logout</button>
     <div v-if = "username" class = "container" style = "margin-right:2%">
       <div class = "row" v-if="$route.meta.hasProfileHeader">
         <div class = "col-md-12" style = "position: relative;">
