@@ -1,5 +1,5 @@
 <template>
-  <div id = "pokeImageContainer" @click.prevent="onChoose(info.name)">
+  <div id = "pokeImageContainer" @click.prevent="onChoose(info.name)" class = "col-md-3">
     <div id = 'pokeContent'>
       <img :class = "'poke' + info.id"
            id = "pokeImg"

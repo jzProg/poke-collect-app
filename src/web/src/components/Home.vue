@@ -47,7 +47,7 @@
         this.getCollection();
       },
       getStarters() {
-       this.getPokemonInfoFromList(this.getUserPokemon, this.starters);
+       this.getPokemonInfoFromList(this.getUserStarters, this.starters);
       },
       getCollection() {
        this.getPokemonInfoFromList(this.getUserPokemon, this.collection);
@@ -59,6 +59,7 @@
     computed: {
       ...mapGetters([
         'getUserPokemon',
+        'getUserStarters',
         'getLoginUsername'
       ]),
       getStartersUpdated() {

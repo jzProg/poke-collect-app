@@ -4,7 +4,6 @@
       <div class = "row">
         <component :is="mode"
               v-for = '(poke,index) in sortedPokeList'
-              class = "col-md-3"
               :key = "index"
               :info="poke"
               :copies = "1">

@@ -54,7 +54,8 @@
       ...mapMutations([
           'setLoginUsername',
           'setUserPokemon',
-          'setUserBasicInfo'
+          'setUserBasicInfo',
+          'setUserStarters'
       ]),
       ...mapActions([
         'userLogout',
@@ -73,6 +74,7 @@
               if (user.username === username) {
                 localStorage.setItem('userId', user.userId);
                 this.setUserPokemon({ value: user.pokemon });
+                this.setUserStarters({ value: user.starters });
                 this.setUserBasicInfo({ value: user.initialized });
                 bus.$emit('login', username);
               }

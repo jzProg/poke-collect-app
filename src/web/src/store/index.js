@@ -12,6 +12,7 @@ export default new Vuex.Store({
       currentReward: { rewardType: '', rewardId: ''},
       loginUsername: '',
       pokemon: [],
+      starters: [],
       initialized: false,
     },
     errorLoginMessage: '',
@@ -36,10 +37,16 @@ export default new Vuex.Store({
     getUserPokemon(state) {
       return state.userInfo.pokemon;
     },
+    getUserStarters(state) {
+      return state.userInfo.starters;
+    },
   },
   mutations: {
     setUserBasicInfo(state, payload) {
       state.userInfo.initialized = payload.value;
+    },
+    setUserStarters(state, payload) {
+      state.userInfo.starters = payload.value;
     },
     setUserPokemon(state, payload) {
       state.userInfo.pokemon = payload.value;
@@ -69,6 +76,7 @@ export default new Vuex.Store({
        var id = localStorage.getItem('userId');
        firebase.database().ref('users/' + id).update({
          pokemon: payload.ids,
+         starters: payload.ids,
          initialized: state.userInfo.initialized,
        });
     },
