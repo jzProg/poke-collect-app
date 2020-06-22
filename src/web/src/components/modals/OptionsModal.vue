@@ -9,8 +9,8 @@
       <EditModal v-if="showEditOptions"
                  @close="showEditOptions = false">
       </EditModal>
-      <span>Number of Pokemon: 6 </span><br>
-      <span>Number of Coins: 100 </span>
+      <span># of Pokemon: {{ getUserPokemon.length }} </span><br>
+      <span>{{ getUserCoins }} <i class="fas fa-coins" style="color:yellow"></i></span>
     </div>
     <div slot = "footer" class = "text-center">
       <!--button type = "button" class = "btn btn-primary" @click.prevent = "editProfile">Edit Profile</button-->
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex';
+  import { mapActions, mapGetters } from 'vuex';
   import Modal from './GenericModalStructure.vue';
   import EditModal from './EditProfileModal.vue';
 
@@ -48,6 +48,12 @@
       close() {
         this.$emit('close');
       }
-    }
+    },
+    computed: {
+      ...mapGetters([
+        'getUserPokemon',
+        'getUserCoins',
+      ]),
+    },
   }
 </script>

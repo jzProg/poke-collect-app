@@ -55,7 +55,8 @@
           'setLoginUsername',
           'setUserPokemon',
           'setUserBasicInfo',
-          'setUserStarters'
+          'setUserStarters',
+          'setUserCoins'
       ]),
       ...mapActions([
         'userLogout',
@@ -76,6 +77,7 @@
                 this.setUserPokemon({ value: user.pokemon });
                 this.setUserStarters({ value: user.starters });
                 this.setUserBasicInfo({ value: user.initialized });
+                this.setUserCoins({ value: user.coins });
                 bus.$emit('login', username);
               }
             });

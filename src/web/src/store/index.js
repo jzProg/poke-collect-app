@@ -13,6 +13,7 @@ export default new Vuex.Store({
       loginUsername: '',
       pokemon: [],
       starters: [],
+      coins: 0,
       initialized: false,
     },
     errorLoginMessage: '',
@@ -40,8 +41,14 @@ export default new Vuex.Store({
     getUserStarters(state) {
       return state.userInfo.starters;
     },
+    getUserCoins(state) {
+      return state.userInfo.coins;
+    },
   },
   mutations: {
+    setUserCoins(state, payload) {
+      state.userInfo.coins = payload.value;
+    },
     setUserBasicInfo(state, payload) {
       state.userInfo.initialized = payload.value;
     },
@@ -77,6 +84,7 @@ export default new Vuex.Store({
        firebase.database().ref('users/' + id).update({
          pokemon: payload.ids,
          starters: payload.ids,
+         coins: payload.coins,
          initialized: state.userInfo.initialized,
        });
     },
@@ -99,6 +107,8 @@ export default new Vuex.Store({
         userId: payload.userId,
         username: payload.username,
         pokemon: [],
+        starters: [],
+        coins: 0,
         initialized: false,
       }).then(() => {
         firebase.auth().currentUser.updateProfile({
