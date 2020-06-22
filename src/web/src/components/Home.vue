@@ -2,7 +2,10 @@
   <div>
   <div class="container" style="width: 10%;float: left;">
     <div class="row" style="width: 100%">
-      <div class="coinsDiv col-md-12"> <h2><b>{{ getUserCoins }} </b></h2><i class="fas fa-coins fa-5x" style="color:yellow"></i></div>
+      <div class="coinsDiv col-md-12">
+        <h2><b>{{ getUserCoins }} </b></h2>
+        <i class="fas fa-coins fa-5x" style="color:yellow"></i>
+      </div>
     </div><br>
     <div class="row" style="width: 100%">
       <div class="startersDiv col-md-12" style="cursor:pointer" @click.prevent="toggleCollection(false)">
@@ -25,7 +28,9 @@
   <div class="container" style="width: 90%; float: right; min-height:2000px;background-color:lightblue">
     <div class="row" style="width: 100%">
       <div class="col-md-12">
-        <Poke-list :poke-list="showCollection? getCollectionUpdated : getStartersUpdated" :simple-mode="true"></Poke-list>
+        <Poke-list :poke-list="showCollection? getCollectionUpdated : getStartersUpdated"
+                   :simple-mode="true">
+       </Poke-list>
       </div>
     </div>
   </div>
@@ -91,7 +96,6 @@
         return this.starters;
       },
       getCollectionUpdated() {
-        this.collection.push(this.collection[0])
         return this.collection;
       },
     },
