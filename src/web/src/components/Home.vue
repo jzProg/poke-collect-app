@@ -1,6 +1,6 @@
 <template>
   <div>
-  <div class="container" style="width: 10%;float: left;">
+  <div class="optionsDiv container" style="float: left;">
     <div class="row" style="width: 100%">
       <div class="coinsDiv col-md-12">
         <h2><b>{{ getUserCoins }} </b></h2>
@@ -25,7 +25,7 @@
       </div>
     </div>
   </div>
-  <div class="container" style="width: 90%; float: right; min-height:2000px;background-color:lightblue">
+  <div class="pokemonDiv container" style="float: right; min-height:2000px;background-color:lightblue">
     <div class="row" style="width: 100%">
       <div class="col-md-12">
         <Poke-list :poke-list="showCollection? getCollectionUpdated : getStartersUpdated"
@@ -101,3 +101,22 @@
     },
   }
 </script>
+
+<style scoped>
+
+  .optionsDiv {
+    width: 10%;
+  }
+  .pokemonDiv {
+    width: 90%;
+  }
+
+ @media only screen and (max-width: 600px) {
+   .optionsDiv {
+     width: 30%;
+   }
+   .pokemonDiv {
+     width: 70%;
+   }
+}
+</style>
