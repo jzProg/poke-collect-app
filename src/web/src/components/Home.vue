@@ -2,11 +2,11 @@
   <div>
   <div class="startersDiv">
     <h1>Your Starters</h1>
-    <Poke-list :poke-list="starters" :simple-mode="true"></Poke-list>
+    <Poke-list :poke-list="getStartersUpdated" :simple-mode="true"></Poke-list>
   </div>
   <div class="collectionDiv">
     <h1>Your Collection</h1>
-    <Poke-list :poke-list="collection" :simple-mode="true"></Poke-list>
+    <Poke-list :poke-list="getCollectionUpdated" :simple-mode="true"></Poke-list>
   </div>
   <button type="button" class="btn btn-primary" @click.prevent="startGame()">Play</button>
   </div>
@@ -34,21 +34,23 @@
         bus.$on('login', (username) => {
           console.log('Home --> on Login')
           this.storeUsername(username);
+          this.initData();
         });
-        this.getStarters();
-        this.getCollection();
-      }
+      } else this.initData();
     },
     methods: {
       ...mapActions([
           'storeUsername',
       ]),
+      initData() {
+        this.getStarters();
+        this.getCollection();
+      },
       getStarters() {
-        this.getPokemonInfoFromList(this.getUserPokemon, this.starters);
-
+       this.getPokemonInfoFromList(this.getUserPokemon, this.starters);
       },
       getCollection() {
-        this.getPokemonInfoFromList(this.getUserPokemon, this.collection);
+       this.getPokemonInfoFromList(this.getUserPokemon, this.collection);
       },
       startGame() {
         this.$router.push('Game');
@@ -57,7 +59,14 @@
     computed: {
       ...mapGetters([
         'getUserPokemon',
-      ])
-    }
+        'getLoginUsername'
+      ]),
+      getStartersUpdated() {
+        return this.starters;
+      },
+      getCollectionUpdated() {
+        return this.collection;
+      },
+    },
   }
 </script>
