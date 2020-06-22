@@ -2,7 +2,7 @@
   <div>
     <div id = 'pokeListContent' class = "container">
       <div class = "row">
-        <component :is="mode"
+        <component :is="getMode"
               v-for = '(poke,index) in sortedPokeList'
               :key = "index"
               :info="poke"
@@ -24,20 +24,14 @@ export default {
   components: {
     Pokemon,
   },
-  data() {
-    return {
-      mode: PokemonCard,
-    }
-  },
   created() {
-    this.mode = this.simpleMode ? Pokemon : PokemonCard;
     bus.$on('chosed', (name) => {
       this.onPokemonClick(name);
     });
   },
   methods: {
     onPokemonClick(pokeName) {
-      this.actionOnClick(pokeName);
+      if (this.actionOnClick) this.actionOnClick(pokeName);
     },
   },
   computed: {
@@ -46,6 +40,9 @@ export default {
        return poke1.order > poke2.order;
      });
    },
+   getMode() {
+     return this.simpleMode ? Pokemon : PokemonCard;
+   }
   }
 }
 </script>
