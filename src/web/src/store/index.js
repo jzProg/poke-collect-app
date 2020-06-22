@@ -102,20 +102,15 @@ export default new Vuex.Store({
           commit({ type: 'setRegisterErrorMessage', value: error.message });
         });
     },
-    createUserProfile({ commit }, payload) {
+    createUserProfile({ commit, dispatch }, payload) {
       return firebase.database().ref('users/' + payload.userId).set({
         userId: payload.userId,
         username: payload.username,
+        mail: payload.mail,
         pokemon: [],
         starters: [],
         coins: 0,
         initialized: false,
-      }).then(() => {
-        firebase.auth().currentUser.updateProfile({
-          displayName: payload.username,
-        }).catch((error) => {
-          console.log('profile update error: ', error);
-        });
       });
     },
     userLogout({ commit }) {

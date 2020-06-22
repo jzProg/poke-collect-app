@@ -17,7 +17,7 @@ import bus from "@/common/eventBus";
     props: ['info'],
     methods: {
       onChoose(name) {
-        bus.$emit('chosed', name);
+        //bus.$emit('chosed', name);
       },
     },
   }

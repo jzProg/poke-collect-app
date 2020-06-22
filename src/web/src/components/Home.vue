@@ -1,5 +1,6 @@
 <template>
   <div>
+  <button type="button" style="margin-top: 2%" class="btn btn-primary" @click.prevent="startGame()">Play</button>
   <div class="startersDiv">
     <h1>Your Starters</h1>
     <Poke-list :poke-list="getStartersUpdated" :simple-mode="true"></Poke-list>
@@ -8,7 +9,6 @@
     <h1>Your Collection</h1>
     <Poke-list :poke-list="getCollectionUpdated" :simple-mode="true"></Poke-list>
   </div>
-  <button type="button" class="btn btn-primary" @click.prevent="startGame()">Play</button>
   </div>
 </template>
 

@@ -85,7 +85,7 @@
         this.userAuth(newUserEntry).then(() => {
           this.storeUsername(this.enteredName);
           this.userLogin(newUserEntry).then(() => {
-            this.createUserProfile({ userId: this.guid(), username: this.enteredName });
+            this.createUserProfile({ userId: this.guid(), username: this.enteredName, mail: this.enteredMail });
           });
         });
       },

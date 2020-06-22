@@ -68,17 +68,21 @@
      onOptionsClose() {
        this.showOptionsModal = false;
      },
-      fetchInitialUserInfo(username)  {
+      fetchInitialUserInfo(mail)  {
+        console.log('fetching user info...');
         firebase.database().ref('users/').on("value", (userObject) => {
           if (userObject.val()) {
             Object.values(userObject.val()).forEach((user) => {
-              if (user.username === username) {
+              if (user.mail === mail) {
+                console.log('user found!');
                 localStorage.setItem('userId', user.userId);
                 this.setUserPokemon({ value: user.pokemon });
                 this.setUserStarters({ value: user.starters });
                 this.setUserBasicInfo({ value: user.initialized });
                 this.setUserCoins({ value: user.coins });
-                bus.$emit('login', username);
+                this.username = user.username;
+                this.setLoginUsername({ value: user.username });
+                bus.$emit('login', user.username);
               }
             });
           }});
@@ -104,11 +108,10 @@
           console.log('loggedIn!');
           // User is signed in.
           user = firebase.auth().currentUser;
-          vm.username = user.displayName;
-          vm.setLoginUsername({ value: user.displayName });
           user.getIdToken().then((token) => {
             localStorage.setItem('token', token);
-            vm.fetchInitialUserInfo(user.displayName);
+            console.log(user.email);
+            vm.fetchInitialUserInfo(user.email);
           });
         } else {
           console.log('loggedOut!');

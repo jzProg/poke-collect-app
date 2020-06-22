@@ -57,7 +57,7 @@ const router =  new Router({
       path: '/getStarted',
       name: 'GetStarted',
       component: GetStarted,
-      meta: { hasProfileHeader: true },
+      meta: { hasProfileHeader: false },
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem('token')) next();
         else next('/');
