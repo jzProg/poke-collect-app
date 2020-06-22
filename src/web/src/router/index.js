@@ -77,6 +77,7 @@ const router =  new Router({
       path: '/battle',
       name: 'Battle',
       component: Battle,
+      meta: { hasProfileHeader: false },
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem('token')) next();
         else next('/');

@@ -1,79 +1,63 @@
 <template>
   <div>
-    <div id = "addBookBtn"
-         class = "btn btn-primary"
-         style = "border-radius:40px"
-         @click.prevent = "postBook">
-      <i class = "fas fa-plus"></i>
-    </div>
-  <router-link :to="{ name: 'Game', params: {} }">Play</router-link>
+  <div class="startersDiv">
+    <h1>Your Starters</h1>
+    <Poke-list :poke-list="starters" :simple-mode="true"></Poke-list>
+  </div>
+  <div class="collectionDiv">
+    <h1>Your Collection</h1>
+    <Poke-list :poke-list="collection" :simple-mode="true"></Poke-list>
+  </div>
+  <button type="button" class="btn btn-primary" @click.prevent="startGame()">Play</button>
   </div>
 </template>
 
 <script>
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
+  import pokemonMixin from '@/common/mixins/pokemonMixin';
   import bus from "@/common/eventBus";
   import { mapActions, mapGetters } from 'vuex';
+  import PokeList from './PokemonList.vue';
 
   export default {
     name: 'Home',
-    mixins: [uniqueIdGeneratorMixin],
+    mixins: [uniqueIdGeneratorMixin, pokemonMixin],
+    components: {PokeList},
     data() {
       return {
-        userBooks: [],
-        showModal: false,
+        starters: [],
+        collection: [],
       }
     },
     created() {
       if (!this.getLoginUsername) {
         bus.$on('login', (username) => {
+          console.log('Home --> on Login')
           this.storeUsername(username);
         });
-      } else {
-        //this.fetchBooks(this.getLoginUsername); // todo change [Fetch pokemon]
+        this.getStarters();
+        this.getCollection();
       }
     },
     methods: {
       ...mapActions([
-          'fetchBooks',
-          'addNewBook',
-          'deleteBook',
           'storeUsername',
       ]),
-      onClose(res) {
-        if (res && Object.keys(res).length) {
-          const bookId = this.guid();
-          this.addNewBook({ bookId: bookId,
-                            title: res.title,
-                            author: res.author_name[0],
-                            image: `http://covers.openlibrary.org/b/isbn/${res.isbn[0]}-L.jpg`,
-                            postedBy: this.getLoginUsername}).then(() => {
-            this.fetchBooks(this.getLoginUsername);
-          });
-        }
-        this.showModal = false;
+      getStarters() {
+        this.getPokemonInfoFromList(this.getUserPokemon, this.starters);
+
       },
-      postBook() {
-        this.showModal = true;
+      getCollection() {
+        this.getPokemonInfoFromList(this.getUserPokemon, this.collection);
       },
-      deleteBook(bookId) {
-        this.deleteBook({ bookId: bookId}).then(() => {
-          this.fetchBooks(this.getLoginUsername);
-        });
-      },
+      startGame() {
+        this.$router.push('Game');
+      }
     },
     computed: {
       ...mapGetters([
-          'getUserBooks',
-          'getLoginUsername',
-      ]),
+        'getUserPokemon',
+      ])
     }
   }
 </script>
-
-<style scoped>
-  #addBookBtn {
-    float: left;
-    margin-left: 10%;
-  }
-</style>

@@ -22,26 +22,23 @@
     },
     created(){
       bus.$on('login', (username) => {
+        console.log('welcome --> on Login')
         this.storeUsername(username).then(() => {
-          this.fetchUserPokemon(this.getLoginUsername).then(() => {
-            if (!this.getUserBasicInfo) {
-              this.$router.push('getStarted');
-            } else {
-              this.$router.push('home');
-            }
-          });
+          if (!this.getUserBasicInfo) {
+            this.$router.push('getStarted');
+          } else {
+            this.$router.push('home');
+          }
         });
       });
     },
     methods: {
       ...mapActions([
           'storeUsername',
-          'fetchUserPokemon',
       ]),
     },
     computed: {
       ...mapGetters([
-        'getLoginUsername',
         'getUserBasicInfo',
       ]),
     }

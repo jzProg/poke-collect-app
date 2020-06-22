@@ -2,12 +2,13 @@
   <div>
     <div id = 'pokeListContent' class = "container">
       <div class = "row">
-        <Pokemon v-for = '(poke,index) in sortedPokeList'
-              class = "col-md-4"
+        <component :is="mode"
+              v-for = '(poke,index) in sortedPokeList'
+              class = "col-md-3"
               :key = "index"
               :info="poke"
               :copies = "1">
-        </Pokemon>
+        </component>
       </div>
     </div>
   </div>
@@ -15,15 +16,22 @@
 
 <script>
 import Pokemon from './Pokemon.vue';
+import PokemonCard from './PokemonCard.vue';
 import bus from "@/common/eventBus";
 
 export default {
   name: 'PokemonList',
-  props: ['pokeList', 'actionOnClick'],
+  props: ['pokeList', 'actionOnClick', 'simpleMode'],
   components: {
     Pokemon,
   },
+  data() {
+    return {
+      mode: PokemonCard,
+    }
+  },
   created() {
+    this.mode = this.simpleMode ? Pokemon : PokemonCard;
     bus.$on('chosed', (name) => {
       this.onPokemonClick(name);
     });

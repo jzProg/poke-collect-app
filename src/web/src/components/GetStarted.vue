@@ -23,7 +23,6 @@
     },
     beforeRouteEnter(to, from, next) {
       next(vm => {
-        console.log(vm.getUserBasicInfo)
           if (vm.getUserBasicInfo) {
             next('home');
           }

@@ -59,6 +59,7 @@
     },
     created() {
       bus.$on('login', () => {
+        console.log('Register --> on Login');
         this.$router.push('getStarted');
       });
     },
