@@ -1,13 +1,33 @@
 <template>
   <div>
-  <button type="button" style="margin-top: 2%" class="btn btn-primary" @click.prevent="startGame()">Play</button>
-  <div class="startersDiv">
-    <h1>Your Starters</h1>
-    <Poke-list :poke-list="getStartersUpdated" :simple-mode="true"></Poke-list>
+  <div class="container" style="width: 10%;float: left;">
+    <div class="row" style="width: 100%">
+      <div class="coinsDiv col-md-12"> <h2><b>{{ getUserCoins }} </b></h2><i class="fas fa-coins fa-5x" style="color:yellow"></i></div>
+    </div><br>
+    <div class="row" style="width: 100%">
+      <div class="startersDiv col-md-12" style="cursor:pointer" @click.prevent="toggleCollection(false)">
+        <h3><b>Your Starters</b></h3>
+        <img src="..\assets\pikatsu.png" style="width:100px;height:100px">
+      </div>
+    </div><br>
+    <div class="row" style="width: 100%">
+      <div class="collectionDiv col-md-12" style="cursor:pointer" @click.prevent="toggleCollection(true)">
+        <h3><b>Your Collection</b></h3>
+        <img src="..\assets\collection.jpg" style="width:100px;height:100px">
+      </div>
+    </div>
+    <div class="row" style="width: 100%">
+      <div class="collectionDiv col-md-12">
+        <button type="button" style="margin-top: 20%" class="btn btn-primary" @click.prevent="startGame()">Start Game</button>
+      </div>
+    </div>
   </div>
-  <div class="collectionDiv">
-    <h1>Your Collection</h1>
-    <Poke-list :poke-list="getCollectionUpdated" :simple-mode="true"></Poke-list>
+  <div class="container" style="width: 90%; float: right; min-height:2000px;background-color:lightblue">
+    <div class="row" style="width: 100%">
+      <div class="col-md-12">
+        <Poke-list :poke-list="showCollection? getCollectionUpdated : getStartersUpdated" :simple-mode="true"></Poke-list>
+      </div>
+    </div>
   </div>
   </div>
 </template>
@@ -27,6 +47,7 @@
       return {
         starters: [],
         collection: [],
+        showCollection: false
       }
     },
     created() {
@@ -52,6 +73,9 @@
       getCollection() {
        this.getPokemonInfoFromList(this.getUserPokemon, this.collection);
       },
+      toggleCollection(showCollection) {
+        this.showCollection = showCollection;
+      },
       startGame() {
         this.$router.push('Game');
       }
@@ -60,12 +84,14 @@
       ...mapGetters([
         'getUserPokemon',
         'getUserStarters',
-        'getLoginUsername'
+        'getLoginUsername',
+        'getUserCoins'
       ]),
       getStartersUpdated() {
         return this.starters;
       },
       getCollectionUpdated() {
+        this.collection.push(this.collection[0])
         return this.collection;
       },
     },
