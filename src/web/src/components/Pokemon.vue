@@ -1,5 +1,5 @@
 <template>
-  <div id = "pokeImageContainer" @click.prevent="onChoose(info.name)" class = "col-md-3">
+  <div id = "pokeImageContainer" @click.prevent="onChoose(info.name)" class = "col-md-3" :style="getStyle()">
     <div id = 'pokeContent'>
       <img :class = "'poke' + info.id"
            id = "pokeImg"
@@ -14,11 +14,14 @@ import bus from "@/common/eventBus";
 
   export default {
     name: 'Pokemon',
-    props: ['info'],
+    props: ['info', 'disabled'],
     methods: {
       onChoose(name) {
-        //bus.$emit('chosed', name);
+       if (!this.disabled) bus.$emit('chosed', name);
       },
+      getStyle() {
+        return this.disabled? {opacity: '0.5'} : '';
+      }
     },
   }
 </script>
