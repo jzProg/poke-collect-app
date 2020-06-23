@@ -7,7 +7,7 @@ const pokemonMixin = {
       totalPokemon: 300, // to do map by region
       imageAPI: 'https://pokeres.bastionbot.org/images/pokemon/',
       startersInfo: {
-        NUM_OF_STARTERS: 4,
+        NUM_OF_STARTERS: 3,
         STANDARD_STARTERS: ['bulbasaur', 'squirtle', 'charmander'],
         STARTERS_TYPE: '', // todo change based on POKE API
       },
