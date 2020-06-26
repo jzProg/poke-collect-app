@@ -311,6 +311,7 @@
   background-color: darkgray;
   border: 3px solid black;
   border-radius: 8px 8px 8px 8px;
+  padding: 1%;
 }
 
 .player .statBox .progress {
@@ -326,6 +327,7 @@
   background-color: darkgray;
   border: 3px solid black;
   border-radius: 8px 8px 8px 8px;
+  padding: 1%;
 }
 
 .opponent .statBox .progress {
