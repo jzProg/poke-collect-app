@@ -29,7 +29,7 @@
     <div class="row" style="width: 100%">
       <div class="col-md-12">
         <Poke-list :poke-list="showCollection? getCollectionUpdated : getStartersUpdated"
-                   :simple-mode="!showCollection">
+                   :simple-mode="showCollection">
        </Poke-list>
       </div>
     </div>
