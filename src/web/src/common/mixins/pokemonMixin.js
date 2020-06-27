@@ -19,6 +19,158 @@ const pokemonMixin = {
       },
       prizes: ["COINS", "PACK", "ITEM"],
       items: [], // todo change
+      avatars: {
+        1: {
+          name: 'Ash',
+          image: 'avatar-1.png',
+          pokemon: {
+            0 : [
+              'charmander',
+              'bulbasaur',
+              'squirtle',
+              'pikachu',
+              'pidgeotto',
+              'butterfree'
+            ],
+            1: [
+              'pikachu',
+              'kingler',
+              'snorlax',
+              'charmeleon',
+              'totodile',
+              'Muk'
+            ] ,
+            2: [
+              'charizard',
+              'pikachu',
+              'chicorita',
+              'pidgeon',
+              'primeape',
+              'lapras'
+            ]
+          }
+        },
+        2: {
+          name: 'Brock',
+          image: 'avatar-2.png',
+          pokemon: {
+            0: [
+              'zubat',
+              'geodude',
+              'onix',
+              'chansey',
+              'mudkip',
+              'vulpix'
+            ],
+            1: [
+              'vulpix',
+              'geodude',
+              'golbat',
+              'onix',
+              'marshtomp',
+              'bonsly'
+            ],
+            2: [
+              'steelix',
+              'golbat',
+              'geodude',
+              'crobat',
+              'sudowoodo',
+              'ludicolo'
+            ]
+          }
+        },
+        3: {
+          name: 'Gary',
+          image: 'avatar-3.png',
+          pokemon: {
+            0: [
+              'squirtle',
+              'eevee',
+              'krabby',
+              'arcanine',
+              'doduo',
+              'hoothoot'
+            ],
+            1: [
+              'wartortle',
+              'eevee',
+              'electivire',
+              'nidoking',
+              'arcanine',
+              'dodrio'
+            ],
+            2: [
+              'blastoise',
+              'umbreon',
+              'golem',
+              'scizor',
+              'magmar',
+              'nidoqueen'
+            ]
+          }
+        },
+        4: {
+          name: 'Misty',
+          image: 'avatar-4.png',
+          pokemon: {
+            0: [
+              'staryu',
+              'psyduck',
+              'corsola',
+              'horsea',
+              'goldeen',
+              'poliwag'
+            ],
+            1: [
+              'starmie',
+              'goldeen',
+              'azurill',
+              'poliwhirl',
+              'caserin',
+              'togepi'
+            ],
+            2: [
+              'gyarados',
+              'politoed',
+              'togetic',
+              'scizor',
+              'starmie',
+              'golduck'
+            ]
+          }
+        },
+        5: {
+          name: 'Team Rocket',
+          image: 'avatar-5.jpg',
+          pokemon: {
+            0: [
+              'meowth',
+              'magikarp',
+              'ekans',
+              'bellsprout',
+              'cacnea',
+              'koffing'
+            ],
+            1: [
+              'ditto',
+              'wobbuffet',
+              'victreebel',
+              'growlie',
+              'weezing',
+              'arbok'
+            ],
+            2: [
+              'gyarados',
+              'lickitung',
+              'wobbuffet',
+              'mimikyu',
+              'arbok',
+              'weezing'
+            ]
+          }
+        },
+      },
     }
   },
   methods: {
@@ -35,6 +187,7 @@ const pokemonMixin = {
       return P.getItemByName(itemName);
     },
     getPokemonInfoFromList(listOfPokemon, listToFill) {
+      console.log(listOfPokemon);
       listOfPokemon.forEach((item, i) => {
         this.getPokemon(item).then((response) => {
           this.getPokemonSpecies(item).then((res) => {

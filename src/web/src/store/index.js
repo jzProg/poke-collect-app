@@ -15,11 +15,16 @@ export default new Vuex.Store({
       starters: [],
       coins: 0,
       initialized: false,
+      currentOpponentId: 0,
     },
+    enemybattlePokemon: [],
     errorLoginMessage: '',
     errorRegisterMessage: '',
   },
   getters: {
+    getCurrentOpponentId(state) {
+      return state.userInfo.currentOpponentId;
+    },
     getErrorRegisterMessage(state) {
       return state.errorRegisterMessage;
     },
@@ -44,8 +49,17 @@ export default new Vuex.Store({
     getUserCoins(state) {
       return state.userInfo.coins;
     },
+    getEnemyBattlePokemon(state) {
+      return state.enemybattlePokemon;
+    },
   },
   mutations: {
+    setEnemyBattlePokemon(state, payload) {
+      state.enemybattlePokemon = payload.value;
+    },
+    setCurrentOpponentId(state, payload) {
+      state.userInfo.currentOpponentId = payload.value;
+    },
     setUserCoins(state, payload) {
       state.userInfo.coins = payload.value;
     },

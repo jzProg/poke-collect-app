@@ -14,7 +14,8 @@
                </div>
                <div class="enemyDiv col-md-6 col-xs-6" style="padding:1%">
                  <h4><b>{{ enemyName }} Scope: {{ parseInt(gameState.enemyScore) }}</b></h4>
-                 <img src = "../assets/profile_default.png"
+                 <img :src = "image"
+                      v-if="image"
                       alt = "profile image"
                       style = "width:50px; height:50px; border-radius:50px"/>
                </div>
@@ -91,6 +92,7 @@
 <script>
   import { mapGetters } from 'vuex';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
+  import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
   import PokeList from './PokemonList.vue';
   import Pokemon from './Pokemon.vue';
   import bus from "@/common/eventBus";
@@ -100,12 +102,13 @@
 
   export default {
      name: 'Battle',
-     mixins: [pokemonMixin],
+     mixins: [pokemonMixin, uniqueIdGeneratorMixin],
      components: {PokeList, Pokemon},
      data() {
        return {
+          image: '',
           fullscreen: false,
-          enemyName: 'AVATAR_1', //todo change
+          enemyName: '',
           message: '',
           homebattlePokemon: {},
           homePokemon: [],
@@ -141,6 +144,8 @@
         }
      },
      created() {
+       this.getAvatarImage();
+       this.enemyName = this.avatars[this.getCurrentOpponentId].name;
        this.gameState.currentState = this.getNextState();
        bus.$on('chosed', (name) => {
          this.onPokemonChoosed(name);
@@ -151,6 +156,9 @@
        this.getEnemyPokemon();
      },
      methods: {
+       getAvatarImage() {
+         this.image = require(`@/assets/${this.avatars[this.getCurrentOpponentId].image}`);
+       },
        fullscreenChange() {
          this.fullscreen = !this.fullscreen;
          if (this.fullscreen) document.getElementById('game').style.height = "850px";
@@ -189,7 +197,7 @@
         this.getPokemonInfoFromList(this.getUserStarters, this.homePokemon);
        },
        getEnemyPokemon() {
-         this.getPokemonInfoFromList(this.getUserStarters, this.enemyPokemon); // TODO: fetch from previous page (avatars pokemon)
+         this.getPokemonInfoFromList(this.getEnemyBattlePokemon, this.enemyPokemon);
        },
        attack(ability) {
          if (this.gameState.currentState === 'HOME_BATTLE') {
@@ -252,7 +260,9 @@
     },
     computed: {
       ...mapGetters([
-        'getUserStarters'
+        'getUserStarters',
+        'getCurrentOpponentId',
+        'getEnemyBattlePokemon'
       ]),
       getHomePokemon()  {
         return this.homePokemon;
