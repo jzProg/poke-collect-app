@@ -1,9 +1,10 @@
 <template>
   <div id="containerDiv" class="container" style="width:100%">
     <div class="row">
+      <!--button type="button" @click.prevent="toggle()">full</button-->
        <div class="battleDiv col-md-12">
          <div class="row" style="background-color:black">
-           <div class="col-md-12 col-xs-12">
+           <fullscreen ref="fullscreen" @change="fullscreenChange" class="col-md-12 col-xs-12">
              <div class="scoreDiv row" style="background-color:darkgray">
                <div class="profileDiv col-md-6 col-xs-6" style="padding:1%">
                  <h4><b>Your Scope: {{ parseInt(gameState.homeScore) }}</b></h4>
@@ -18,7 +19,7 @@
                       style = "width:50px; height:50px; border-radius:50px"/>
                </div>
              </div>
-             <div class="gameDiv row">
+             <div class="gameDiv row" id="game">
                <div class="opponent" v-if="enemybattlePokemon && Object.keys(enemybattlePokemon).length">
                  <div class="col-md-6 col-xs-6" style="float:left; width:30%;">
                    <div class="statBox">
@@ -55,10 +56,10 @@
                </div>
              </div>
              <div class="messageDiv row">
-                 <div id="battleMessage" class="col-md-6 col-xs-12">
+                 <div id="battleMessage" class="col-md-6 col-xs-6">
                      {{ message }}
                  </div>
-                 <div class="col-md-6 col-xs-12" style="width: 50%;float:right">
+                 <div id="options" class="col-md-6 col-xs-6" style="width: 50%;float:right">
                      <div v-for="(move,index) in homebattlePokemon.moves"
                            class="move"
                            :key="index"
@@ -66,18 +67,21 @@
                            v-if="Object.keys(homebattlePokemon).length && index < 4">
                             {{ move.move.name }}
                      </div>
-                     <div v-if="getHomePokemon && !Object.keys(homebattlePokemon).length"
-                         v-for="(poke, index) in getHomePokemon":key="index">
-                       <div class="startersDiv" style="cursor:pointer">
-                         <Pokemon :info="poke"
-                                  :disabled="disabled[poke.name]"
-                                  style="width:100px;height:100px;">
-                        </Pokemon>
-                      </div>
-                     </div>
+                     <div class="row">
+                       <div v-if="getHomePokemon && !Object.keys(homebattlePokemon).length"
+                           v-for="(poke, index) in getHomePokemon":key="index">
+                         <div class="startersDiv">
+                           <Pokemon :info="poke"
+                                    class="col-md-4 col-xs-4"
+                                    :disabled="disabled[poke.name]"
+                                    id="starter">
+                          </Pokemon>
+                        </div>
+                       </div>
+                    </div>
                  </div>
              </div>
-           </div>
+           </fullscreen>
          </div>
        </div>
      </div>
@@ -90,6 +94,9 @@
   import PokeList from './PokemonList.vue';
   import Pokemon from './Pokemon.vue';
   import bus from "@/common/eventBus";
+  import fullscreen from 'vue-fullscreen';
+  import Vue from 'vue';
+  Vue.use(fullscreen);
 
   export default {
      name: 'Battle',
@@ -97,6 +104,7 @@
      components: {PokeList, Pokemon},
      data() {
        return {
+          fullscreen: false,
           enemyName: 'AVATAR_1', //todo change
           message: '',
           homebattlePokemon: {},
@@ -143,6 +151,14 @@
        this.getEnemyPokemon();
      },
      methods: {
+       fullscreenChange() {
+         this.fullscreen = !this.fullscreen;
+         if (this.fullscreen) document.getElementById('game').style.height = "850px";
+         else document.getElementById('game').style.height = "480px";
+       },
+       toggle () {
+        this.$refs['fullscreen'].toggle();
+       },
        getNextState() {
          const currentState = this.gameState.currentState;
          const stateMessage = this.gameState.statesInfo[currentState].message;
@@ -250,7 +266,6 @@
 
 <style scoped>
 .gameDiv {
-  position: relative;
   background-image: url('../../src/assets/battle_field.png');
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -376,6 +391,16 @@
   background-color: gray;
 }
 
+#starter {
+  width:100px;
+  height:100px;
+  border-radius:50px;
+  background-color:white;
+  margin-left:2%;
+  padding:2%;
+  border: 7px solid black;
+}
+
 #battleMessage {
   font-size: 24px;
   width: 50%;
@@ -390,6 +415,14 @@
 
   #battleMessage {
     font-size: 18px !important;
+  }
+
+  .statBox .progress .hpSpan {
+     width: 25% !important;
+  }
+
+  .statBox .progress .hpDiv {
+     width: 75% !important;
   }
 }
 
@@ -441,6 +474,17 @@
 
  #battleMessage {
    font-size: 18px !important;
+   width: 100%;
+ }
+
+ #starter {
+   width:70px !important;
+   height:70px !important;
+   margin-left: 10%;
+ }
+
+ #options {
+   width: 100% !important;
  }
 
 }
