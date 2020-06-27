@@ -426,7 +426,7 @@
   }
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 980px) {
  .gameDiv {
    height: 300px;
    margin-top: 20;
