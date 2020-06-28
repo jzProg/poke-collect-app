@@ -193,7 +193,8 @@ const pokemonMixin = {
           this.getPokemonSpecies(item).then((res) => {
             const image = this.getPokemonImage(response.id);
             Object.assign(response, { color: res.color.name, pokeImage: image });
-            listToFill.push(response);
+            if (listToFill.filter(e => e.name === response.name).length <= 0)
+              listToFill.push(response);
           });
         });
       });
