@@ -35,7 +35,7 @@
       </div>
     </div>
   </div>
-      <PokemonDetails v-if="showDetails" @close="showDetails=false" :info="getSelectedPokemon"/>
+  <PokemonDetails v-if="showDetails" @close="showDetails=false" :info="getSelectedPokemon"/>
   </div>
 </template>
 
@@ -71,11 +71,11 @@
     },
     methods: {
       onClickAction(name){
-        if(this.showCollection){
-          this.showDetails=true;
-          this.selectedPokemon=this.collection.filter(item=> item.name===name )[0]}
+        if(this.showCollection) {
+          this.showDetails = true;
+          this.selectedPokemon = this.collection.filter(item => item.name === name )[0];
+        }
       },
-
       ...mapActions([
           'storeUsername',
       ]),

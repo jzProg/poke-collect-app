@@ -1,5 +1,5 @@
 <template>
-  <div id = "pokeContainer" @click.prevent="onChoose(info.name)"  class = "col-md-4">
+  <div id = "pokeContainer" class = "col-md-4">
     <div id = 'pokeContent'>
       <div id = 'copiesSpan' v-show = 'copies >= 2'>
         x{{ copies || 1 }}
@@ -37,10 +37,10 @@ import bus from "@/common/eventBus";
 
   export default {
     name: 'PokemonCard',
-    props: ['info', 'copies'],
+    props: ['info', 'copies', 'actionOnClick'],
     methods: {
       onChoose(name) {
-        bus.$emit('chosed', name);
+        this.actionOnClick(name);
       },
       getTypeStyle() {
         return { color: this.info.color };

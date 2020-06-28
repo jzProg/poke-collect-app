@@ -14,10 +14,10 @@ import bus from "@/common/eventBus";
 
   export default {
     name: 'Pokemon',
-    props: ['info', 'disabled'],
+    props: ['info', 'disabled', 'actionOnClick'],
     methods: {
       onChoose(name) {
-       if (!this.disabled) bus.$emit('chosed', name);
+       if (!this.disabled) this.actionOnClick(name);
       },
       getStyle() {
         return this.disabled? {opacity: '0.5'} : '';
