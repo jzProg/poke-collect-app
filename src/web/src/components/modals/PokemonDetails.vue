@@ -3,7 +3,7 @@
     <span slot = "close" id = 'closeSymbol' @click.prevent = "close">x</span><br>
     <h3 slot = "header">Confirm</h3>
     <div slot = "body">
-      <img :src="image" >
+      <img :src="image" class="pokeImg">
       {{info.color}}
 
     </div>
@@ -39,7 +39,7 @@ import pokemonMixin from '@/common/mixins/pokemonMixin';
   }
 </script>
 <style scoped>
-img{
+.pokeImg{
   width:200px;
   height:200px;
 }

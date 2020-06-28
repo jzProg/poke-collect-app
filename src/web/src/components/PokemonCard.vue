@@ -1,5 +1,5 @@
 <template>
-  <div id = "pokeContainer" @click.prevent="onChoose(info.name)"  @class = "col-md-4">
+  <div id = "pokeContainer" @click.prevent="onChoose(info.name)"  class = "col-md-4">
     <div id = 'pokeContent'>
       <div id = 'copiesSpan' v-show = 'copies >= 2'>
         x{{ copies || 1 }}
