@@ -29,15 +29,18 @@
     <div class="row" style="width: 100%">
       <div class="col-md-12">
         <Poke-list :poke-list="showCollection? getCollectionUpdated : getStartersUpdated"
+                   :action-on-click="onClickAction"
                    :simple-mode="showCollection">
-       </Poke-list>
+       </Poke-list >
       </div>
     </div>
   </div>
+      <PokemonDetails v-if="showDetails" @close="showDetails=false" :info="getSelectedPokemon"/>
   </div>
 </template>
 
 <script>
+  import PokemonDetails from '@/components/modals/PokemonDetails';
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
   import bus from "@/common/eventBus";
@@ -47,12 +50,14 @@
   export default {
     name: 'Home',
     mixins: [uniqueIdGeneratorMixin, pokemonMixin],
-    components: {PokeList},
+    components: {PokeList,PokemonDetails},
     data() {
       return {
         starters: [],
         collection: [],
-        showCollection: false
+        showCollection: false,
+        showDetails: false,
+        selectedPokemon:{}
       }
     },
     created() {
@@ -65,6 +70,12 @@
       } else this.initData();
     },
     methods: {
+      onClickAction(name){
+        if(this.showCollection){
+          this.showDetails=true;
+          this.selectedPokemon=this.collection.filter(item=> item.name===name )[0]}
+      },
+
       ...mapActions([
           'storeUsername',
       ]),
@@ -92,6 +103,9 @@
         'getLoginUsername',
         'getUserCoins'
       ]),
+      getSelectedPokemon() {
+        return this.selectedPokemon;
+      },
       getStartersUpdated() {
         return this.starters;
       },

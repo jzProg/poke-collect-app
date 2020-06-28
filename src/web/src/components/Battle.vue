@@ -93,7 +93,6 @@
   import { mapGetters } from 'vuex';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
-  import PokeList from './PokemonList.vue';
   import Pokemon from './Pokemon.vue';
   import bus from "@/common/eventBus";
   import fullscreen from 'vue-fullscreen';
@@ -103,7 +102,7 @@
   export default {
      name: 'Battle',
      mixins: [pokemonMixin, uniqueIdGeneratorMixin],
-     components: {PokeList, Pokemon},
+     components: {Pokemon},
      data() {
        return {
           image: '',
