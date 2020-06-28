@@ -1,11 +1,12 @@
 <template>
   <Modal>
     <span slot = "close" id = 'closeSymbol' @click.prevent = "close">x</span><br>
-    <h3 slot = "header">Confirm</h3>
+    <h3 slot = "header">Pokemon Details</h3>
     <div slot = "body">
+<div class="container-sm">
       <img :src="image" >
-      {{info.color}}
-
+      {{info.forms[0].name.charAt(0).toUpperCase()+info.forms[0].name.slice(1)}}
+  </div>
     </div>
   </Modal>
 </template>
