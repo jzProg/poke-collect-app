@@ -6,14 +6,14 @@
       <img src = "../../assets/profile_default.png"
            alt = "profile image"
            style = "width:50%;height:50%;border-radius:50px;margin: 2%;"><br>
-      <EditModal v-if="showEditOptions"
-                 @close="showEditOptions = false">
-      </EditModal>
+      <Confirm v-if="showConfirm"
+                 @confirm="onConfirm"
+                 @close="showConfirm = false">
+      </Confirm>
       <span># of Pokemon: {{ getUserPokemon.length }} </span><br>
       <span>{{ getUserCoins }} <i class="fas fa-coins" style="color:yellow"></i></span>
     </div>
     <div slot = "footer" class = "text-center">
-      <!--button type = "button" class = "btn btn-primary" @click.prevent = "editProfile">Edit Profile</button-->
       <div style="margin-bottom:2%">Start A new Game <router-link :to="{ name: 'Game', params: {} }">here</router-link></div>
       <button type = "button" class = "btn btn-danger" @click.prevent = "unsub">Unsubscribe</button>
       <button type = "button" class = "btn btn-danger" @click.prevent = "logout">Logout</button>
@@ -24,26 +24,31 @@
 <script>
   import { mapActions, mapGetters } from 'vuex';
   import Modal from './GenericModalStructure.vue';
-  import EditModal from './EditProfileModal.vue';
+  import Confirm from './Confirm.vue';
 
   export default {
     name: 'OptionsModal',
-    components: { Modal, EditModal },
+    components: { Modal, Confirm },
     props: ['logout', 'username'],
     data() {
       return {
-        showEditOptions: false,
+        showConfirm: false,
       }
     },
     methods: {
+      ...mapActions([
+        'deleteUser',
+      ]),
       goToPage(page) {
         this.$router.push(`\${page}`);
       },
-      editProfile() {
-        this.showEditOptions = true;
-      },
       unsub() {
-        // todo implement
+        this.showConfirm = true;
+      },
+      onConfirm() {
+        this.deleteUser().then(() => {
+          this.logout();
+        });
       },
       close() {
         this.$emit('close');

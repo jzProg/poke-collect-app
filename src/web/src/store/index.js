@@ -127,6 +127,22 @@ export default new Vuex.Store({
         initialized: false,
       });
     },
+    deleteUser({ commit, dispatch }) {
+      const user = firebase.auth().currentUser;
+       const userId = localStorage.getItem('userId');
+       firebase.database().ref('users/' + userId).remove().then(() => {
+         console.log('DB user deleted succesfully! About to delete auth user as well...');
+         user.delete()
+          .then(() => {
+            console.log('Successfully deleted auth user');
+         })
+         .catch((error) => {
+           console.log('Error deleting auth user:', error);
+        });
+       }).catch((error) => {
+         console.log('Error deleting DB user:', error);
+      });
+    },
     userLogout({ commit }) {
       return firebase.auth().signOut()
         .then(() => {
