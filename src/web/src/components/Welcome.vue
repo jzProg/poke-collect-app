@@ -22,13 +22,9 @@
     },
     created(){
       bus.$on('login', (username) => {
-        console.log('welcome --> on Login')
+        console.log('welcome --> on Login');
         this.storeUsername(username).then(() => {
-          if (!this.getUserBasicInfo) {
-            this.$router.push('getStarted');
-          } else {
-            this.$router.push('home');
-          }
+          this.$router.push('getStarted');
         });
       });
     },

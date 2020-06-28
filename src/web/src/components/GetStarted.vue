@@ -48,8 +48,9 @@
         var randomPokeList =  [];
         this.getPokemonInfoFromList(listOfStarters, randomPokeList);
         this.setCurrentReward({ type: this.prizes.PACK, value:  randomPokeList});
-        this.storePokemon({ list: randomPokeList , ids: listOfStarters, coins: this.coinsInfo.START_COINS });
-        this.$router.push('reward');
+        this.storePokemon({ list: randomPokeList , ids: listOfStarters, coins: this.coinsInfo.START_COINS }).then(() => {
+          this.$router.push('reward');
+        });
       }
     },
     computed: {

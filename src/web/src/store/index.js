@@ -95,7 +95,7 @@ export default new Vuex.Store({
        commit({ type: 'setUserPokemon', value: payload.list });
        commit({ type: 'setUserBasicInfo', value: true });
        var id = localStorage.getItem('userId');
-       firebase.database().ref('users/' + id).update({
+       return firebase.database().ref('users/' + id).update({
          pokemon: payload.ids,
          starters: payload.ids,
          coins: payload.coins,
