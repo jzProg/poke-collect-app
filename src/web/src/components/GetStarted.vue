@@ -2,7 +2,7 @@
  <div>
    <h1>Choose your starter pokemon!</h1>
    <h3>...and gain <span style="color:red">+3</span> more pokemon</h3>
-    <Poke-list :poke-list="list" :action-on-click="awardUser"></Poke-list>
+    <Poke-list :poke-list="list" :action-on-click="awardUser" :simple-mode="false"></Poke-list>
  </div>
 </template>
 
