@@ -74,6 +74,7 @@
                          <div class="startersDiv">
                            <Pokemon :info="poke"
                                     class="col-md-4 col-xs-4"
+                                    :action-on-click="onPokemonChoosed"
                                     :disabled="disabled[poke.name]"
                                     id="starter">
                           </Pokemon>
@@ -94,7 +95,6 @@
   import pokemonMixin from '@/common/mixins/pokemonMixin';
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
   import Pokemon from './Pokemon.vue';
-  import bus from "@/common/eventBus";
   import fullscreen from 'vue-fullscreen';
   import Vue from 'vue';
   Vue.use(fullscreen);
@@ -146,9 +146,6 @@
        this.getAvatarImage();
        this.enemyName = this.avatars[this.getCurrentOpponentId].name;
        this.gameState.currentState = this.getNextState();
-       bus.$on('chosed', (name) => {
-         this.onPokemonChoosed(name);
-       });
      },
      mounted() {
        this.getStarters();

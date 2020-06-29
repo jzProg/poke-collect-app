@@ -5,6 +5,7 @@
         <component :is="getMode"
               v-for = '(poke,index) in sortedPokeList'
               :key = "index"
+              :action-on-click="onPokemonClick"
               :info="poke"
               :copies = "1">
         </component>
@@ -16,19 +17,10 @@
 <script>
 import Pokemon from './Pokemon.vue';
 import PokemonCard from './PokemonCard.vue';
-import bus from "@/common/eventBus";
 
 export default {
   name: 'PokemonList',
   props: ['pokeList', 'actionOnClick', 'simpleMode'],
-  components: {
-    Pokemon,
-  },
-  created() {
-    bus.$on('chosed', (name) => {
-      this.onPokemonClick(name);
-    });
-  },
   methods: {
     onPokemonClick(pokeName) {
       if (this.actionOnClick) this.actionOnClick(pokeName);
