@@ -91,6 +91,16 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    findUserByUsername({ commit, dispatch}, payload) {
+      firebase.database().ref('users/').on("value", (userObject) => {
+        if (userObject.val()) {
+          Object.values(userObject.val()).forEach((user) => {
+            if (user.username === payload.username) {
+              commit({ type: 'setRegisterErrorMessage', value: 'Username exists...Please, enter another one' });
+            }
+          });
+        }});
+    },
     storePokemon({ commit, dispatch, state }, payload) {
        commit({ type: 'setUserPokemon', value: payload.list });
        commit({ type: 'setUserBasicInfo', value: true });

@@ -76,21 +76,26 @@
         'createUserProfile',
         'getUserLoginInfo',
         'storeUsername',
+        'findUserByUsername',
       ]),
       register() {
-        const newUserEntry = {
-          email: this.enteredMail,
-          password: this.enteredPass
-        };
-        this.userAuth(newUserEntry).then(() => {
-          const errorInRegister = this.getErrorRegisterMessage;
-          if (!errorInRegister) {
-            this.storeUsername(this.enteredName);
-            this.userLogin(newUserEntry).then(() => {
-              this.createUserProfile({ userId: this.guid(), username: this.enteredName, mail: this.enteredMail });
-            });
-          }
-        });
+         this.findUserByUsername({ username: this.enteredName });
+         var errorInRegister = this.getErrorRegisterMessage;
+         if (!errorInRegister) {
+           const newUserEntry = {
+             email: this.enteredMail,
+             password: this.enteredPass
+           };
+           this.userAuth(newUserEntry).then(() => {
+             errorInRegister = this.getErrorRegisterMessage;
+             if (!errorInRegister) {
+               this.storeUsername(this.enteredName);
+               this.userLogin(newUserEntry).then(() => {
+                 this.createUserProfile({ userId: this.guid(), username: this.enteredName, mail: this.enteredMail });
+               });
+             }
+           });
+         }
       },
       removeErrorMessage() {
         this.setRegisterErrorMessage({ value: '' });
