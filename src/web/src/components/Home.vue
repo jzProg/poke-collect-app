@@ -5,7 +5,7 @@
     <div class="row" style="width: 100%">
       <div class="col-md-12">
         <Poke-list :poke-list="showCollection? getCollectionUpdated : getStartersUpdated"
-                   :action-on-click="onClickAction"
+                   :action-on-click="showCollection ? onClickAction : null"
                    :simple-mode="showCollection">
        </Poke-list >
       </div>
@@ -32,7 +32,11 @@
   export default {
     name: 'Home',
     mixins: [uniqueIdGeneratorMixin, pokemonMixin],
+<<<<<<< HEAD
     components: {PokeList,Loading,Sidemenu,Options},
+=======
+    components: {PokeList,Loading,Sidemenu, Options},
+>>>>>>> bfad29b2375da43d6d8cf03adfe90f79d2072f99
     data() {
       return {
         starters: [],
