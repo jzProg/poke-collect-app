@@ -55,7 +55,7 @@
   export default {
     name: 'Home',
     mixins: [uniqueIdGeneratorMixin, pokemonMixin],
-    components: {PokeList, PokemonDetails, Loading,  Options},
+    components: {PokeList, Loading,  Options},
     data() {
       return {
         starters: [],
