@@ -187,7 +187,9 @@ const pokemonMixin = {
       return P.getItemByName(itemName);
     },
     getPokemonInfoFromList(listOfPokemon, listToFill) {
-      console.log(listOfPokemon);
+      while(listToFill.length > 0) {
+        listToFill.pop();
+      }
       listOfPokemon.forEach((item, i) => {
         this.getPokemon(item).then((response) => {
           this.getPokemonSpecies(item).then((res) => {
