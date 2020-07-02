@@ -39,10 +39,12 @@
             :poke-list="getStartersUpdated"
             :selected-pokemon="selectedPokemon"
             @close="showOptions=false" />
+            <!--  <Loading></Loading> -->
   </div>
 </template>
 
 <script>
+  import Loading from '@/components/modals/Loading';
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
   import bus from "@/common/eventBus";
@@ -53,7 +55,7 @@
   export default {
     name: 'Home',
     mixins: [uniqueIdGeneratorMixin, pokemonMixin],
-    components: { PokeList, Options },
+    components: {PokeList, PokemonDetails, Loading,  Options},
     data() {
       return {
         starters: [],
