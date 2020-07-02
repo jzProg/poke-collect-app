@@ -15,6 +15,7 @@
     <div slot = "footer" class = "text-center">
       <button type = "button"
               class = "btn btn-primary"
+              :disabled="getUserStarters.indexOf(selectedPokemon.id) != -1"
               @click.prevent = "showAdd">
               Add to Starters
      </button>
@@ -61,6 +62,7 @@
     computed: {
       ...mapGetters([
         'getUserPokemon',
+        'getUserStarters',
       ]),
     }
   }
