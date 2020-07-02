@@ -3,16 +3,13 @@
     <span slot = "close" id = 'closeSymbol' @click.prevent = "close">x</span><br>
     <h3 slot = "header">Pokemon Details</h3>
     <div slot = "body">
-<<<<<<< HEAD
 <div class="container-sm">
       <img :src="image" >
       {{info.forms[0].name.charAt(0).toUpperCase()+info.forms[0].name.slice(1)}}
   </div>
-=======
       <img :src="image" class="pokeImg">
       {{info.color}}
 
->>>>>>> f1285db6294db2a7aaceffe4388851c13bc28083
     </div>
   </Modal>
 </template>
