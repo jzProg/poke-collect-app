@@ -1,8 +1,8 @@
 <template>
   <div id = "pokeImageContainer" @click.prevent="onChoose(info.name)" class = "col-md-3" :style="getStyle()">
     <div id = 'pokeContent'>
-      <img :class = "'poke' + info.id"
-           id = "pokeImg"
+      <img :id = "'poke' + info.id"
+           class = "pokeImg"
            :src = "info.pokeImage"
            alt = "Pokemon cover">
     </div>
@@ -55,7 +55,7 @@ import bus from "@/common/eventBus";
     text-decoration:none;
     cursor:pointer;
   }
-  #pokeImg {
+  .pokeImg {
     height: 100%;
     margin-bottom: 2%;
     width: 125px;

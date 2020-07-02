@@ -1,30 +1,6 @@
 <template>
   <div>
-  <div class="optionsDiv container" style="float: left;">
-    <div class="row" style="width: 100%">
-      <div class="coinsDiv col-md-12">
-        <h2><b>{{ getUserCoins }} </b></h2>
-        <i class="fas fa-coins fa-5x" style="color:yellow"></i>
-      </div>
-    </div><br>
-    <div class="row" style="width: 100%">
-      <div class="startersDiv col-md-12" style="cursor:pointer" @click.prevent="toggleCollection(false)">
-        <h3><b>Your Starters</b></h3>
-        <img src="..\assets\pikatsu.png" style="width:100px;height:100px">
-      </div>
-    </div><br>
-    <div class="row" style="width: 100%">
-      <div class="collectionDiv col-md-12" style="cursor:pointer" @click.prevent="toggleCollection(true)">
-        <h3><b>Your Collection</b></h3>
-        <img src="..\assets\collection.jpg" style="width:100px;height:100px">
-      </div>
-    </div>
-    <div class="row" style="width: 100%">
-      <div class="collectionDiv col-md-12">
-        <button type="button" style="margin-top: 20%" class="btn btn-primary" @click.prevent="startGame()">Start Game</button>
-      </div>
-    </div>
-  </div>
+  <Sidemenu :coins="getUserCoins" :toggleCollection="toggleCollection" :startGame="startGame" ></Sidemenu>
   <div class="pokemonDiv container" style="float: right; min-height:2000px;background-color:lightblue">
     <div class="row" style="width: 100%">
       <div class="col-md-12">
@@ -41,6 +17,7 @@
 </template>
 
 <script>
+  import Sidemenu from './Sidemenu.vue'
   import Loading from '@/components/modals/Loading';
   import PokemonDetails from '@/components/modals/PokemonDetails';
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
@@ -52,7 +29,7 @@
   export default {
     name: 'Home',
     mixins: [uniqueIdGeneratorMixin, pokemonMixin],
-    components: {PokeList,PokemonDetails,Loading},
+    components: {PokeList,PokemonDetails,Loading,Sidemenu},
     data() {
       return {
         starters: [],
