@@ -4,7 +4,6 @@
     <h3 slot = "header">Pokemon Details</h3>
     <div slot = "body">
 <div class="container-sm">
-      <img :src="image" >
       {{info.forms[0].name.charAt(0).toUpperCase()+info.forms[0].name.slice(1)}}
   </div>
       <img :src="image" class="pokeImg">
