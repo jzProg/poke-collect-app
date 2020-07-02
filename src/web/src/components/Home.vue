@@ -36,10 +36,12 @@
     </div>
   </div>
   <PokemonDetails v-if="showDetails" @close="showDetails=false" :info="getSelectedPokemon"/>
+<!--  <Loading></Loading> -->
   </div>
 </template>
 
 <script>
+  import Loading from '@/components/modals/Loading';
   import PokemonDetails from '@/components/modals/PokemonDetails';
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
@@ -50,7 +52,7 @@
   export default {
     name: 'Home',
     mixins: [uniqueIdGeneratorMixin, pokemonMixin],
-    components: {PokeList,PokemonDetails},
+    components: {PokeList,PokemonDetails,Loading},
     data() {
       return {
         starters: [],

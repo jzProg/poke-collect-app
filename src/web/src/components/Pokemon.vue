@@ -31,6 +31,8 @@ import bus from "@/common/eventBus";
 #pokeImageContainer{
   background:url("http://www.pngall.com/wp-content/uploads/4/Pokemon-Pokeball-Transparent.png");
   background-size: cover;
+  width:200px;
+  height:200px;
 }
   #pokeContent {
     margin-top: 10%;
@@ -54,8 +56,9 @@ import bus from "@/common/eventBus";
     cursor:pointer;
   }
   #pokeImg {
-    width: 100%;
     height: 100%;
     margin-bottom: 2%;
+    width: 125px;
+    padding-top: 20px;
   }
 </style>
