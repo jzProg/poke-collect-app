@@ -3,10 +3,10 @@
     <div id = 'pokeContent'>
       <img :class = "'poke' + info.id"
            id = "pokeImg"
-           :src = "info.sprites.front_default"
+           :src = "info.pokeImage"
            alt = "Pokemon cover">
     </div>
-    
+
   </div>
 </template>
 
