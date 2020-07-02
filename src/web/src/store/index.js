@@ -96,8 +96,10 @@ export default new Vuex.Store({
   },
   actions: {
     replaceStarter({ commit, state}, payload) {
-      const starterToBeRemoved = payload.pokeId;
-      const index = state.userInfo.starters.indexOf(starterToBeRemoved);
+      const starterToBeRemoved_id = payload.pokeId;
+      const starterToBeRemoved_name = payload.name;
+      var index = state.userInfo.starters.indexOf(starterToBeRemoved_id);
+      if (index === -1) index = state.userInfo.starters.indexOf(starterToBeRemoved_name);
       const pokemonToBeAddedToStarters = state.pokemonToBeSwitched.id;
       state.userInfo.starters.splice(index, 1, pokemonToBeAddedToStarters);
       var id = localStorage.getItem('userId');

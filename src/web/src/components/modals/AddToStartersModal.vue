@@ -6,13 +6,13 @@
       <img v-for="(poke, index) in pokeList"
            :src="poke.pokeImage"
            style="cursor:pointer"
-           :class="['pokemonImg', chosenPokemon === poke.id ? 'highlighted' : '']"
-           @click.prevent="choose(poke.id)">
+           :class="['pokemonImg', chosenPokemon_id === poke.id ? 'highlighted' : '']"
+           @click.prevent="choose(poke.id, poke.name)">
     </div>
     <div slot = "footer" class = "text-center">
       <button type = "button"
               class = "btn btn-primary"
-              :disabled= "!chosenPokemon"
+              :disabled= "!chosenPokemon_id"
               @click.prevent = "change">
               Switch
      </button>
@@ -30,18 +30,20 @@
     components: { Modal },
     data() {
       return {
-        chosenPokemon: 0,
+        chosenPokemon_id: 0,
+        chosenPokemon_name: '',
       }
     },
     methods: {
       ...mapActions([
         'replaceStarter',
       ]),
-      choose(pokeId) {
-        this.chosenPokemon = pokeId;
+      choose(pokeId, name) {
+        this.chosenPokemon_id = pokeId;
+        this.chosenPokemon_name = name;
       },
       change() {
-        this.replaceStarter({pokeId: this.chosenPokemon}).then(() => {
+        this.replaceStarter({pokeId: this.chosenPokemon_id, name: this.chosenPokemon_name }).then(() => {
           this.$emit('close');
         });
       },
