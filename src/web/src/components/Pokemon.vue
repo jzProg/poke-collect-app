@@ -6,6 +6,7 @@
            :src = "info.sprites.front_default"
            alt = "Pokemon cover">
     </div>
+    
   </div>
 </template>
 
