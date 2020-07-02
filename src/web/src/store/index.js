@@ -20,6 +20,7 @@ export default new Vuex.Store({
     enemybattlePokemon: [],
     errorLoginMessage: '',
     errorRegisterMessage: '',
+    pokemonToBeSwitched: {}
   },
   getters: {
     getCurrentOpponentId(state) {
@@ -54,6 +55,9 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    storePokemonToBeSwitched(state, payload) {
+      state.pokemonToBeSwitched = payload.value;
+    },
     setEnemyBattlePokemon(state, payload) {
       state.enemybattlePokemon = payload.value;
     },
@@ -91,6 +95,16 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    replaceStarter({ commit, state}, payload) {
+      const starterToBeRemoved = payload.pokeId;
+      const index = state.userInfo.starters.indexOf(starterToBeRemoved);
+      const pokemonToBeAddedToStarters = state.pokemonToBeSwitched.id;
+      state.userInfo.starters.splice(index, 1, pokemonToBeAddedToStarters);
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('users/' + id).update({
+        starters: state.userInfo.starters,
+      });
+    },
     findUserByUsername({ commit, dispatch}, payload) {
       firebase.database().ref('users/').on("value", (userObject) => {
         if (userObject.val()) {

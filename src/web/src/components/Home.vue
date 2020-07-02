@@ -35,28 +35,31 @@
       </div>
     </div>
   </div>
-  <PokemonDetails v-if="showDetails" @close="showDetails=false" :info="getSelectedPokemon"/>
+  <Options v-if="showOptions"
+            :poke-list="getStartersUpdated"
+            :selected-pokemon="selectedPokemon"
+            @close="showOptions=false" />
   </div>
 </template>
 
 <script>
-  import PokemonDetails from '@/components/modals/PokemonDetails';
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
   import bus from "@/common/eventBus";
   import { mapActions, mapGetters } from 'vuex';
   import PokeList from './PokemonList.vue';
+  import Options from '@/components/modals/Options';
 
   export default {
     name: 'Home',
     mixins: [uniqueIdGeneratorMixin, pokemonMixin],
-    components: {PokeList,PokemonDetails},
+    components: { PokeList, Options },
     data() {
       return {
         starters: [],
         collection: [],
         showCollection: false,
-        showDetails: false,
+        showOptions: false,
         selectedPokemon:{}
       }
     },
@@ -71,10 +74,8 @@
     },
     methods: {
       onClickAction(name){
-        if(this.showCollection) {
-          this.showDetails = true;
+          this.showOptions = true;
           this.selectedPokemon = this.collection.filter(item => item.name === name )[0];
-        }
       },
       ...mapActions([
           'storeUsername',
