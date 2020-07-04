@@ -4,6 +4,7 @@
       <img :id = "'poke' + info.id"
            class = "pokeImg"
            :src = "info.pokeImage"
+           :class= "classFlag? 'pokeImgForBattle':'pokeImgForCollection'"
            alt = "Pokemon cover">
     </div>
 
@@ -15,7 +16,13 @@ import bus from "@/common/eventBus";
 
   export default {
     name: 'Pokemon',
-    props: ['info', 'disabled', 'actionOnClick'],
+    props: ['info', 'disabled', 'actionOnClick','classFlag'],
+    data(){
+      return{
+        "pokeCollectionClass":true
+      }
+    },
+
     methods: {
       onChoose(name) {
        if (!this.disabled) this.actionOnClick(name);
@@ -55,10 +62,14 @@ import bus from "@/common/eventBus";
     text-decoration:none;
     cursor:pointer;
   }
-  .pokeImg {
+  .pokeImgForCollection {
     height: 100%;
     margin-bottom: 2%;
     width: 125px;
     padding-top: 20px;
+  }
+  .pokeImgForBattle{
+    width: 100%;
+    height: 100%;
   }
 </style>

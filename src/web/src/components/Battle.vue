@@ -74,6 +74,7 @@
                          <div class="startersDiv">
                            <Pokemon :info="poke"
                                     class="col-md-4 col-xs-4"
+                                    :classFlag="true"
                                     :action-on-click="onPokemonChoosed"
                                     :disabled="disabled[poke.name]"
                                     id="starter">

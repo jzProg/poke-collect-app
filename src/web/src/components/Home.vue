@@ -32,11 +32,7 @@
   export default {
     name: 'Home',
     mixins: [uniqueIdGeneratorMixin, pokemonMixin],
-<<<<<<< HEAD
     components: {PokeList,Loading,Sidemenu,Options},
-=======
-    components: {PokeList,Loading,Sidemenu, Options},
->>>>>>> bfad29b2375da43d6d8cf03adfe90f79d2072f99
     data() {
       return {
         starters: [],
