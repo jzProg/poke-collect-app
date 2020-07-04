@@ -2,7 +2,7 @@
   <div id = "app">
     <div class="header container">
       <div class="row">
-        <h3 style="color:white;float:left;" class="col-md-2 col-xs-4"><b>PokeCollectApp</b></h3>
+        <h3 style="color:white;float:left;cursor:pointer" class="col-md-2 col-xs-4" @click.prevent="goToHome"><b>PokeCollectApp</b></h3>
         <div class="col-md-8 col-xs-4">
           <img v-if = "(!isLoggedIn() || notAuthPage()) &&  !isExcludedPage()"
                src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png"
@@ -51,6 +51,9 @@
       };
     },
     methods: {
+      goToHome(){
+        this.$router.push('getStarted');
+      },
       ...mapMutations([
           'setLoginUsername',
           'setUserPokemon',
