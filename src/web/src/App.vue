@@ -58,7 +58,6 @@
       this.notFullyLoaded=false;
     },
     methods: {
-
       goToHome(){
         this.$router.push('getStarted');
       },

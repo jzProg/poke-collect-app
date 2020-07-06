@@ -23,6 +23,7 @@
     "vue": "^2.5.2",
     "vue-axios": "^2.0.2",
     "vue-fullscreen": "^2.1.6",
+    "vue-images-loaded": "^1.1.2",
     "vue-router": "^3.0.1",
     "vue-svg-map": "^1.2.0",
     "vuex": "^3.0.1"

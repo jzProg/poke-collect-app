@@ -3,7 +3,7 @@
   <Sidemenu :coins="getUserCoins" :toggleCollection="toggleCollection" :startGame="startGame" ></Sidemenu>
   <div class="pokemonDiv container" style="float: right; min-height:2000px;background-color:lightblue">
     <div class="row" style="width: 100%">
-      <div class="col-md-12">
+      <div class="col-md-12" v-imageloader="loaded">
         <div class="pagination" v-if="showCollection && getCollectionUpdated.length > 20">
           <button class="prev" @click.prevent="prevPage()">prev</button>
           <button class="next" @click.prevent="nextPage()">next</button>
@@ -20,7 +20,6 @@
             :poke-list="getStartersUpdated"
             :selected-pokemon="selectedPokemon"
             @close="showOptions=false" />
-            <!--  <Loading></Loading> -->
   </div>
 </template>
 
@@ -33,11 +32,15 @@
   import { mapActions, mapGetters } from 'vuex';
   import PokeList from './PokemonList.vue';
   import Options from '@/components/modals/Options';
+  import imagesLoaded from 'vue-images-loaded';
 
   export default {
     name: 'Home',
     mixins: [uniqueIdGeneratorMixin, pokemonMixin],
     components: {PokeList,Loading,Sidemenu,Options},
+    directives: {
+      imageloader: imagesLoaded,
+    },
     data() {
       return {
         starters: [],
@@ -45,6 +48,7 @@
         showCollection: false,
         showOptions: false,
         page: 0,
+        numOfImagesLoaded: 0,
         selectedPokemon:{}
       }
     },
@@ -58,6 +62,13 @@
       } else this.initData();
     },
     methods: {
+      loaded() {
+        console.log('loaded.....'); // TODO implement logic here
+        this.numOfImagesLoaded++;
+        if (this.numOfImagesLoaded === 3) {
+          console.log('All loaded!');
+        }
+      },
       nextPage() {
         this.page += 1;
       },
