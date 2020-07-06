@@ -1,6 +1,6 @@
 <template>
   <div>
-  <Sidemenu :coins="getUserCoins" :toggleCollection="toggleCollection" :startGame="startGame" ></Sidemenu>
+  <Sidemenu :coins="getUserCoins" :doAction="actionFor" :startGame="startGame" ></Sidemenu>
   <div class="pokemonDiv container" style="float: right; min-height:2000px;background-color:lightblue">
     <div class="row" style="width: 100%">
       <div class="col-md-12">
@@ -98,6 +98,17 @@
       },
       toggleCollection(showCollection) {
         this.showCollection = showCollection;
+      },
+      actionFor(category) {
+        switch (category) {
+        case 'STARTERS': this.toggleCollection(false);
+                      break;
+        case 'COLLECTION': this.toggleCollection(true);
+                      break;
+        case 'ITEMS': this.toggleCollection(true);// TODO change
+                      break;
+        default: this.startGame();
+        }
       },
       startGame() {
         this.$router.push('Game');

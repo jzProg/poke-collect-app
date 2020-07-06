@@ -14,7 +14,7 @@
          :key="index">
       <div :class="['col-md-12', checkedCategory === index? 'checked' : '']"
            style="cursor:pointer; margin-left:5%; padding: 5%;"
-           @click.prevent="setChecked(index);toggleCollection(categories[index].collection)">
+           @click.prevent="setChecked(index);doAction(categories[index].type)">
         <h3><b>{{ categories[index].title }}</b></h3>
         <img :src="categories[index].image"
               style="width:100px;height:100px">
@@ -40,24 +40,24 @@
 
   export default {
     name: 'Sidemenu',
-    props:['coins','startGame','toggleCollection'],
+    props:['coins','startGame','doAction'],
     data() {
       return {
          checkedCategory: 0,
          categories: [{
                         image: require('../assets/pikatsu.png'),
                         title: 'Your Starters',
-                        collection: false,
+                        type: 'STARTERS',
                       },
                       {
                         image: require('../assets/collection.jpg'),
                         title: 'Your Collection',
-                        collection: true,
+                        type: 'COLLECTION',
                       },
                       {
                         image: require('../assets/backpack.png'),
                         title: 'Your Inventory',
-                        collection: true,
+                        type: 'ITEMS',
                     }],
       }
     },
