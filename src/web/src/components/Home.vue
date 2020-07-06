@@ -1,7 +1,7 @@
 <template>
   <div>
   <Sidemenu :coins="getUserCoins" :doAction="actionFor" :startGame="startGame" ></Sidemenu>
-  <div class="pokemonDiv container" style="float: right; min-height:2000px;background-color:lightblue">
+  <div class="pokemonDiv container">
     <div class="row" style="width: 100%">
       <div class="col-md-12">
         <div class="pagination" v-if="showCollection && getCollectionUpdated.length > 20">
@@ -141,6 +141,10 @@
 </script>
 
 <style scoped>
+.pokemonDiv.container{
+  float: right;
+  background-color:lightblue
+}
 
   .optionsDiv {
     width: 10%;
