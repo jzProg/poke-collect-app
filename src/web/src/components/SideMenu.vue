@@ -49,20 +49,15 @@
                       {
                         image: require('../assets/backpack.png'),
                         title: 'Your Inventory',
-<<<<<<< HEAD
-                        collection: true,
+                        type: 'ITEMS',
+
                     },
                     {image: require('../assets/battle.png'),
                     title: 'Battle',
-                    collection: false,
-
-                }]}},
-=======
-                        type: 'ITEMS',
-                    }],
-      }
-    },
->>>>>>> ff52431680d0cb0c739596cdc70056d59a7eefc8
+                    type: 'MODES'
+                    }
+              ]}
+            },
     methods: {
       setChecked(index) {
         this.checkedCategory = index;
@@ -104,11 +99,6 @@
   box-shadow: 0 5px #666;
   transform: translateY(4px);
   color:#e9ec08;
-}
-.icon:hover{
-  background-color:#ff4301;
-  color:white;
-
 }
 
 </style>
