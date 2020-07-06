@@ -4,8 +4,13 @@
   <div class="pokemonDiv container" style="float: right; min-height:2000px;background-color:lightblue">
     <div class="row" style="width: 100%">
       <div class="col-md-12">
+        <div class="pagination" v-if="showCollection && getCollectionUpdated.length > 20">
+          <button class="prev" @click.prevent="prevPage()">prev</button>
+          <button class="next" @click.prevent="nextPage()">next</button>
+         </div>
         <Poke-list :poke-list="showCollection? getCollectionUpdated : getStartersUpdated"
                    :action-on-click="showCollection ? onClickAction : null"
+                   :page="page"
                    :simple-mode="showCollection">
        </Poke-list >
       </div>
@@ -39,6 +44,7 @@
         collection: [],
         showCollection: false,
         showOptions: false,
+        page: 0,
         selectedPokemon:{}
       }
     },
@@ -52,6 +58,12 @@
       } else this.initData();
     },
     methods: {
+      nextPage() {
+        this.page += 1;
+      },
+      prevPage() {
+        this.page -= 1;
+      },
       onClickAction(name){
           this.showOptions = true;
           this.selectedPokemon = this.collection.filter(item => item.name === name )[0];

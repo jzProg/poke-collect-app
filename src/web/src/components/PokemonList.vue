@@ -4,6 +4,7 @@
       <div class = "row">
         <component :is="getMode"
               v-for = '(poke,index) in sortedPokeList'
+              v-if = "index >= page*20 && index < 20*(page + 1)"
               :key = "index"
               :action-on-click="onPokemonClick"
               :info="poke"
@@ -20,7 +21,7 @@ import PokemonCard from './PokemonCard.vue';
 
 export default {
   name: 'PokemonList',
-  props: ['pokeList', 'actionOnClick', 'simpleMode'],
+  props: ['pokeList', 'actionOnClick', 'simpleMode', 'page'],
   methods: {
     onPokemonClick(pokeName) {
       if (this.actionOnClick) this.actionOnClick(pokeName);
