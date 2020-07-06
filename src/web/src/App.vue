@@ -1,9 +1,5 @@
 <template>
   <div id = "app">
-<<<<<<< HEAD
-
-=======
->>>>>>> ff52431680d0cb0c739596cdc70056d59a7eefc8
     <div class="header container">
       <div class="row">
         <h3 style="color:white;float:left;cursor:pointer" class="col-md-2 col-xs-4" @click.prevent="goToHome"><b>PokeCollectApp</b></h3>
