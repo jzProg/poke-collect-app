@@ -12,7 +12,7 @@
          style="width: 100%"
          v-for="(category, index) in categories"
          :key="index">
-      <div :class="['col-md-12', checkedCategory === index? 'checked' : '']"
+      <div :class="['col-md-12 icon', checkedCategory === index? 'checked' : '']"
            style="cursor:pointer; margin-left:5%; padding: 5%;"
            @click.prevent="setChecked(index);toggleCollection(categories[index].collection)">
         <h3><b>{{ categories[index].title }}</b></h3>
@@ -20,17 +20,9 @@
               style="width:100px;height:100px">
       </div>
     </div><br>
-    <div class="row" style="width: 100%">
-      <div class="col-md-12">
-        <button type="button"
-                style="margin-top: 20%"
-                class="btn btn-primary"
-                @click.prevent="startGame()">
-              Start Game
-        </button>
-      </div>
+
     </div>
-  </div>
+
 </template>
 <script>
 
@@ -50,7 +42,7 @@
                         collection: false,
                       },
                       {
-                        image: require('../assets/collection.jpg'),
+                        image: require('../assets/collectionpokeballs.png'),
                         title: 'Your Collection',
                         collection: true,
                       },
@@ -58,9 +50,12 @@
                         image: require('../assets/backpack.png'),
                         title: 'Your Inventory',
                         collection: true,
-                    }],
-      }
-    },
+                    },
+                    {image: require('../assets/battle.png'),
+                    title: 'Battle',
+                    collection: false,
+
+                }]}},
     methods: {
       setChecked(index) {
         this.checkedCategory = index;
@@ -77,9 +72,16 @@
   .pokemonDiv {
     width: 90%;
   }
-
+.optionsDiv.container{
+  background-color:#4a3f35;
+  color:#ff4301;
+  height:100%;
+}
   .checked {
-    border: 3px solid gray;
+    background-color:#ff4301;
+    box-shadow: 5px 5px #2f2519;
+    transform: translateY(4px);
+    color:white;
   }
 
  @media only screen and (max-width: 600px) {
@@ -89,6 +91,17 @@
    .pokemonDiv {
      width: 70%;
    }
+}
+.icon:active{
+
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+  color:#e9ec08;
+}
+.icon:hover{
+  background-color:#ff4301;
+  color:white;
 
 }
+
 </style>

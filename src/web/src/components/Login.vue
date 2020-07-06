@@ -1,5 +1,13 @@
 <template>
   <div id = 'container'>
+
+    <div id="video_container">
+
+  <video id="video" width=500px>
+  <source src="../../src/assets/loginGif.mp4" type="video/mp4"></video>
+    <div id="Logo" class="hideP"> POKEZAGG</div>
+
+</div>
     <form>
         <div class = 'form-group'>
           <label for = "email">Email: </label>
@@ -34,6 +42,9 @@
 </template>
 
 <script>
+
+
+
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
   import { mapActions, mapGetters, mapMutations } from 'vuex';
 
@@ -46,10 +57,27 @@
         enteredPass: '',
       }
     },
+
     mounted() {
       this.removeErrorMessage();
-    },
+
+      var video = document.querySelector('video');
+      video.muted = true;
+      video.play();
+      video.addEventListener('ended',()=>{
+        var elementVideo=document.getElementById('video')
+        var Logo=document.getElementById('Logo')
+          this.fadeOutInEffect(elementVideo,Logo)
+        });
+      },
     methods: {
+      fadeOutInEffect(element,Logo){
+        element.classList.add('hideP')
+        element.classList.remove('showP')
+        Logo.classList.remove('hideP')
+        Logo.classList.add('showP')
+
+      },
       ...mapMutations([
          'setLoginErrorMessage',
       ]),
@@ -88,5 +116,14 @@
 
 #buttonDiv{
   margin-top:4%;
+}
+
+.showP{
+  opacity: 1;
+  transition: opacity 1000ms;
+}
+.hideP{
+  opacity: 0;
+  transition: opacity 1000ms;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
 
   <div id = "app">
-<Loading v-if="notFullyLoaded"></Loading>
+
     <div class="header container">
       <div class="row">
         <h3 style="color:white;float:left;cursor:pointer" class="col-md-2 col-xs-4" @click.prevent="goToHome"><b>PokeCollectApp</b></h3>
@@ -46,17 +46,15 @@
   export default {
     name: 'app',
     mixins: [firebaseConfigProperties, urlAuthMixin],
-    components: { OptionsModal,Loading },
+    components: { OptionsModal},
     data() {
       return {
         username: '',
-        showOptionsModal: false,
-        notFullyLoaded:true
+        showOptionsModal: false
+
       };
     },
-    updated(){
-      this.notFullyLoaded=false;
-    },
+
     methods: {
 
       goToHome(){
@@ -141,6 +139,7 @@
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
+
   }
 
  .header {
