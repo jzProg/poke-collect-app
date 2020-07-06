@@ -3,13 +3,14 @@
   <Sidemenu :coins="getUserCoins" :toggleCollection="toggleCollection" :startGame="startGame" ></Sidemenu>
   <div class="pokemonDiv container" style="float: right; min-height:2000px;background-color:lightblue">
     <div class="row" style="width: 100%">
-      <div class="col-md-12" v-imageloader="loaded">
+      <div class="col-md-12">
         <div class="pagination" v-if="showCollection && getCollectionUpdated.length > 20">
           <button class="prev" @click.prevent="prevPage()">prev</button>
           <button class="next" @click.prevent="nextPage()">next</button>
          </div>
         <Poke-list :poke-list="showCollection? getCollectionUpdated : getStartersUpdated"
                    :action-on-click="showCollection ? onClickAction : null"
+                   v-imageloader="loaded"
                    :page="page"
                    :simple-mode="showCollection">
        </Poke-list >
@@ -20,6 +21,7 @@
             :poke-list="getStartersUpdated"
             :selected-pokemon="selectedPokemon"
             @close="showOptions=false" />
+  <Loading v-if="toLoad"></Loading>
   </div>
 </template>
 
@@ -48,8 +50,9 @@
         showCollection: false,
         showOptions: false,
         page: 0,
-        numOfImagesLoaded: 0,
-        selectedPokemon:{}
+        imageLoadedStarters: false,
+        selectedPokemon:{},
+        imageLoadedCollection: false,
       }
     },
     created() {
@@ -63,10 +66,11 @@
     },
     methods: {
       loaded() {
-        console.log('loaded.....'); // TODO implement logic here
-        this.numOfImagesLoaded++;
-        if (this.numOfImagesLoaded === 3) {
-          console.log('All loaded!');
+        console.log('loaded.....');
+        if (this.showCollection) {
+          this.imageLoadedCollection = true;
+        } else {
+          this.imageLoadedStarters = true;
         }
       },
       nextPage() {
@@ -106,6 +110,12 @@
         'getLoginUsername',
         'getUserCoins'
       ]),
+      toLoad() {
+        if(this.showCollection) {
+          return !this.imageLoadedCollection;
+        }
+        return !this.imageLoadedStarters;
+      },
       getSelectedPokemon() {
         return this.selectedPokemon;
       },

@@ -51,11 +51,7 @@
       return {
         username: '',
         showOptionsModal: false,
-        notFullyLoaded:true
       };
-    },
-    updated(){
-      this.notFullyLoaded=false;
     },
     methods: {
       goToHome(){
