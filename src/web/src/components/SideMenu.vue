@@ -14,7 +14,7 @@
          :key="index">
       <div :class="['col-md-12 icon', checkedCategory === index? 'checked' : '']"
            style="cursor:pointer; margin-left:5%; padding: 5%;"
-           @click.prevent="setChecked(index);toggleCollection(categories[index].collection)">
+           @click.prevent="setChecked(index);doAction(categories[index].type)">
         <h3><b>{{ categories[index].title }}</b></h3>
         <img :src="categories[index].image"
               style="width:100px;height:100px">
@@ -32,23 +32,24 @@
 
   export default {
     name: 'Sidemenu',
-    props:['coins','startGame','toggleCollection'],
+    props:['coins','startGame','doAction'],
     data() {
       return {
          checkedCategory: 0,
          categories: [{
                         image: require('../assets/pikatsu.png'),
                         title: 'Your Starters',
-                        collection: false,
+                        type: 'STARTERS',
                       },
                       {
                         image: require('../assets/collectionpokeballs.png'),
                         title: 'Your Collection',
-                        collection: true,
+                        type: 'COLLECTION',
                       },
                       {
                         image: require('../assets/backpack.png'),
                         title: 'Your Inventory',
+<<<<<<< HEAD
                         collection: true,
                     },
                     {image: require('../assets/battle.png'),
@@ -56,6 +57,12 @@
                     collection: false,
 
                 }]}},
+=======
+                        type: 'ITEMS',
+                    }],
+      }
+    },
+>>>>>>> ff52431680d0cb0c739596cdc70056d59a7eefc8
     methods: {
       setChecked(index) {
         this.checkedCategory = index;

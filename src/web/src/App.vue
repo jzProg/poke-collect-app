@@ -1,7 +1,9 @@
 <template>
-
   <div id = "app">
+<<<<<<< HEAD
 
+=======
+>>>>>>> ff52431680d0cb0c739596cdc70056d59a7eefc8
     <div class="header container">
       <div class="row">
         <h3 style="color:white;float:left;cursor:pointer" class="col-md-2 col-xs-4" @click.prevent="goToHome"><b>PokeCollectApp</b></h3>
@@ -41,22 +43,18 @@
   import { mapActions, mapGetters, mapMutations } from 'vuex';
   import firebase from 'firebase';
   import OptionsModal from '@/components/modals/OptionsModal';
-  import Loading from '@/components/modals/Loading';
 
   export default {
     name: 'app',
     mixins: [firebaseConfigProperties, urlAuthMixin],
-    components: { OptionsModal},
+    components: { OptionsModal },
     data() {
       return {
         username: '',
-        showOptionsModal: false
-
+        showOptionsModal: false,
       };
     },
-
     methods: {
-
       goToHome(){
         this.$router.push('getStarted');
       },

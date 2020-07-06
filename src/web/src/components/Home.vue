@@ -1,6 +1,6 @@
 <template>
   <div>
-  <Sidemenu :coins="getUserCoins" :toggleCollection="toggleCollection" :startGame="startGame" ></Sidemenu>
+  <Sidemenu :coins="getUserCoins" :doAction="actionFor" :startGame="startGame" ></Sidemenu>
   <div class="pokemonDiv container" style="float: right; min-height:2000px;background-color:lightblue">
     <div class="row" style="width: 100%">
       <div class="col-md-12">
@@ -10,6 +10,7 @@
          </div>
         <Poke-list :poke-list="showCollection? getCollectionUpdated : getStartersUpdated"
                    :action-on-click="showCollection ? onClickAction : null"
+                   v-imageloader="loaded"
                    :page="page"
                    :simple-mode="showCollection">
        </Poke-list >
@@ -20,7 +21,7 @@
             :poke-list="getStartersUpdated"
             :selected-pokemon="selectedPokemon"
             @close="showOptions=false" />
-            <!--  <Loading></Loading> -->
+  <Loading v-if="toLoad"></Loading>
   </div>
 </template>
 
@@ -33,11 +34,15 @@
   import { mapActions, mapGetters } from 'vuex';
   import PokeList from './PokemonList.vue';
   import Options from '@/components/modals/Options';
+  import imagesLoaded from 'vue-images-loaded';
 
   export default {
     name: 'Home',
     mixins: [uniqueIdGeneratorMixin, pokemonMixin],
     components: {PokeList,Loading,Sidemenu,Options},
+    directives: {
+      imageloader: imagesLoaded,
+    },
     data() {
       return {
         starters: [],
@@ -45,7 +50,9 @@
         showCollection: false,
         showOptions: false,
         page: 0,
-        selectedPokemon:{}
+        imageLoadedStarters: false,
+        selectedPokemon:{},
+        imageLoadedCollection: false,
       }
     },
     created() {
@@ -58,6 +65,14 @@
       } else this.initData();
     },
     methods: {
+      loaded() {
+        console.log('loaded.....');
+        if (this.showCollection) {
+          this.imageLoadedCollection = true;
+        } else {
+          this.imageLoadedStarters = true;
+        }
+      },
       nextPage() {
         this.page += 1;
       },
@@ -84,6 +99,17 @@
       toggleCollection(showCollection) {
         this.showCollection = showCollection;
       },
+      actionFor(category) {
+        switch (category) {
+        case 'STARTERS': this.toggleCollection(false);
+                      break;
+        case 'COLLECTION': this.toggleCollection(true);
+                      break;
+        case 'ITEMS': this.toggleCollection(true);// TODO change
+                      break;
+        default: this.startGame();
+        }
+      },
       startGame() {
         this.$router.push('Game');
       }
@@ -95,6 +121,12 @@
         'getLoginUsername',
         'getUserCoins'
       ]),
+      toLoad() {
+        if(this.showCollection) {
+          return !this.imageLoadedCollection;
+        }
+        return !this.imageLoadedStarters;
+      },
       getSelectedPokemon() {
         return this.selectedPokemon;
       },
