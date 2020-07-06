@@ -10,6 +10,8 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@pkmn/data": "0.0.9",
+    "@smogon/calc": "^0.4.2",
     "@svg-maps/japan": "^1.0.1",
     "axios": "^0.18.1",
     "firebase": "^7.15.1",

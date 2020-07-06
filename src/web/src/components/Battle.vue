@@ -174,13 +174,13 @@
                              return 'HOME_BATTLE';
          case 'HOME_BATTLE': this.message = this.homebattlePokemon.name + stateMessage + this.gameState.currentAttack;
                              return 'HOME_DAMAGE_DONE';
-         case 'HOME_DAMAGE_DONE': this.message = this.currentDamage > 10 ? stateMessage[1] : stateMessage[0];
+         case 'HOME_DAMAGE_DONE': this.message = this.gameState.currentDamage > 10 ? stateMessage[1] : stateMessage[0];
                              return  this.gameState.enemyPokemonHP > 0 ? 'ENEMY_BATTLE' : 'HOME_WINNER';
          case 'ENEMY_CHOOSE': this.message = this.enemyName + stateMessage + this.enemybattlePokemon;
                              return 'HOME_OPTION'; // or ENEMY_BATTLE (?)
          case 'ENEMY_BATTLE': this.message = this.enemybattlePokemon.name + stateMessage + this.gameState.currentAttack;
                              return 'ENEMY_DAMAGE_DONE';
-         case 'ENEMY_DAMAGE_DONE': this.message = this.currentDamage > 10 ? stateMessage[1] : stateMessage[0];
+         case 'ENEMY_DAMAGE_DONE': this.message = this.gameState.currentDamage > 10 ? stateMessage[1] : stateMessage[0];
                              return  this.gameState.homePokemonHP > 0 ? 'HOME_OPTION' : 'ENEMY_WINNER';
          case 'HOME_WINNER': this.message = this.enemybattlePokemon.name + stateMessage;
                              return this.gameState.homeScore === 3 ? 'FINISH' : 'ENEMY_CHOOSE';
@@ -200,11 +200,21 @@
          if (this.gameState.currentState === 'HOME_BATTLE') {
            this.gameState.currentAttack = ability.name;
            this.gameState.currentState = this.getNextState(); // attacks with ability -> HOME_DAMAGE_DONE
-           this.gameState.currentDamage = 5; // TODO: compute damage using API
-           // TODO: animate enemy pokemon's damage
-           this.updateScore();
-           if (this.gameState.currentState === 'ENEMY_BATTLE') this.opponentMoves();
-           else this.announceRoundWinner(); // TODO: for home
+           const attackerObj = {
+              name: this.homebattlePokemon.species.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
+           };
+           const defenderObj = {
+               name: this.enemybattlePokemon.species.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
+           };
+           this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0]; // TODO: get random or basedon on logic from damage list
+          console.log(this.gameState.currentDamage)
+           setTimeout(() => {
+             // TODO: animate enemy pokemon's damage
+             console.log('animating damage...');
+             this.updateScore();
+             /* if (this.gameState.currentState === 'ENEMY_BATTLE') this.opponentMoves();
+             else this.announceRoundWinner(); // TODO: for home */
+           }, 1000);
          }
        },
        enemyChoose() {
