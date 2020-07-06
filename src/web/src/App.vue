@@ -1,5 +1,7 @@
 <template>
+
   <div id = "app">
+<Loading v-if="notFullyLoaded"></Loading>
     <div class="header container">
       <div class="row">
         <h3 style="color:white;float:left;cursor:pointer" class="col-md-2 col-xs-4" @click.prevent="goToHome"><b>PokeCollectApp</b></h3>
@@ -39,18 +41,24 @@
   import { mapActions, mapGetters, mapMutations } from 'vuex';
   import firebase from 'firebase';
   import OptionsModal from '@/components/modals/OptionsModal';
+  import Loading from '@/components/modals/Loading';
 
   export default {
     name: 'app',
     mixins: [firebaseConfigProperties, urlAuthMixin],
-    components: { OptionsModal },
+    components: { OptionsModal,Loading },
     data() {
       return {
         username: '',
         showOptionsModal: false,
+        notFullyLoaded:true
       };
     },
+    updated(){
+      this.notFullyLoaded=false;
+    },
     methods: {
+
       goToHome(){
         this.$router.push('getStarted');
       },
