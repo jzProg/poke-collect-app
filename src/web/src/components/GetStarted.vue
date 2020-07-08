@@ -2,7 +2,7 @@
  <div>
    <h1>Choose your starter pokemon!</h1>
    <h3>...and gain <span style="color:red">+3</span> more pokemon</h3>
-    <Poke-list :poke-list="list" :action-on-click="awardUser" :simple-mode="false"></Poke-list>
+    <Poke-list :poke-list="list" :action-on-click="awardUser" :simple-mode="false" :page="page"></Poke-list>
  </div>
 </template>
 
@@ -19,6 +19,7 @@
     data () {
       return {
         list:[],
+        page: 0,
       }
     },
     beforeRouteEnter(to, from, next) {
@@ -47,7 +48,7 @@
         };
         var randomPokeList =  [];
         this.getPokemonInfoFromList(listOfStarters, randomPokeList);
-        this.setCurrentReward({ type: this.prizes.PACK, value:  randomPokeList});
+        this.setCurrentReward({ type: this.prizes.PACK.type, value:  randomPokeList});
         this.storePokemon({ list: randomPokeList , ids: listOfStarters, coins: this.coinsInfo.START_COINS }).then(() => {
           this.$router.push('reward');
         });

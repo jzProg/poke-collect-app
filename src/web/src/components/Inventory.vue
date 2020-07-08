@@ -30,9 +30,11 @@
         'getItems'
       ]),
       items() {
+        if (!this.getItems) return [];
         return this.getItems.filter(item => item.type === this.prizes.ITEM.type);
       },
       stones() {
+        if (!this.getItems) return [];
         return this.getItems.filter(item => item.type === this.prizes.STONE.type);
       }
     }
