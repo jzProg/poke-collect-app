@@ -13,7 +13,7 @@
                style = "margin-right:2%">
             <div v-if="$route.meta.hasProfileHeader">
                 <a @click.prevent = "showOptions">
-                  <img src = "./assets/profile_default.png"
+                  <img :src = "getImage()"
                        alt = "profile image"
                        style = "width:80px; height:80px; border-radius:50px; float:right;cursor:pointer">
                 </a>
@@ -50,54 +50,6 @@
         showOptionsModal: false,
       };
     },
-    methods: {
-      goToHome(){
-        this.$router.push('getStarted');
-      },
-      ...mapMutations([
-          'setLoginUsername',
-          'setUserPokemon',
-          'setUserBasicInfo',
-          'setUserStarters',
-          'setUserCoins'
-      ]),
-      ...mapActions([
-        'userLogout',
-        'clearUserData',
-      ]),
-      showOptions() {
-       this.showOptionsModal = true;
-     },
-     onOptionsClose() {
-       this.showOptionsModal = false;
-     },
-      fetchInitialUserInfo(mail)  {
-        console.log('fetching user info...');
-        firebase.database().ref('users/').on("value", (userObject) => {
-          if (userObject.val()) {
-            Object.values(userObject.val()).forEach((user) => {
-              if (user.mail === mail) {
-                console.log('user found!');
-                localStorage.setItem('userId', user.userId);
-                this.setUserPokemon({ value: user.pokemon });
-                this.setUserStarters({ value: user.starters });
-                this.setUserBasicInfo({ value: user.initialized });
-                this.setUserCoins({ value: user.coins });
-                this.username = user.username;
-                this.setLoginUsername({ value: user.username });
-                bus.$emit('login', user.username);
-              }
-            });
-          }});
-      },
-      logout() {
-        this.onOptionsClose();
-        this.userLogout().then(() => {
-          this.clearUserData();
-          this.$router.push('/');
-        });
-      },
-    },
     created() {
       // Initialize Firebase
       if (!firebase.apps.length) {
@@ -122,6 +74,64 @@
           localStorage.setItem('token', '');
         }
       });
+    },
+    methods: {
+      getImage() {
+        return require(`./assets/profileAvatar/${this.getUserImage}`);
+      },
+      goToHome(){
+        this.$router.push('getStarted');
+      },
+      ...mapMutations([
+          'setLoginUsername',
+          'setUserPokemon',
+          'setUserBasicInfo',
+          'setUserStarters',
+          'setUserCoins',
+          'setUserImage'
+      ]),
+      ...mapActions([
+        'userLogout',
+        'clearUserData',
+      ]),
+      showOptions() {
+       this.showOptionsModal = true;
+     },
+     onOptionsClose() {
+       this.showOptionsModal = false;
+     },
+      fetchInitialUserInfo(mail)  {
+        console.log('fetching user info...');
+        firebase.database().ref('users/').on("value", (userObject) => {
+          if (userObject.val()) {
+            Object.values(userObject.val()).forEach((user) => {
+              if (user.mail === mail) {
+                console.log('user found!');
+                localStorage.setItem('userId', user.userId);
+                this.setUserPokemon({ value: user.pokemon });
+                this.setUserStarters({ value: user.starters });
+                this.setUserBasicInfo({ value: user.initialized });
+                this.setUserCoins({ value: user.coins });
+                this.setUserImage({ value: user.image });
+                this.username = user.username;
+                this.setLoginUsername({ value: user.username });
+                bus.$emit('login', user.username);
+              }
+            });
+          }});
+      },
+      logout() {
+        this.onOptionsClose();
+        this.userLogout().then(() => {
+          this.clearUserData();
+          this.$router.push('/');
+        });
+      },
+    },
+    computed: {
+      ...mapGetters([
+        'getUserImage'
+      ]),
     }
 }
 </script>

@@ -9,6 +9,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     userInfo: {
+      image: '',
       currentReward: { rewardType: '', rewardId: ''},
       loginUsername: '',
       pokemon: [],
@@ -23,6 +24,9 @@ export default new Vuex.Store({
     pokemonToBeSwitched: {}
   },
   getters: {
+    getUserImage(state) {
+      return state.userInfo.image;
+    },
     getCurrentOpponentId(state) {
       return state.userInfo.currentOpponentId;
     },
@@ -55,6 +59,9 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    setUserImage(state, payload) {
+      state.userInfo.image = payload.value;
+    },
     storePokemonToBeSwitched(state, payload) {
       state.pokemonToBeSwitched = payload.value;
     },
@@ -95,6 +102,14 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    changeAvatar({ commit, state}, payload) {
+      const image = `avatar_${payload.image}.png`;
+      commit({ type: 'setUserImage', value: image });
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('users/' + id).update({
+        image: image,
+      });
+    },
     replaceStarter({ commit, state}, payload) {
       const starterToBeRemoved_id = payload.pokeId;
       const starterToBeRemoved_name = payload.name;
@@ -148,6 +163,7 @@ export default new Vuex.Store({
         username: payload.username,
         mail: payload.mail,
         pokemon: [],
+        image: 'profile_default.png',
         starters: [],
         coins: 0,
         initialized: false,

@@ -8,7 +8,7 @@
              <div class="scoreDiv row" style="background-color:darkgray">
                <div class="profileDiv col-md-6 col-xs-6" style="padding:1%">
                  <h4><b>Your Scope: {{ parseInt(gameState.homeScore) }}</b></h4>
-                 <img src = "../assets/profile_default.png"
+                 <img :src = "getImage()"
                       alt = "profile image"
                       style = "width:50px; height:50px; border-radius:50px;"/>
                </div>
@@ -153,6 +153,9 @@
        this.getEnemyPokemon();
      },
      methods: {
+       getImage() {
+         return require(`@/assets/profileAvatar/${this.getUserImage}`);
+       },
        getAvatarImage() {
          this.image = require(`@/assets/${this.avatars[this.getCurrentOpponentId].image}`);
        },
@@ -269,7 +272,8 @@
       ...mapGetters([
         'getUserStarters',
         'getCurrentOpponentId',
-        'getEnemyBattlePokemon'
+        'getEnemyBattlePokemon',
+        'getUserImage',
       ]),
       getHomePokemon()  {
         return this.homePokemon;

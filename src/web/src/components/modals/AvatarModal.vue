@@ -5,7 +5,7 @@
     <div slot = "body" v-if="image">
       <img :src = "image"
            alt = "profile image"
-           style = "width:50%;height:50%;border-radius:50px;margin: 2%;"><br>
+           style = "width:50%;height:50%;border-radius:50px;margin: 2%"><br>
       <span> Your opponent is {{ avatars[getCurrentOpponentId].name }}!</span><br>
     </div>
     <div slot = "footer" class = "text-center">
