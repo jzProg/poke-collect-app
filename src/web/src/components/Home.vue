@@ -105,13 +105,16 @@
                       break;
         case 'COLLECTION': this.toggleCollection(true);
                       break;
-        case 'ITEMS': this.toggleCollection(true);// TODO change
+        case 'ITEMS': this.goToInventory();
                       break;
         default: this.startGame();
         }
       },
       startGame() {
         this.$router.push('Game');
+      },
+      goToInventory() {
+        this.$router.push('inventory');
       }
     },
     computed: {

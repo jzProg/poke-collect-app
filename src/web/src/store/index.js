@@ -134,7 +134,6 @@ export default new Vuex.Store({
       });
     },
     purchase({ commit, state, dispatch}, payload) {
-      console.log(payload.items);
       var type = payload.type;
       if (type === 'pack') {
         return dispatch('awardPokemon', { list: payload.items[0].items, coins: payload.cost });

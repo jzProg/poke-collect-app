@@ -88,7 +88,8 @@
           'setUserBasicInfo',
           'setUserStarters',
           'setUserCoins',
-          'setUserImage'
+          'setUserImage',
+          'setItems',
       ]),
       ...mapActions([
         'userLogout',
@@ -113,6 +114,7 @@
                 this.setUserBasicInfo({ value: user.initialized });
                 this.setUserCoins({ value: user.coins });
                 this.setUserImage({ value: user.image });
+                this.setItems({ value: user.items });
                 this.username = user.username;
                 this.setLoginUsername({ value: user.username });
                 bus.$emit('login', user.username);
