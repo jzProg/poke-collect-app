@@ -79,6 +79,8 @@
           };
           this.getPokemonInfoFromList(newItems, itemList);
           itemBudle[0].items = newItems;
+        } else {
+          itemList = itemBudle.map(item => item.image);
         }
         this.purchase({ items: itemBudle, type: rewardType, cost: coins }).then(() => {
           this.setCurrentReward({ value: itemList, type: rewardType });

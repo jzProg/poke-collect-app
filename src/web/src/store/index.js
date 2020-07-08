@@ -15,6 +15,7 @@ export default new Vuex.Store({
       pokemon: [],
       starters: [],
       coins: 0,
+      items: [],
       initialized: false,
       currentOpponentId: 0,
     },
@@ -24,6 +25,9 @@ export default new Vuex.Store({
     pokemonToBeSwitched: {}
   },
   getters: {
+    getItems(state) {
+      return state.userInfo.items;
+    },
     getUserImage(state) {
       return state.userInfo.image;
     },
@@ -59,6 +63,9 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    setItems(state, payload) {
+      state.userInfo.items = payload.value;
+    },
     setUserImage(state, payload) {
       state.userInfo.image = payload.value;
     },
@@ -114,13 +121,30 @@ export default new Vuex.Store({
         coins: coins,
       });
     },
+    awardItems({ commit, state }, payload) {
+      var existingItems = state.userInfo.items;
+      var mergedItems = existingItems.concat(payload.list);
+      commit({ type: 'setItems', value: mergedItems });
+      var coins = state.userInfo.coins;
+      if (payload.coins) coins -= payload.coins;
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('users/' + id).update({
+        coins: coins,
+        items: mergedItems,
+      });
+    },
     purchase({ commit, state, dispatch}, payload) {
       console.log(payload.items);
       var type = payload.type;
       if (type === 'pack') {
         return dispatch('awardPokemon', { list: payload.items[0].items, coins: payload.cost });
       } else {
-        // TODO store item to db
+        var items = payload.items;
+        var newItems = [];
+        for (var i = 0; i< items.length; i++) {
+          newItems.push({ type: type, name: items[i].title, image: items[i].image, quantity: items[i].quantity })
+        }
+        return dispatch('awardItems', { list: newItems, coins: payload.cost });
       }
     },
     changeAvatar({ commit, state}, payload) {
@@ -184,6 +208,7 @@ export default new Vuex.Store({
         username: payload.username,
         mail: payload.mail,
         pokemon: [],
+        items: [],
         image: 'profile_default.png',
         starters: [],
         coins: 0,

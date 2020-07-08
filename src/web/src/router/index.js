@@ -3,7 +3,6 @@ import Router from 'vue-router';
 import Welcome from '@/components/Welcome';
 import Register from '@/components/Register';
 import Home from '@/components/Home';
-import Profile from '@/components/Profile';
 import GetStarted from '@/components/GetStarted';
 import Reward from '@/components/Reward';
 import Battle from '@/components/Battle';
@@ -48,11 +47,6 @@ const router =  new Router({
         if (localStorage.getItem('token')) next();
         else next('/');
       }
-    },
-    {
-      path: '/profile',
-      name: 'Profile',
-      component: Profile
     },
     {
       path: '/getStarted',

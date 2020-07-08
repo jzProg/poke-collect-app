@@ -1,9 +1,10 @@
 <template>
  <div>
     <h3>You obtained new Reward!</h3>
-    <Poke-list :poke-list="list" :simpleMode="false" :page="page"></Poke-list> <!-- todo add cases prize.COINS, prize.ITEM -->
+    <Poke-list v-if="type === this.prizes.PACK.type" :poke-list="list" :simpleMode="false" :page="page"></Poke-list>
+    <img v-else v-for="(item, index) in list" :src="item" :key="index" height="200px" width="200px">
     <br>
-    <button @click.prevent="goToHome()" class="btn btn-primary">Get Started!</button>
+    <button @click.prevent="goToHome()" class="btn btn-primary">Continue</button>
  </div>
 </template>
 
