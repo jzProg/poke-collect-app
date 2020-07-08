@@ -8,6 +8,7 @@ import GetStarted from '@/components/GetStarted';
 import Reward from '@/components/Reward';
 import Battle from '@/components/Battle';
 import Game from '@/components/Game';
+import Store from '@/components/Store';
 
 Vue.use(Router);
 
@@ -77,6 +78,16 @@ const router =  new Router({
       path: '/battle',
       name: 'Battle',
       component: Battle,
+      meta: { hasProfileHeader: false },
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem('token')) next();
+        else next('/');
+      }
+    },
+    {
+      path: '/store',
+      name: 'Store',
+      component: Store,
       meta: { hasProfileHeader: false },
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem('token')) next();
