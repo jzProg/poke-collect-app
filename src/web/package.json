@@ -12,7 +12,6 @@
   "dependencies": {
     "@pkmn/data": "0.0.9",
     "@smogon/calc": "^0.4.2",
-    "@svg-maps/japan": "^1.0.1",
     "axios": "^0.18.1",
     "firebase": "^7.15.1",
     "lodash": "^4.17.13",
@@ -25,7 +24,6 @@
     "vue-fullscreen": "^2.1.6",
     "vue-images-loaded": "^1.1.2",
     "vue-router": "^3.0.1",
-    "vue-svg-map": "^1.2.0",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
