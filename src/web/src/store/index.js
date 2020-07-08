@@ -105,17 +105,20 @@ export default new Vuex.Store({
     awardPokemon({ commit, state }, payload) {
       var existingPokemon = state.userInfo.pokemon;
       var mergedPokemon = existingPokemon.concat(payload.list);
+      var coins = state.userInfo.coins;
+      if (payload.coins) coins -= payload.coins;
       commit({ type: 'setUserPokemon', value: mergedPokemon });
       var id = localStorage.getItem('userId');
       return firebase.database().ref('users/' + id).update({
         pokemon: mergedPokemon,
+        coins: coins,
       });
     },
     purchase({ commit, state, dispatch}, payload) {
       console.log(payload.items);
       var type = payload.type;
       if (type === 'pack') {
-        return dispatch('awardPokemon', { list: payload.items[0].items });
+        return dispatch('awardPokemon', { list: payload.items[0].items, coins: payload.cost });
       } else {
         // TODO store item to db
       }

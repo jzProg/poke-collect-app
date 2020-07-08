@@ -48,7 +48,7 @@
         buy() {
           if (this.getUserCoins < this.getTotalCost) {
             this.cashError = true;
-          } else this.buyAction(this.itemsToBuy, this.items.type);
+          } else this.buyAction(this.itemsToBuy, this.items.type, this.getTotalCost);
         },
         cancel() {
           this.$emit('close');

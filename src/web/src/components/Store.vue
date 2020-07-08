@@ -69,7 +69,7 @@
       buyItems() {
         console.log("buying items...");
       },
-      onBuyAction(itemBudle, rewardType) {
+      onBuyAction(itemBudle, rewardType, coins) {
         var itemList = [];
         if (rewardType === this.prizes.PACK.type) {
           var newItems = [];
@@ -80,7 +80,7 @@
           this.getPokemonInfoFromList(newItems, itemList);
           itemBudle[0].items = newItems;
         }
-        this.purchase({ items: itemBudle, type: rewardType }).then(() => {
+        this.purchase({ items: itemBudle, type: rewardType, cost: coins }).then(() => {
           this.setCurrentReward({ value: itemList, type: rewardType });
           this.$router.push('reward');
         });
