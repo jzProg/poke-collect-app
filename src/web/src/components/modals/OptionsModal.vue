@@ -20,7 +20,7 @@
     </div>
     <div slot = "footer" class = "text-center">
       <div style="margin-bottom:2%">Start A new Game <router-link :to="{ name: 'Game', params: {} }">here</router-link></div>
-      <button type = "button" class = "btn btn-primary" @click.prevent = "changePic">Change Avatar</button>
+      <button style="margin-bottom:2%" type = "button" class = "btn btn-primary" @click.prevent = "changePic">Change Avatar</button>
       <button type = "button" class = "btn btn-danger" @click.prevent = "unsub">Unsubscribe</button>
       <button type = "button" class = "btn btn-danger" @click.prevent = "logout">Logout</button>
     </div>
