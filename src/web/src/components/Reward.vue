@@ -1,7 +1,7 @@
 <template>
  <div>
     <h3>You obtained new Reward!</h3>
-    <Poke-list v-if="type === prizes.PACK" :poke-list="list"></Poke-list> <!-- todo add cases prize.COINS, prize.ITEM -->
+    <Poke-list :poke-list="list" :simpleMode="false" :page="page"></Poke-list> <!-- todo add cases prize.COINS, prize.ITEM -->
     <br>
     <button @click.prevent="goToHome()" class="btn btn-primary">Get Started!</button>
  </div>
@@ -20,9 +20,11 @@
       return {
         list:[],
         type: '',
+        page: 0,
       }
     },
     created(){
+      console.log(this.getCurrentReward);
       this.type = this.getCurrentReward.rewardType;
       this.list = this.getCurrentReward.rewardId;
     },

@@ -102,6 +102,24 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    awardPokemon({ commit, state }, payload) {
+      var existingPokemon = state.userInfo.pokemon;
+      var mergedPokemon = existingPokemon.concat(payload.list);
+      commit({ type: 'setUserPokemon', value: mergedPokemon });
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('users/' + id).update({
+        pokemon: mergedPokemon,
+      });
+    },
+    purchase({ commit, state, dispatch}, payload) {
+      console.log(payload.items);
+      var type = payload.type;
+      if (type === 'pack') {
+        return dispatch('awardPokemon', { list: payload.items[0].items });
+      } else {
+        // TODO store item to db
+      }
+    },
     changeAvatar({ commit, state}, payload) {
       const image = `avatar_${payload.image}.png`;
       commit({ type: 'setUserImage', value: image });
@@ -132,7 +150,7 @@ export default new Vuex.Store({
           });
         }});
     },
-    storePokemon({ commit, dispatch, state }, payload) {
+    storePokemon({ commit, dispatch, state }, payload) { //initial pokemon + basic info set (TODO refactor naming)
        commit({ type: 'setUserPokemon', value: payload.list });
        commit({ type: 'setUserBasicInfo', value: true });
        var id = localStorage.getItem('userId');

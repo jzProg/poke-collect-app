@@ -5,12 +5,12 @@ import {calculate, Generations, Pokemon, Move} from '@smogon/calc';
 const pokemonMixin = {
   data() {
     return {
-      totalPokemon: 300, // to do map by region
+      totalPokemon: 300, // TODO map by region (?)
       imageAPI: 'https://pokeres.bastionbot.org/images/pokemon/',
       startersInfo: {
         NUM_OF_STARTERS: 3,
         STANDARD_STARTERS: ['bulbasaur', 'squirtle', 'charmander'],
-        STARTERS_TYPE: '', // todo change based on POKE API
+        STARTERS_TYPE: '', // TODO change based on POKE API
       },
       coinsInfo: {
         START_COINS: 100,
@@ -18,8 +18,24 @@ const pokemonMixin = {
       packInfo: {
         NUM_OF_CARDS: 2,
       },
-      prizes: ["COINS", "PACK", "ITEM"],
-      items: [], // todo change
+      prizes: {
+        COINS: {
+          //TODO implement after battle
+        },
+        PACK: {
+          type: 'pack',
+          items: [{ title: 'pokemon pack', quantity: 1, price: 50 }],
+        },
+        ITEM: {
+           //TODO implement
+        },
+        STONE: {
+         type: 'stone',
+         items: [{ title: 'fire-stone', quantity: 1, price: 480 },
+                  { title: 'water-stone', quantity: 1, price: 550 },
+                  { title: 'thunder-stone', quantity: 1, price: 650 }],
+        }
+      },
       avatars: {
         1: {
           name: 'Ash',
