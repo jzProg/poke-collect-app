@@ -3,11 +3,12 @@
 
     <div id="video_container">
 
-  <video id="video" width=500px>
+  <video id="video" class="showP">
   <source src="../../src/assets/loginGif.mp4" type="video/mp4"></video>
-    <div id="Logo" class="hideP"> POKEZAGG</div>
+  <img id="Logo" class='hideP' src="../../src/assets/PokeZagg.png"></img></div>
 
-</div>
+
+
     <form>
         <div class = 'form-group'>
           <label for = "email">Email: </label>
@@ -76,6 +77,9 @@
         element.classList.remove('showP')
         Logo.classList.remove('hideP')
         Logo.classList.add('showP')
+        //var Logo=document.createElement("img")
+      //  Logo.src='../../src/assets/PokeZagg.png'
+        //element.replaceWith(Logo)
 
       },
       ...mapMutations([
@@ -121,9 +125,13 @@
 .showP{
   opacity: 1;
   transition: opacity 1000ms;
+  width:500px;
+  height:300px;
 }
 .hideP{
   opacity: 0;
   transition: opacity 1000ms;
+  width:0px;
+  height:0px;
 }
 </style>
