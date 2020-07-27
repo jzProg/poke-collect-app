@@ -2,7 +2,7 @@
   <transition name = "modal">
     <div class = "modal-mask">
       <div class = "modal-wrapper">
-        <div class = "modal-container">
+        <div class = "modal-container" :style="{ width: width ? width: '300px'}">
          <slot name = "close"></slot>
           <div class = "modal-header">
             <slot name = "header"></slot>
@@ -22,6 +22,7 @@
 <script>
   export default {
     name: 'GenericModal',
+    props: ['width']
   }
 </script>
 
@@ -42,6 +43,8 @@
     background-color: rgba(0, 0, 0, .5);
     display: table;
     transition: opacity .3s ease;
+    min-height:200px;
+
   }
 
   .modal-wrapper {
@@ -50,7 +53,6 @@
   }
 
   .modal-container {
-    width: 300px;
     margin: 0px auto;
     padding: 20px 30px;
     background-color: #fff;

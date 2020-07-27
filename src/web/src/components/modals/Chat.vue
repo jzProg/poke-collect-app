@@ -1,5 +1,5 @@
 <template>
-  <Modal>
+  <Modal :width="'500px'">
     <span slot = "close" id = 'closeSymbol' @click.prevent = "close">x</span><br>
     <h3 slot = "header">{{ !activeChatId? 'Chat' :  getChat.name }}</h3>
     <div slot = "body">
@@ -19,7 +19,7 @@
              v-for="(conv, index) in getAvailableChats"
             :key="index"
             @click.prevent = "chooseChat(conv.id)"
-            style="cursor:pointer; padding:5%; border-style: solid;">
+            style="cursor:pointer; padding:5%; border-style: solid;overflow:auto">
           <b>{{ conv.name }}</b>
         </div>
       </div>
@@ -130,5 +130,13 @@
 <style scoped>
 .convDiv:hover {
   color: gray;
+}
+#chatDiv {
+  min-height: 300px;
+  max-height: 300px;
+  overflow-y:auto;
+  max-width: 100%;
+  overflow-x: hidden;
+  word-wrap:break-word;
 }
 </style>
