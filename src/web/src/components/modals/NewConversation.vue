@@ -7,7 +7,7 @@
       <input type="text" v-model="title">
     </div>
     <div slot = "footer" class="text-center">
-      <button type = "button" class="btn btn-primary" @click.prevent = "confirmed">Done</button>
+      <button type = "button" class="btn btn-primary" @click.prevent = "confirmed" :disabled= "!title">Done</button>
       <button type = "button" class="btn btn-danger" @click.prevent = "cancel">Cancel</button>
     </div>
   </Modal>
