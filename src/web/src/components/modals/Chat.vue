@@ -3,7 +3,7 @@
     <span slot = "close" id = 'closeSymbol' @click.prevent = "close">x</span><br>
     <h3 slot = "header">{{ !activeChatId? 'Chat' :  getChat.name }}</h3>
     <div slot = "body">
-      <div id="chatDiv" v-if="activeChatId">
+      <div id="chatDiv" v-if="activeChatId" class="scrollable">
         <div v-for="(mes, index) in getChat.messages" :key="index" style="text-align: left;" >
           <span :style="getColorStyle(mes.sender)">
             {{ mes.sender }}
@@ -14,7 +14,7 @@
           </span>
         </div><br>
       </div>
-      <div id="conversationsDiv" v-else>
+      <div id="conversationsDiv" v-else class="scrollable">
         <div class="convDiv"
              v-for="(conv, index) in getAvailableChats"
             :key="index"
@@ -82,6 +82,7 @@
         createNewChat(name) {
           this.activeChatId = this.guid();
           this.initChat({ chatId: this.activeChatId, name: name });
+          this.fetchMessages({ chatId: this.activeChatId });
           this.showNewChatModal=false;
         },
         send() {
@@ -131,7 +132,7 @@
 .convDiv:hover {
   color: gray;
 }
-#chatDiv {
+.scrollable {
   min-height: 300px;
   max-height: 300px;
   overflow-y:auto;
