@@ -5,7 +5,13 @@
     <div slot = "body">
       <div id="chatDiv" v-if="activeChatId">
         <div v-for="(mes, index) in getChat.messages" :key="index" style="text-align: left;" >
-          <span :style="getColorStyle(mes.sender)">{{ mes.sender }}</span> {{ mes.text }} <span style="color:lightgrey;">{{ mes.date }}</span>
+          <span :style="getColorStyle(mes.sender)">
+            {{ mes.sender }}
+          </span>
+          {{ mes.text }}
+          <span style="color:lightgrey;" v-if="mes.date">
+            <i>{{ new Date(mes.date).toLocaleString() }}</i>
+          </span>
         </div><br>
       </div>
       <div id="conversationsDiv" v-else>
@@ -82,7 +88,7 @@
           const message = {
             sender: this.getLoginUsername,
             text: this.inputMessage,
-            date: new Date()
+            date: new Date().getTime()
           }
           this.sendMessage({ chatId: this.activeChatId, message: message });
           this.clearInput();
