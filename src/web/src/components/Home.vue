@@ -14,6 +14,7 @@
                    :page="page"
                    :simple-mode="showCollection">
        </Poke-list >
+       <i class="fab fa-rocketchat fa-9x" style="float:right; cursor:pointer" @click.prevent="loadChat()"></i>
       </div>
     </div>
   </div>
@@ -22,6 +23,8 @@
             :selected-pokemon="selectedPokemon"
             @close="showOptions=false" />
   <Loading v-if="toLoad"></Loading>
+  <Chat v-if="showChat"
+            @close="showChat=false" />
   </div>
 </template>
 
@@ -34,12 +37,13 @@
   import { mapActions, mapGetters } from 'vuex';
   import PokeList from './PokemonList.vue';
   import Options from '@/components/modals/Options';
+  import Chat from '@/components/modals/Chat';
   import imagesLoaded from 'vue-images-loaded';
 
   export default {
     name: 'Home',
     mixins: [uniqueIdGeneratorMixin, pokemonMixin],
-    components: {PokeList,Loading,Sidemenu,Options},
+    components: {PokeList, Loading, Sidemenu, Options, Chat},
     directives: {
       imageloader: imagesLoaded,
     },
@@ -49,6 +53,7 @@
         collection: [],
         showCollection: false,
         showOptions: false,
+        showChat: false,
         page: 0,
         imageLoadedStarters: false,
         selectedPokemon:{},
@@ -65,6 +70,10 @@
       } else this.initData();
     },
     methods: {
+      loadChat() {
+        console.log('chatting...');
+        this.showChat = true;
+      },
       loaded() {
         console.log('loaded.....');
         if (this.showCollection) {

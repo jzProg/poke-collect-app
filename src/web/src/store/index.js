@@ -18,11 +18,13 @@ export default new Vuex.Store({
       items: [],
       initialized: false,
       currentOpponentId: 0,
+      chat: {},
     },
     enemybattlePokemon: [],
     errorLoginMessage: '',
     errorRegisterMessage: '',
-    pokemonToBeSwitched: {}
+    pokemonToBeSwitched: {},
+    chats: [],
   },
   getters: {
     getItems(state) {
@@ -60,6 +62,12 @@ export default new Vuex.Store({
     },
     getEnemyBattlePokemon(state) {
       return state.enemybattlePokemon;
+    },
+    getChat(state) {
+      return state.userInfo.chat;
+    },
+    getAvailableChats(state) {
+      return state.chats;
     },
   },
   mutations: {
@@ -107,8 +115,45 @@ export default new Vuex.Store({
     setLoginUsername(state, payload) {
       state.userInfo.loginUsername = payload.value;
     },
+    setChat(state, payload) {
+      state.userInfo.chat = payload.value;
+    },
+    setConversations(state, payload) {
+      state.chats = payload.value;
+    }
   },
   actions: {
+    fetchConversations({ commit, state }, payload) {
+      firebase.database().ref('chats/').on("value", (chatObject) => {
+        if (chatObject.val()) {
+          const conversations = [];
+          Object.values(chatObject.val()).forEach((chat) => {
+            conversations.push({ name: chat.name, id: chat.id });
+          });
+          commit({ type: 'setConversations', value: conversations });
+        }
+      });
+    },
+    initChat({ commit, state }, payload) {
+      return firebase.database().ref('chats/' + payload.chatId).set({
+        id: payload.chatId,
+        name: payload.name,
+        messages: [],
+      });
+    },
+    sendMessage({ commit, state }, payload) {
+      return firebase.database().ref('chats/' + payload.chatId).child('messages').push(payload.message);
+    },
+    fetchMessages({ commit, state }, payload) {
+      firebase.database().ref('chats/').on("value", (chatObject) => {
+        if (chatObject.val()) {
+          Object.values(chatObject.val()).forEach((chat) => {
+            if (payload.chatId === chat.id) {
+              commit({ type: 'setChat', value: chat });
+            }
+          });
+        }});
+    },
     awardPokemon({ commit, state }, payload) {
       var existingPokemon = state.userInfo.pokemon;
       var mergedPokemon = existingPokemon.concat(payload.list);
