@@ -29,13 +29,13 @@
 </template>
 
 <script>
-  import Sidemenu from './Sidemenu.vue'
+  import Sidemenu from '@/components/SideMenu';
   import Loading from '@/components/modals/Loading';
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
   import bus from "@/common/eventBus";
   import { mapActions, mapGetters } from 'vuex';
-  import PokeList from './PokemonList.vue';
+  import PokeList from '@/components/PokemonList';
   import Options from '@/components/modals/Options';
   import Chat from '@/components/modals/Chat';
   import imagesLoaded from 'vue-images-loaded';

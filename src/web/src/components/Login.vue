@@ -1,14 +1,10 @@
 <template>
   <div id = 'container'>
-
     <div id="video_container">
-
-  <video id="video" class="showP">
-  <source src="../../src/assets/loginGif.mp4" type="video/mp4"></video>
-  <img id="Logo" class='hideP' src="../../src/assets/PokeZagg.png"></img></div>
-
-
-
+      <video id="video" class="showP">
+      <source src="../../src/assets/loginGif.mp4" type="video/mp4"></video>
+      <img id="Logo" class='hideP' src="../../src/assets/PokeZagg.png"></img>
+    </div>
     <form>
         <div class = 'form-group'>
           <label for = "email">Email: </label>
@@ -43,9 +39,6 @@
 </template>
 
 <script>
-
-
-
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
   import { mapActions, mapGetters, mapMutations } from 'vuex';
 
@@ -58,10 +51,8 @@
         enteredPass: '',
       }
     },
-
     mounted() {
       this.removeErrorMessage();
-
       var video = document.querySelector('video');
       video.muted = true;
       video.play();
@@ -70,7 +61,7 @@
         var Logo=document.getElementById('Logo')
           this.fadeOutInEffect(elementVideo,Logo)
         });
-      },
+    },
     methods: {
       fadeOutInEffect(element,Logo){
         element.classList.add('hideP')

@@ -1,6 +1,5 @@
 <template>
  <div>
-   <h1 class = 'text-center'>{{ title }} </h1>
    <Login></Login>
  </div>
 </template>
@@ -12,11 +11,6 @@
 
   export default {
     name: 'Welcome',
-    data () {
-      return {
-        title: 'Welcome to Poke Collect App!',
-      }
-    },
     components:{
       Login
     },

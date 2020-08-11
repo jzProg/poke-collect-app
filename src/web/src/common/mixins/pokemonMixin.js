@@ -1,7 +1,3 @@
-const Pokedex = require('pokeapi-js-wrapper');
-const P = new Pokedex.Pokedex();
-import {calculate, Generations, Pokemon, Move} from '@smogon/calc';
-
 const pokemonMixin = {
   data() {
     return {
@@ -191,15 +187,6 @@ const pokemonMixin = {
     }
   },
   methods: {
-    calcDamage(attacker, defender, move) {
-      const gen = Generations.get(5);
-      return calculate(
-        gen,
-        new Pokemon(gen, attacker.name),
-        new Pokemon(gen, defender.name),
-        new Move(gen, move)
-      );
-    },
     getPokemon(nameOrId) {
       return P.getPokemonByName(nameOrId);
     },
