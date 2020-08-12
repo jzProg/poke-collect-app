@@ -1,5 +1,3 @@
-const Pokedex = require('pokeapi-js-wrapper');
-const P = new Pokedex.Pokedex();
 import {calculate, Generations, Pokemon, Move} from '@smogon/calc';
 
 const battleMixin = {
