@@ -5,8 +5,8 @@
     <div class="row" style="width: 100%">
       <div class="col-md-12">
         <div class="pagination" v-if="showCollection && getCollectionUpdated.length > 20">
-          <button class="prev" @click.prevent="prevPage()" :disabled="!hasPrev()">prev</button>
-          <button class="next" @click.prevent="nextPage()" :disabled="!hasNext()">next</button>
+          <button class="prev btn btn-primary" @click.prevent="prevPage()" :disabled="!hasPrev()">prev</button>
+          <button class="next btn btn-primary" @click.prevent="nextPage()" :disabled="!hasNext()">next</button>
          </div>
         <Poke-list :poke-list="showCollection? getCollectionUpdated : getStartersUpdated"
                    :action-on-click="showCollection ? onClickAction : null"
