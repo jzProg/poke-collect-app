@@ -26,7 +26,9 @@
                    <div class="statBox">
                      <div class="progress">
                        <span class="hpSpan"><b>HP</b></span>
-                       <div class="hpDiv"></div>
+                       <div class="hpDiv">
+                         <div class="progDiv" :style="getEnemyScoreStyle()"></div>
+                       </div>
                      </div>
                      <span class="name">
                        <b>{{ enemybattlePokemon.name }} </b>
@@ -43,7 +45,9 @@
                    <div class="statBox">
                      <div class="progress">
                        <span class="hpSpan"><b>HP</b></span>
-                       <div class="hpDiv"></div>
+                       <div class="hpDiv">
+                         <div class="progDiv" :style="getHomeScoreStyle()"></div>
+                       </div>
                      </div>
                      <span class="name">
                        <b>{{ homebattlePokemon.name }} </b>
@@ -132,6 +136,14 @@
        this.getEnemyPokemon();
      },
      methods: {
+       getHomeScoreStyle() {
+         const score = this.gameState.homePokemonHP;
+         return { 'width': score + '%', 'height': '100%', 'background-color': 'green' };
+       },
+       getEnemyScoreStyle() {
+         const score = this.gameState.enemyPokemonHP;
+         return { 'width': score + '%', 'height': '100%', 'background-color': 'green' };
+       },
        getImage() {
          return require(`@/assets/profileAvatar/${this.getUserImage}`);
        },
@@ -284,14 +296,12 @@
   float:right;
   width: 90%;
   height:100%;
-  background-color: green;
 }
 
  .opponent .statBox .progress .hpDiv {
    float:right;
    width: 90%;
    height:100%;
-   background-color: green;
 }
 
 .move {

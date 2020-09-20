@@ -64,7 +64,7 @@ const battleMixin = {
         const defenderObj = {
             name: this.enemybattlePokemon.species.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
         };
-        this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0]; // TODO: get random or basedon on logic from damage list
+        this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0]; // TODO: get random or based on logic from damage list
        console.log(this.gameState.currentDamage)
         setTimeout(() => {
           // TODO: animate enemy pokemon's damage
