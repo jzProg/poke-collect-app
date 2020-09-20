@@ -11,6 +11,8 @@ const battleMixin = {
         homePokemonHP: 300,
         enemyPokemonHP: 300,
         enemyPokemonIndex: 0,
+        availableEnemyPokemon: [1, 2],
+        homeUsedAbilitiesCount: {},
         currentState: 'HOME_CHOOSE',
         currentDamage: 0,
         currentAttack: '',
@@ -20,8 +22,8 @@ const battleMixin = {
           'HOME_BATTLE': { message: ' used ' },
           'ENEMY_CHOOSE': { message: ' Chosed ' },
           'ENEMY_BATTLE': { message: ' used ' },
-          'HOME_DAMAGE_DONE': { message: ['It did nothing...', 'Very Effective!'] },
-          'ENEMY_DAMAGE_DONE': { message: ['It did nothing...', 'Very Effective!'] },
+          'HOME_DAMAGE_DONE': { message: ['It did nothing...', 'Not very effective...', 'It is super effective!'] },
+          'ENEMY_DAMAGE_DONE': { message: ['It did nothing...', 'Not very effective...', 'It is super effective!'] },
           'HOME_WINNER': { message: ' fainted!' },
           'ENEMY_WINNER': { message: ' fainted!' },
           'FINISH': { message: 'Game Finished!'}
@@ -40,14 +42,14 @@ const battleMixin = {
                           return 'HOME_BATTLE';
       case 'HOME_BATTLE': this.message = this.homebattlePokemon.name + stateMessage + this.gameState.currentAttack;
                           return 'HOME_DAMAGE_DONE';
-      case 'HOME_DAMAGE_DONE': this.message = this.gameState.currentDamage > 10 ? stateMessage[1] : stateMessage[0];
+      case 'HOME_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.defaultHP/10 ? stateMessage[2] : stateMessage[1];
                           if (this.gameState.enemyPokemonHP <= 0) this.gameState.homeScore++;
                           return  this.gameState.enemyPokemonHP > 0 ? 'ENEMY_BATTLE' : 'HOME_WINNER';
       case 'ENEMY_CHOOSE': this.message = this.enemyName + stateMessage + this.enemybattlePokemon.name;
                           return 'HOME_OPTION'; // or ENEMY_BATTLE (?)
       case 'ENEMY_BATTLE': this.message = this.enemybattlePokemon.name + stateMessage + this.gameState.currentAttack;
                           return 'ENEMY_DAMAGE_DONE';
-      case 'ENEMY_DAMAGE_DONE': this.message = this.gameState.currentDamage > 10 ? stateMessage[1] : stateMessage[0];
+      case 'ENEMY_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.defaultHP/10 ? stateMessage[2] : stateMessage[1];
                                 if (this.gameState.homePokemonHP <= 0) this.gameState.enemyScore++;
                                 return  this.gameState.homePokemonHP > 0 ? 'HOME_OPTION' : 'ENEMY_WINNER';
       case 'HOME_WINNER': this.message = this.enemybattlePokemon.name + stateMessage;
@@ -62,6 +64,9 @@ const battleMixin = {
     attack(ability) {
       if (this.gameState.currentState === 'HOME_BATTLE') {
         this.gameState.currentAttack = ability.name;
+        let abilityEntry = this.gameState.homeUsedAbilitiesCount[ability.name];
+        if (abilityEntry) this.gameState.homeUsedAbilitiesCount[ability.name]++;
+        else this.gameState.homeUsedAbilitiesCount[ability.name] = 1;
         this.gameState.currentState = this.getNextState(); // attacks with ability -> HOME_DAMAGE_DONE
         const attackerObj = this.prepareBattleObject(this.homebattlePokemon);
         const defenderObj = this.prepareBattleObject(this.enemybattlePokemon);
@@ -81,7 +86,9 @@ const battleMixin = {
       }
     },
     enemyChoose() {
-      this.gameState.enemyPokemonIndex++;
+      const randomIndex = this.getRandomInt(0, this.gameState.availableEnemyPokemon.length - 1);
+      this.gameState.enemyPokemonIndex = this.gameState.availableEnemyPokemon[randomIndex]; // choose next pokemon
+      this.gameState.availableEnemyPokemon.splice(randomIndex, 1); // remove from available pokemon
       this.gameState.enemyPokemonHP = this.defaultHP;
       this.gameState.currentState = this.getNextState(); // chooses next pokemon -> HOME_OPTION
       if (this.gameState.currentState === 'HOME_OPTION') this.gameState.currentState = this.getNextState(); // HOME_OPTION -> HOME_BATTLE
