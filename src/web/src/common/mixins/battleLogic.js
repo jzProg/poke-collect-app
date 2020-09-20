@@ -76,7 +76,7 @@ const battleMixin = {
             setTimeout(() => {
               this.opponentMoves();
             }, 1000);
-          } else this.announceRoundWinner(); // TODO: for home */
+          } else this.announceRoundWinner();
         }, 1000);
       }
     },
@@ -121,10 +121,10 @@ const battleMixin = {
       this.gameState.currentState = this.getNextState(); // effective -> ENEMY_BATTLE or HOME_WINNER
     },
     announceRoundWinner() {
-       // TODO: implement
        this.gameState.currentState = this.getNextState(); // fainted -> FINISH or ENEMY_CHOOSE
        if (this.gameState.currentState === 'FINISH') this.endGame();
-       else this.enemyChoose();
+       else if (this.gameState.currentState === 'ENEMY_CHOOSE') this.enemyChoose();
+       else this.gameState.currentState = this.getNextState(); // HOME_CHOOSE -> HOME_BATTLE
     },
     endGame() {
       console.log('game ended...');

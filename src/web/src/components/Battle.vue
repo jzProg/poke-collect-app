@@ -167,6 +167,7 @@
            this.disabled[poke] = true;
            this.getPokemon(poke).then((response) => {
              this.homebattlePokemon = response;
+             this.gameState.homePokemonHP = this.defaultHP;
              this.gameState.currentState = this.getNextState();
            });
          } else console.log('You cannot choose another pokemon right now!');
