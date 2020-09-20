@@ -7,8 +7,8 @@ const battleMixin = {
       gameState: {
         homeScore: 0,
         enemyScore: 0,
-        homePokemonHP: 100,
-        enemyPokemonHP: 100,
+        homePokemonHP: 300,
+        enemyPokemonHP: 300,
         currentState: 'HOME_CHOOSE',
         currentDamage: 0,
         currentAttack: '',
@@ -60,13 +60,25 @@ const battleMixin = {
         this.gameState.currentState = this.getNextState(); // attacks with ability -> HOME_DAMAGE_DONE
         const attackerObj = {
            name: this.homebattlePokemon.species.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
+           hp: this.homebattlePokemon.stats[0].base_stat,
+           atk: this.homebattlePokemon.stats[1].base_stat,
+           def: this.homebattlePokemon.stats[2].base_stat,
+           spa: this.homebattlePokemon.stats[3].base_stat,
+           spd: this.homebattlePokemon.stats[4].base_stat,
+           spe: this.homebattlePokemon.stats[5].base_stat,
         };
         const defenderObj = {
             name: this.enemybattlePokemon.species.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
             hp: this.enemybattlePokemon.stats[0].base_stat,
+            atk: this.enemybattlePokemon.stats[1].base_stat,
+            def: this.enemybattlePokemon.stats[2].base_stat,
+            spa: this.enemybattlePokemon.stats[3].base_stat,
+            spd: this.enemybattlePokemon.stats[4].base_stat,
+            spe: this.enemybattlePokemon.stats[5].base_stat,
         };
-        this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0; // TODO: get random or based on logic from damage list
-        console.log(this.gameState.currentDamage)
+        console.log(this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack));
+        this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
+        console.log(this.gameState.currentDamage);
         setTimeout(() => {
           // TODO: animate enemy pokemon's damage
           console.log('animating damage...');
@@ -90,20 +102,31 @@ const battleMixin = {
        const defenderObj = {
           name: this.homebattlePokemon.species.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
           hp: this.homebattlePokemon.stats[0].base_stat,
+          atk: this.homebattlePokemon.stats[1].base_stat,
+          def: this.homebattlePokemon.stats[2].base_stat,
+          spa: this.homebattlePokemon.stats[3].base_stat,
+          spd: this.homebattlePokemon.stats[4].base_stat,
+          spe: this.homebattlePokemon.stats[5].base_stat,
        };
        const attackerObj = {
            name: this.enemybattlePokemon.species.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
+           hp: this.enemybattlePokemon.stats[0].base_stat,
+           atk: this.enemybattlePokemon.stats[1].base_stat,
+           def: this.enemybattlePokemon.stats[2].base_stat,
+           spa: this.enemybattlePokemon.stats[3].base_stat,
+           spd: this.enemybattlePokemon.stats[4].base_stat,
+           spe: this.enemybattlePokemon.stats[5].base_stat,
        };
        console.log(this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack));
        this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
        console.log(this.gameState.currentDamage)
-       // TODO: animate home pokemon's damage
        setTimeout(() => {
-         // TODO: animate enemy pokemon's damage
+         // TODO: animate home pokemon's damage
          console.log('animating damage...');
          this.updateScore();
          if (this.gameState.currentState === 'ENEMY_WINNER')
                this.announceRoundWinner(); // TODO: for enemy
+         else this.gameState.currentState = this.getNextState(); // HOME_OPTION -> HOME_BATTLE
        }, 1000);
     },
     choosePCAttack() {
@@ -142,8 +165,22 @@ const battleMixin = {
       const gen = Generations.get(5);
       return calculate(
         gen,
-        new Pokemon(gen, attacker.name),
-        new Pokemon(gen, defender.name, { evs: { hp : defender.hp }}),
+        new Pokemon(gen, attacker.name, { evs: {
+          hp: attacker.hp,
+          atk: attacker.atk,
+          def: attacker.def,
+          spa: attacker.spa,
+          spd: attacker.spd,
+          spe: attacker.spe,
+        }}),
+        new Pokemon(gen, defender.name, { evs: {
+          hp: defender.hp,
+          atk: defender.atk,
+          def: defender.def,
+          spa: defender.spa,
+          spd: defender.spd,
+          spe: defender.spe,
+        }}),
         new Move(gen, move)
       );
     },
