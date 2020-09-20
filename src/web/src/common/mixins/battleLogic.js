@@ -63,15 +63,19 @@ const battleMixin = {
         };
         const defenderObj = {
             name: this.enemybattlePokemon.species.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
+            hp: this.enemybattlePokemon.stats[0].base_stat,
         };
-        this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0]; // TODO: get random or based on logic from damage list
-       console.log(this.gameState.currentDamage)
+        this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0; // TODO: get random or based on logic from damage list
+        console.log(this.gameState.currentDamage)
         setTimeout(() => {
           // TODO: animate enemy pokemon's damage
           console.log('animating damage...');
           this.updateScore();
-          /* if (this.gameState.currentState === 'ENEMY_BATTLE') this.opponentMoves();
-          else this.announceRoundWinner(); // TODO: for home */
+          if (this.gameState.currentState === 'ENEMY_BATTLE') {
+            setTimeout(() => {
+              this.opponentMoves();
+            }, 1000);
+          } else this.announceRoundWinner(); // TODO: for home */
         }, 1000);
       }
     },
@@ -80,20 +84,41 @@ const battleMixin = {
       this.gameState.currentState = this.getNextState(); // chooses next pokemon -> HOME_OPTION
     },
     opponentMoves() {
-       // TODO: computer move --> computer chooses next random attack
+       this.gameState.currentAttack = this.choosePCAttack();
+       console.log('current attack: '+ this.gameState.currentAttack);
        this.gameState.currentState = this.getNextState(); // attacks with ability -> ENEMY_DAMAGE_DONE
-       this.gameState.currentDamage = 10; // TODO: compute damage using API
+       const defenderObj = {
+          name: this.homebattlePokemon.species.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
+          hp: this.homebattlePokemon.stats[0].base_stat,
+       };
+       const attackerObj = {
+           name: this.enemybattlePokemon.species.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
+       };
+       console.log(this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack));
+       this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
+       console.log(this.gameState.currentDamage)
        // TODO: animate home pokemon's damage
-       this.updateScore();
-       if (this.gameState.currentState === 'ENEMY_WINNER')
-             this.announceRoundWinner(); // TODO: for enemy
+       setTimeout(() => {
+         // TODO: animate enemy pokemon's damage
+         console.log('animating damage...');
+         this.updateScore();
+         if (this.gameState.currentState === 'ENEMY_WINNER')
+               this.announceRoundWinner(); // TODO: for enemy
+       }, 1000);
+    },
+    choosePCAttack() {
+      const randomMoveIndex = this.getRandomInt(0, 3);
+      console.log('random index:' + randomMoveIndex);
+      return this.enemybattlePokemon.moves[randomMoveIndex].move.name;
     },
     updateScore() {
       console.log('updating round score...');
       if (this.gameState.currentState === 'ENEMY_DAMAGE_DONE') {
-        this.gameState.homePokemonHP -= this.gameState.currentDamage;
+        if (this.gameState.currentDamage > this.gameState.homePokemonHP) this.gameState.homePokemonHP = 0;
+        else this.gameState.homePokemonHP -= this.gameState.currentDamage;
       } else {
-        this.gameState.enemyPokemonHP -= this.gameState.currentDamage;
+        if (this.gameState.currentDamage > this.gameState.enemyPokemonHP) this.gameState.enemyPokemonHP = 0;
+        else this.gameState.enemyPokemonHP -= this.gameState.currentDamage;
       }
       this.gameState.currentState = this.getNextState(); // effective -> ENEMY_BATTLE or HOME_WINNER
     },
@@ -118,7 +143,7 @@ const battleMixin = {
       return calculate(
         gen,
         new Pokemon(gen, attacker.name),
-        new Pokemon(gen, defender.name),
+        new Pokemon(gen, defender.name, { evs: { hp : defender.hp }}),
         new Move(gen, move)
       );
     },

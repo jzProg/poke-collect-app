@@ -138,11 +138,15 @@
      methods: {
        getHomeScoreStyle() {
          const score = this.gameState.homePokemonHP;
-         return { 'width': score + '%', 'height': '100%', 'background-color': 'green' };
+         const full = this.homebattlePokemon.stats[0].base_stat;
+         const half = full/2;
+         return { 'width': (score*100)/full + '%', 'height': '100%', 'background-color': score < half ?  'orange' : 'green' };
        },
        getEnemyScoreStyle() {
          const score = this.gameState.enemyPokemonHP;
-         return { 'width': score + '%', 'height': '100%', 'background-color': 'green' };
+         const full = this.enemybattlePokemon.stats[0].base_stat;
+         const half = full/2;
+         return { 'width': (score*100)/full + '%', 'height': '100%', 'background-color': score < half ?  'orange' : 'green' };
        },
        getImage() {
          return require(`@/assets/profileAvatar/${this.getUserImage}`);
@@ -169,6 +173,8 @@
            this.disabled[poke] = true;
            this.getPokemon(poke).then((response) => {
              this.homebattlePokemon = response;
+             this.gameState.homePokemonHP = this.homebattlePokemon.stats[0].base_stat;
+             this.gameState.enemyPokemonHP = this.enemybattlePokemon.stats[0].base_stat;
              this.gameState.currentState = this.getNextState();
            });
          } else console.log('You cannot choose another pokemon right now!');
