@@ -4,6 +4,7 @@ const battleMixin = {
   data() {
     return {
       homebattlePokemon: {},
+      defaulHP: 300,
       gameState: {
         homeScore: 0,
         enemyScore: 0,
@@ -58,24 +59,8 @@ const battleMixin = {
       if (this.gameState.currentState === 'HOME_BATTLE') {
         this.gameState.currentAttack = ability.name;
         this.gameState.currentState = this.getNextState(); // attacks with ability -> HOME_DAMAGE_DONE
-        const attackerObj = {
-           name: this.homebattlePokemon.species.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
-           hp: this.homebattlePokemon.stats[0].base_stat,
-           atk: this.homebattlePokemon.stats[1].base_stat,
-           def: this.homebattlePokemon.stats[2].base_stat,
-           spa: this.homebattlePokemon.stats[3].base_stat,
-           spd: this.homebattlePokemon.stats[4].base_stat,
-           spe: this.homebattlePokemon.stats[5].base_stat,
-        };
-        const defenderObj = {
-            name: this.enemybattlePokemon.species.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
-            hp: this.enemybattlePokemon.stats[0].base_stat,
-            atk: this.enemybattlePokemon.stats[1].base_stat,
-            def: this.enemybattlePokemon.stats[2].base_stat,
-            spa: this.enemybattlePokemon.stats[3].base_stat,
-            spd: this.enemybattlePokemon.stats[4].base_stat,
-            spe: this.enemybattlePokemon.stats[5].base_stat,
-        };
+        const attackerObj = this.prepareBattleObject(this.homebattlePokemon);
+        const defenderObj = this.prepareBattleObject(this.enemybattlePokemon);
         console.log(this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack));
         this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
         console.log(this.gameState.currentDamage);
@@ -99,24 +84,8 @@ const battleMixin = {
        this.gameState.currentAttack = this.choosePCAttack();
        console.log('current attack: '+ this.gameState.currentAttack);
        this.gameState.currentState = this.getNextState(); // attacks with ability -> ENEMY_DAMAGE_DONE
-       const defenderObj = {
-          name: this.homebattlePokemon.species.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
-          hp: this.homebattlePokemon.stats[0].base_stat,
-          atk: this.homebattlePokemon.stats[1].base_stat,
-          def: this.homebattlePokemon.stats[2].base_stat,
-          spa: this.homebattlePokemon.stats[3].base_stat,
-          spd: this.homebattlePokemon.stats[4].base_stat,
-          spe: this.homebattlePokemon.stats[5].base_stat,
-       };
-       const attackerObj = {
-           name: this.enemybattlePokemon.species.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
-           hp: this.enemybattlePokemon.stats[0].base_stat,
-           atk: this.enemybattlePokemon.stats[1].base_stat,
-           def: this.enemybattlePokemon.stats[2].base_stat,
-           spa: this.enemybattlePokemon.stats[3].base_stat,
-           spd: this.enemybattlePokemon.stats[4].base_stat,
-           spe: this.enemybattlePokemon.stats[5].base_stat,
-       };
+       const defenderObj = this.prepareBattleObject(this.homebattlePokemon);
+       const attackerObj = this.prepareBattleObject(this.enemybattlePokemon);
        console.log(this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack));
        this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
        console.log(this.gameState.currentDamage)
@@ -160,6 +129,17 @@ const battleMixin = {
     awarding() {
       console.log('about to award...');
       // TODO: implement
+    },
+    prepareBattleObject(statObj) {
+      return  {
+          name: statObj.species.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
+          hp: statObj.stats[0].base_stat,
+          atk: statObj.stats[1].base_stat,
+          def: statObj.stats[2].base_stat,
+          spa: statObj.stats[3].base_stat,
+          spd: statObj.stats[4].base_stat,
+          spe: statObj.stats[5].base_stat,
+      };
     },
     calcDamage(attacker, defender, move) {
       const gen = Generations.get(5);

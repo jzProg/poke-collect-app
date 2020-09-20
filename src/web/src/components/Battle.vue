@@ -27,7 +27,7 @@
                      <div class="progress">
                        <span class="hpSpan"><b>HP</b></span>
                        <div class="hpDiv">
-                         <div class="progDiv" :style="getEnemyScoreStyle()"></div>
+                         <div class="progDiv":style="getScoreStyle(this.gameState.enemyPokemonHP)"></div>
                        </div>
                      </div>
                      <span class="name">
@@ -46,7 +46,7 @@
                      <div class="progress">
                        <span class="hpSpan"><b>HP</b></span>
                        <div class="hpDiv">
-                         <div class="progDiv" :style="getHomeScoreStyle()"></div>
+                         <div class="progDiv" :style="getScoreStyle(this.gameState.homePokemonHP)"></div>
                        </div>
                      </div>
                      <span class="name">
@@ -136,15 +136,9 @@
        this.getEnemyPokemon();
      },
      methods: {
-       getHomeScoreStyle() {
-         const score = this.gameState.homePokemonHP;
-         const full = 300; //this.homebattlePokemon.stats[0].base_stat;
-         const half = full/2;
-         return { 'width': (score*100)/full + '%', 'height': '100%', 'background-color': score < half ?  'orange' : 'green' };
-       },
-       getEnemyScoreStyle() {
-         const score = this.gameState.enemyPokemonHP;
-         const full = 300; //this.enemybattlePokemon.stats[0].base_stat;
+       getScoreStyle(hp) {
+         const score = hp;
+         const full = this.defaulHP;
          const half = full/2;
          return { 'width': (score*100)/full + '%', 'height': '100%', 'background-color': score < half ?  'orange' : 'green' };
        },
