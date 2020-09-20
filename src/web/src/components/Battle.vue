@@ -138,7 +138,7 @@
      methods: {
        getScoreStyle(hp) {
          const score = hp;
-         const full = this.defaulHP;
+         const full = this.defaultHP;
          const half = full/2;
          return { 'width': (score*100)/full + '%', 'height': '100%', 'background-color': score < half ?  'orange' : 'green' };
        },
@@ -167,8 +167,6 @@
            this.disabled[poke] = true;
            this.getPokemon(poke).then((response) => {
              this.homebattlePokemon = response;
-             //this.gameState.homePokemonHP = this.homebattlePokemon.stats[0].base_stat;
-             //this.gameState.enemyPokemonHP = this.enemybattlePokemon.stats[0].base_stat;
              this.gameState.currentState = this.getNextState();
            });
          } else console.log('You cannot choose another pokemon right now!');
@@ -185,7 +183,7 @@
         return this.homePokemon;
       },
       enemybattlePokemon() {
-        return this.enemyPokemon[0];
+        return this.enemyPokemon[this.gameState.enemyPokemonIndex];
       }
     },
    }
