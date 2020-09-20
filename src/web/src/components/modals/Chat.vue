@@ -19,7 +19,7 @@
              v-for="(conv, index) in getAvailableChats"
             :key="index"
             @click.prevent = "chooseChat(conv.id)"
-            style="cursor:pointer; padding:5%; border-style: solid;overflow:auto">
+            style="cursor:pointer; padding:5%; border-style: solid;overflow:auto; border-radius:2px">
           <b>{{ conv.name }}</b>
         </div>
       </div>

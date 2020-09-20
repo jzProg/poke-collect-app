@@ -9,8 +9,8 @@
                style="width: 100px; height:100px">
         </div>
           <div class="col-md-2 col-xs-4">
-          <div v-if="username"
-               style = "margin-right:2%">
+          <div v-if="username" style = "margin-right:2%">
+            <i class="fab fa-rocketchat fa-5x" style="float:left;cursor:pointer" @click.prevent="loadChat()"></i>
             <div v-if="$route.meta.hasProfileHeader">
                 <a @click.prevent = "showOptions">
                   <img :src = "getImage()"
@@ -24,6 +24,8 @@
                        :logout = "logout"
                        @close = "onOptionsClose">
          </OptionsModal>
+         <Chat v-if="showChat"
+                   @close="showChat=false" />
         </div>
       </div>
     </div>
@@ -39,15 +41,17 @@
   import { mapActions, mapGetters, mapMutations } from 'vuex';
   import firebase from 'firebase';
   import OptionsModal from '@/components/modals/OptionsModal';
+  import Chat from '@/components/modals/Chat';
 
   export default {
     name: 'app',
     mixins: [firebaseConfigProperties, urlAuthMixin],
-    components: { OptionsModal },
+    components: { OptionsModal, Chat },
     data() {
       return {
         username: '',
         showOptionsModal: false,
+        showChat: false,
       };
     },
     created() {
@@ -76,6 +80,10 @@
       });
     },
     methods: {
+      loadChat() {
+        console.log('chatting...');
+        this.showChat = true;
+      },
       getImage() {
         return require(`./assets/profileAvatar/${this.getUserImage}`);
       },
