@@ -138,8 +138,11 @@ const battleMixin = {
     announceRoundWinner() {
        this.gameState.currentState = this.getNextState(); // fainted -> FINISH or ENEMY_CHOOSE
        if (this.gameState.currentState === 'FINISH') this.endGame();
-       else if (this.gameState.currentState === 'ENEMY_CHOOSE') this.enemyChoose();
-       else {
+       else if (this.gameState.currentState === 'ENEMY_CHOOSE') {
+         setTimeout(() => {
+           this.enemyChoose();
+         }, 1000);
+       } else {
          setTimeout(() => {
            this.gameState.currentState = this.getNextState(); // HOME_CHOOSE -> HOME_BATTLE
          }, 1000);
@@ -148,7 +151,9 @@ const battleMixin = {
     endGame() {
       console.log('game ended...');
       if (this.gameState.homeScore > this.gameState.enemyScore) this.awarding();
-      this.gameState.currentState = this.getNextState(); // game finished -> end
+      setTimeout(() => {
+        this.gameState.currentState = this.getNextState(); // game finished -> end
+      }, 1000);
     },
     awarding() {
       console.log('about to award...');
