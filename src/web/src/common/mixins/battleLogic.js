@@ -76,7 +76,7 @@ const battleMixin = {
         this.delayCall(() => {
           this.animateDamage(false);
           this.updateScore();
-          if (this.gameState.currentState === 'ENEMY_BATTLE') this.delayCall(this.opponentMoves);
+          if (this.gameState.currentState === 'ENEMY_BATTLE') this.delayCall(this.opponentMoves, 2000);
           else this.announceRoundWinner();
         });
       }
@@ -130,7 +130,7 @@ const battleMixin = {
     announceRoundWinner() {
        this.gameState.currentState = this.getNextState(); // fainted -> FINISH or ENEMY_CHOOSE
        if (this.gameState.currentState === 'FINISH') this.endGame();
-       else if (this.gameState.currentState === 'ENEMY_CHOOSE') this.delayCall(this.enemyChoose);
+       else if (this.gameState.currentState === 'ENEMY_CHOOSE') this.delayCall(this.enemyChoose, 2000);
        else this.delayCall(() => { this.gameState.currentState = this.getNextState(); }); // HOME_CHOOSE -> HOME_BATTLE
     },
     endGame() {
@@ -138,10 +138,10 @@ const battleMixin = {
       if (this.gameState.homeScore > this.gameState.enemyScore) this.awarding();
       this.delayCall(() => { this.gameState.currentState = this.getNextState(); }); // game finished -> end
     },
-    delayCall(callback) {
+    delayCall(callback, duration) {
       setTimeout(() => {
         callback();
-      }, 1000);
+      }, duration || 1000);
     },
     awarding() {
       console.log('about to award...');

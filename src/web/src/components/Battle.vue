@@ -93,6 +93,7 @@
          </div>
        </div>
      </div>
+     <PostGame v-if="gameState.currentState === ''"  @close="goToIndex()"></PostGame>
   </div>
 </template>
 
@@ -101,16 +102,18 @@
   import pokemonMixin from '@/common/mixins/pokemonMixin';
   import battleMixin from '@/common/mixins/battleLogic';
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
+  import PostGame from '@/components/modals/PostGame';
   import Pokemon from './Pokemon.vue';
   import fullscreen from 'vue-fullscreen';
   import Vue from 'vue';
-   window.$ = window.jQuery = require('jquery');
+
+  window.$ = window.jQuery = require('jquery');
   Vue.use(fullscreen);
 
   export default {
      name: 'Battle',
      mixins: [pokemonMixin, battleMixin, uniqueIdGeneratorMixin],
-     components: {Pokemon},
+     components: { Pokemon, PostGame },
      data() {
        return {
           image: '',
@@ -144,6 +147,9 @@
        this.getEnemyPokemon();
      },
      methods: {
+       goToIndex() {
+         this.$router.push('getStarted');
+       },
        getScoreStyle(hp) {
          const score = hp;
          const full = this.defaultHP;
