@@ -11,6 +11,7 @@ const battleMixin = {
         homePokemonHP: 300,
         enemyPokemonHP: 300,
         enemyPokemonIndex: 0,
+        enemyFaint: false,
         availableEnemyPokemon: [1, 2],
         homeUsedAbilitiesCount: {},
         currentState: 'HOME_CHOOSE',
@@ -53,6 +54,7 @@ const battleMixin = {
                                 if (this.gameState.homePokemonHP <= 0) this.gameState.enemyScore++;
                                 return  this.gameState.homePokemonHP > 0 ? 'HOME_OPTION' : 'ENEMY_WINNER';
       case 'HOME_WINNER': this.message = this.enemybattlePokemon.name + stateMessage;
+                          this.gameState.enemyFaint = true;
                           return this.gameState.homeScore === 3 ? 'FINISH' : 'ENEMY_CHOOSE';
       case 'ENEMY_WINNER': this.message = this.homebattlePokemon.name + stateMessage;
                            this.homebattlePokemon = {};
@@ -87,6 +89,7 @@ const battleMixin = {
       this.gameState.enemyPokemonIndex = this.gameState.availableEnemyPokemon[randomIndex]; // choose next pokemon
       this.gameState.availableEnemyPokemon.splice(randomIndex, 1); // remove from available pokemon
       this.gameState.enemyPokemonHP = this.defaultHP;
+      this.gameState.enemyFaint = false;
       this.gameState.currentState = this.getNextState(); // chooses next pokemon -> HOME_OPTION
       if (this.gameState.currentState === 'HOME_OPTION') {
         this.delayCall(() => {
