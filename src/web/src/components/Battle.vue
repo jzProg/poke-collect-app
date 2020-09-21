@@ -95,8 +95,12 @@
      </div>
      <PostGame v-if="gameState.currentState === ''"
               :has-winner="gameState.homeScore > gameState.enemyScore"
-              @close="goToIndex()">
+              @close="hasExtra ? showExtra = true : goToIndex()">
     </PostGame>
+    <ExtraAward v-if="showExtra"
+               :poke="getCurrentReward.rewardId[0].name"
+               :item="extraItem"
+               @close="goToIndex()"/>
   </div>
 </template>
 
@@ -106,6 +110,7 @@
   import battleMixin from '@/common/mixins/battleLogic';
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
   import PostGame from '@/components/modals/PostGame';
+  import ExtraAward from '@/components/modals/ExtraAward';
   import Pokemon from './Pokemon.vue';
   import fullscreen from 'vue-fullscreen';
   import Vue from 'vue';
@@ -116,11 +121,14 @@
   export default {
      name: 'Battle',
      mixins: [pokemonMixin, battleMixin, uniqueIdGeneratorMixin],
-     components: { Pokemon, PostGame },
+     components: { Pokemon, PostGame, ExtraAward },
      data() {
        return {
           image: '',
           fullscreen: false,
+          hasExtra: false,
+          showExtra: false,
+          extraItem: {},
           enemyName: '',
           message: '',
           homePokemon: [],

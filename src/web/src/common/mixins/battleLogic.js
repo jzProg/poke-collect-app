@@ -180,7 +180,20 @@ const battleMixin = {
             pokeObj = response;
             this.awardPokemon({ list: [pokeId]});
             this.setCurrentReward({ type: this.gameRewards[1].type, value:  [pokeObj]});
-            this.gameState.currentState = this.getNextState(); // game finished -> end
+            if (pokeObj.held_items.length) {
+               console.log("has extra item: " + pokeObj.held_items[0].item.name);
+               const itemObj = {};
+               this.getItem(pokeObj.held_items[0].item.name).then((res) => {
+                 itemObj.name = res.name;
+                 itemObj.image = res.sprites.default;
+                 itemObj.quantity = 1;
+                 itemObj.type = this.gameRewards[0].type; // item type
+                 this.hasExtra = true;
+                 this.extraItem = itemObj;
+                 this.awardItems({ list: [itemObj]});
+                 this.gameState.currentState = this.getNextState(); // game finished -> end
+               });
+            } else this.gameState.currentState = this.getNextState(); // game finished -> end
           });
         });
       }
@@ -223,6 +236,7 @@ const battleMixin = {
   computed: {
     ...mapGetters([
       'getUserCoins',
+      'getCurrentReward',
     ]),
   }
 };
