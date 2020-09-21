@@ -1,4 +1,5 @@
 import {calculate, Generations, Pokemon, Move} from '@smogon/calc';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 const battleMixin = {
   data() {
@@ -33,6 +34,14 @@ const battleMixin = {
     }
   },
   methods: {
+    ...mapMutations([
+      'setUserCoins',
+      'setCurrentReward',
+    ]),
+    ...mapActions([
+      'awardPokemon',
+      'awardItems',
+    ]),
     getNextState() {
       const currentState = this.gameState.currentState;
       const stateMessage = this.gameState.statesInfo[currentState].message;
@@ -136,7 +145,7 @@ const battleMixin = {
     endGame() {
       console.log('game ended...');
       if (this.gameState.homeScore > this.gameState.enemyScore) this.awarding();
-      this.delayCall(() => { this.gameState.currentState = this.getNextState(); }); // game finished -> end
+      else this.delayCall(() => { this.gameState.currentState = this.getNextState(); }); // game finished -> end
     },
     delayCall(callback, duration) {
       setTimeout(() => {
@@ -145,7 +154,36 @@ const battleMixin = {
     },
     awarding() {
       console.log('about to award...');
-      // TODO: implement
+      const existingCoins = this.getUserCoins;
+      this.setUserCoins({ value: existingCoins + this.coinsInfo.REWARD_COINS }); // assign reward coins to user
+      const rewardTypeIndex = this.getRandomInt(0, 1); // choose extra reward category (item or pokemon)
+      const rewardType = this.gameRewards[rewardTypeIndex].type;
+      if (rewardType === this.gameRewards[0].type) {
+        const itemObj = {};
+        const itemId = this.getRandomInt(1, 100);
+        this.getItem(itemId).then((res) => {
+          itemObj.name = res.name;
+          itemObj.image = res.sprites.default;
+          itemObj.quantity = 1;
+          itemObj.type = rewardType;
+          this.awardItems({ list: [itemObj]});
+          this.setCurrentReward({ type: this.gameRewards[0].type, value:  [itemObj]});
+          this.gameState.currentState = this.getNextState(); // game finished -> end
+        });
+      } else {
+        let pokeObj= {};
+        const pokeId = this.getRandomInt(1, 300);
+        this.getPokemon(pokeId).then((response) => {
+          this.getPokemonSpecies(pokeId).then((res) => {
+            const image = this.getPokemonImage(response.id);
+            Object.assign(response, { color: res.color.name, pokeImage: image, description: res.flavor_text_entries[0].flavor_text });
+            pokeObj = response;
+            this.awardPokemon({ list: [pokeId]});
+            this.setCurrentReward({ type: this.gameRewards[1].type, value:  [pokeObj]});
+            this.gameState.currentState = this.getNextState(); // game finished -> end
+          });
+        });
+      }
     },
     prepareBattleObject(statObj) {
       return  {
@@ -181,6 +219,11 @@ const battleMixin = {
         new Move(gen, move)
       );
     },
+  },
+  computed: {
+    ...mapGetters([
+      'getUserCoins',
+    ]),
   }
 };
 

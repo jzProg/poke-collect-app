@@ -10,7 +10,7 @@
    </div>
    <div class="row" style="width: 100%;margin-top:4%" v-if="items.length">
      <h3><b>Items</b></h3>
-     <div v-for="(item, index) in items" :key="index" :class="['col-md-' + 12/stones.length]" style="margin-top:4%">
+     <div v-for="(item, index) in items" :key="index" :class="['col-md-' + 12/items.length]" style="margin-top:4%">
        <img :src="item.image" height="70" width="70">
        <h4>{{ item.name }}</h4>
      </div>
@@ -31,7 +31,7 @@
       ]),
       items() {
         if (!this.getItems) return [];
-        return this.getItems.filter(item => item.type === this.prizes.ITEM.type);
+        return this.getItems.filter(item => item.type === this.gameRewards[0].type);
       },
       stones() {
         if (!this.getItems) return [];

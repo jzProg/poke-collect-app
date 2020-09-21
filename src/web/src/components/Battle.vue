@@ -93,7 +93,10 @@
          </div>
        </div>
      </div>
-     <PostGame v-if="gameState.currentState === ''"  @close="goToIndex()"></PostGame>
+     <PostGame v-if="gameState.currentState === ''"
+              :has-winner="gameState.homeScore > gameState.enemyScore"
+              @close="goToIndex()">
+    </PostGame>
   </div>
 </template>
 

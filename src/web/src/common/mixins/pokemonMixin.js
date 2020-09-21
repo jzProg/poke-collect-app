@@ -13,20 +13,23 @@ const pokemonMixin = {
       },
       coinsInfo: {
         START_COINS: 100,
+        REWARD_COINS: 200,
       },
       packInfo: {
         NUM_OF_CARDS: 2,
       },
-      prizes: {
-        COINS: {
-          //TODO implement after battle
+      gameRewards: [
+        {
+           type: 'item',
         },
+        {
+          type: 'pokemon',
+        }
+      ],
+      prizes: {
         PACK: {
           type: 'pack',
           items: [{ title: 'pokemon pack', quantity: 1, price: 50 }],
-        },
-        ITEM: {
-           //TODO implement
         },
         STONE: {
          type: 'stone',
