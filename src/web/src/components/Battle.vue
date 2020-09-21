@@ -122,6 +122,12 @@
           disabled: [],
        }
      },
+     beforeRouteEnter(to, from, next) {
+        next(vm => {
+          if (vm.getCurrentOpponentId) next();
+          else next('/Game');
+        });
+     },
      watch: {
         getUserStarters(newValue, oldValue) {
           if(this.getUserStarters) this.getStarters();
