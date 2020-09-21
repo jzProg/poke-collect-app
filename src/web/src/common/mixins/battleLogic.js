@@ -91,7 +91,11 @@ const battleMixin = {
       this.gameState.availableEnemyPokemon.splice(randomIndex, 1); // remove from available pokemon
       this.gameState.enemyPokemonHP = this.defaultHP;
       this.gameState.currentState = this.getNextState(); // chooses next pokemon -> HOME_OPTION
-      if (this.gameState.currentState === 'HOME_OPTION') this.gameState.currentState = this.getNextState(); // HOME_OPTION -> HOME_BATTLE
+      if (this.gameState.currentState === 'HOME_OPTION') {
+        setTimeout(() => {
+            this.gameState.currentState = this.getNextState(); // HOME_OPTION -> HOME_BATTLE
+        }, 1000);
+      }
     },
     opponentMoves() {
        this.gameState.currentAttack = this.choosePCAttack();
@@ -108,7 +112,11 @@ const battleMixin = {
          this.updateScore();
          if (this.gameState.currentState === 'ENEMY_WINNER')
                this.announceRoundWinner(); // TODO: for enemy
-         else this.gameState.currentState = this.getNextState(); // HOME_OPTION -> HOME_BATTLE
+         else {
+           setTimeout(() => {
+              this.gameState.currentState = this.getNextState(); // HOME_OPTION -> HOME_BATTLE
+           }, 1000);
+         }
        }, 1000);
     },
     choosePCAttack() {
@@ -131,7 +139,11 @@ const battleMixin = {
        this.gameState.currentState = this.getNextState(); // fainted -> FINISH or ENEMY_CHOOSE
        if (this.gameState.currentState === 'FINISH') this.endGame();
        else if (this.gameState.currentState === 'ENEMY_CHOOSE') this.enemyChoose();
-       else this.gameState.currentState = this.getNextState(); // HOME_CHOOSE -> HOME_BATTLE
+       else {
+         setTimeout(() => {
+           this.gameState.currentState = this.getNextState(); // HOME_CHOOSE -> HOME_BATTLE
+         }, 1000);
+       }
     },
     endGame() {
       console.log('game ended...');
