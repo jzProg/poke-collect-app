@@ -7,15 +7,19 @@
       <div :style="getTypeStyle()">
        {{ info.types[0].type.name }}
       </div>
-      <img :src="image" class="pokeImg row" style="margin-top: 10%">
-      <div class = "row"
-           v-for = '(row,ind) in Object.keys(info.stats).length/2'
-           :key = "ind">
-        <div class = "col-md-6" v-if = "info.stats[ind*2]">
-           {{ normalizeStat(info.stats[ind*2].stat.name) }}:<span :style="getTypeStyle()">{{ info.stats[ind*2].base_stat}}</span>
-        </div>
-        <div class = "col-md-6" v-if = "info.stats[ind*2 + 1]">
-           {{ normalizeStat(info.stats[ind*2 + 1].stat.name) }}:<span :style="getTypeStyle()">{{ info.stats[ind*2 + 1].base_stat}}</span>
+      <i>{{ info.weight }} kg</i><br>
+      <img :src="image" class="pokeImg row" style="margin-top: 10%"><br>
+      <i style="font-size: 90%">{{ info.description }}</i>
+      <div style="margin-top: 5%">
+        <div class = "row"
+             v-for = "(row,ind) in Object.keys(info.stats).length/2"
+             :key = "ind">
+          <div class = "col-md-6" v-if = "info.stats[ind*2]">
+             {{ normalizeStat(info.stats[ind*2].stat.name) }}:<span :style="getTypeStyle()">{{ info.stats[ind*2].base_stat}}</span>
+          </div>
+          <div class = "col-md-6" v-if = "info.stats[ind*2 + 1]">
+             {{ normalizeStat(info.stats[ind*2 + 1].stat.name) }}:<span :style="getTypeStyle()">{{ info.stats[ind*2 + 1].base_stat}}</span>
+          </div>
         </div>
       </div>
     </div>

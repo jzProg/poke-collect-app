@@ -210,7 +210,7 @@ const pokemonMixin = {
         this.getPokemon(item).then((response) => {
           this.getPokemonSpecies(item).then((res) => {
             const image = this.getPokemonImage(response.id);
-            Object.assign(response, { color: res.color.name, pokeImage: image });
+            Object.assign(response, { color: res.color.name, pokeImage: image, description: res.flavor_text_entries[0].flavor_text });
             if (listToFill.filter(e => e.name === response.name).length <= 0)
               listToFill.push(response);
           });
