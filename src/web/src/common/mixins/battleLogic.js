@@ -73,16 +73,13 @@ const battleMixin = {
         console.log(this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack));
         this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
         console.log(this.gameState.currentDamage);
-        setTimeout(() => {
+        this.delayCall(() => {
           // TODO: animate enemy pokemon's damage
           console.log('animating damage...');
           this.updateScore();
-          if (this.gameState.currentState === 'ENEMY_BATTLE') {
-            setTimeout(() => {
-              this.opponentMoves();
-            }, 1000);
-          } else this.announceRoundWinner();
-        }, 1000);
+          if (this.gameState.currentState === 'ENEMY_BATTLE') this.delayCall(this.opponentMoves);
+          else this.announceRoundWinner();
+        });
       }
     },
     enemyChoose() {
@@ -92,9 +89,9 @@ const battleMixin = {
       this.gameState.enemyPokemonHP = this.defaultHP;
       this.gameState.currentState = this.getNextState(); // chooses next pokemon -> HOME_OPTION
       if (this.gameState.currentState === 'HOME_OPTION') {
-        setTimeout(() => {
+        this.delayCall(() => {
             this.gameState.currentState = this.getNextState(); // HOME_OPTION -> HOME_BATTLE
-        }, 1000);
+        });
       }
     },
     opponentMoves() {
@@ -106,18 +103,18 @@ const battleMixin = {
        console.log(this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack));
        this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
        console.log(this.gameState.currentDamage)
-       setTimeout(() => {
+       this.delayCall(() => {
          // TODO: animate home pokemon's damage
          console.log('animating damage...');
          this.updateScore();
          if (this.gameState.currentState === 'ENEMY_WINNER')
                this.announceRoundWinner(); // TODO: for enemy
          else {
-           setTimeout(() => {
+           this.delayCall(() => {
               this.gameState.currentState = this.getNextState(); // HOME_OPTION -> HOME_BATTLE
-           }, 1000);
+           });
          }
-       }, 1000);
+       });
     },
     choosePCAttack() {
       const randomMoveIndex = this.getRandomInt(0, 3);
@@ -138,21 +135,17 @@ const battleMixin = {
     announceRoundWinner() {
        this.gameState.currentState = this.getNextState(); // fainted -> FINISH or ENEMY_CHOOSE
        if (this.gameState.currentState === 'FINISH') this.endGame();
-       else if (this.gameState.currentState === 'ENEMY_CHOOSE') {
-         setTimeout(() => {
-           this.enemyChoose();
-         }, 1000);
-       } else {
-         setTimeout(() => {
-           this.gameState.currentState = this.getNextState(); // HOME_CHOOSE -> HOME_BATTLE
-         }, 1000);
-       }
+       else if (this.gameState.currentState === 'ENEMY_CHOOSE') this.delayCall(this.enemyChoose);
+       else this.delayCall(() => { this.gameState.currentState = this.getNextState(); }); // HOME_CHOOSE -> HOME_BATTLE
     },
     endGame() {
       console.log('game ended...');
       if (this.gameState.homeScore > this.gameState.enemyScore) this.awarding();
+      this.delayCall(() => { this.gameState.currentState = this.getNextState(); }); // game finished -> end
+    },
+    delayCall(callback) {
       setTimeout(() => {
-        this.gameState.currentState = this.getNextState(); // game finished -> end
+        callback();
       }, 1000);
     },
     awarding() {
