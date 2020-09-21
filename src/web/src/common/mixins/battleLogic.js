@@ -187,7 +187,7 @@ const battleMixin = {
                  itemObj.name = res.name;
                  itemObj.image = res.sprites.default;
                  itemObj.quantity = 1;
-                 itemObj.type = this.gameRewards[0].type; // item type
+                 itemObj.type = res.name.includes('stone') ? this.prizes.STONE.type : this.gameRewards[0].type; // item type
                  this.hasExtra = true;
                  this.extraItem = itemObj;
                  this.awardItems({ list: [itemObj]});
