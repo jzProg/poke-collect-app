@@ -104,6 +104,7 @@
   import Pokemon from './Pokemon.vue';
   import fullscreen from 'vue-fullscreen';
   import Vue from 'vue';
+   window.$ = window.jQuery = require('jquery');
   Vue.use(fullscreen);
 
   export default {
@@ -162,6 +163,11 @@
        },
        getEnemyPokemon() {
          this.getPokemonInfoFromList(this.getEnemyBattlePokemon, this.enemyPokemon);
+       },
+       animateDamage(isHome) {
+         const targetElement = isHome? $('.pokemonHome') : $('.pokemonEnemy');
+         targetElement.fadeOut();
+         targetElement.fadeIn(1000);
        },
        onPokemonChoosed(poke) {
          if (this.gameState.currentState === 'HOME_OPTION') {

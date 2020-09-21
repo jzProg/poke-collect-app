@@ -72,11 +72,10 @@ const battleMixin = {
         this.gameState.currentState = this.getNextState(); // attacks with ability -> HOME_DAMAGE_DONE
         const attackerObj = this.prepareBattleObject(this.homebattlePokemon);
         const defenderObj = this.prepareBattleObject(this.enemybattlePokemon);
-        console.log(this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack));
         this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
-        console.log(this.gameState.currentDamage);
         this.delayCall(() => {
           // TODO: animate enemy pokemon's damage
+          this.animateDamage(false);
           console.log('animating damage...');
           this.updateScore();
           if (this.gameState.currentState === 'ENEMY_BATTLE') this.delayCall(this.opponentMoves);
@@ -99,16 +98,14 @@ const battleMixin = {
     },
     opponentMoves() {
        this.gameState.currentAttack = this.choosePCAttack();
-       console.log('current attack: '+ this.gameState.currentAttack);
        this.gameState.currentState = this.getNextState(); // attacks with ability -> ENEMY_DAMAGE_DONE
        const defenderObj = this.prepareBattleObject(this.homebattlePokemon);
        const attackerObj = this.prepareBattleObject(this.enemybattlePokemon);
-       console.log(this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack));
        this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
-       console.log(this.gameState.currentDamage)
        this.delayCall(() => {
          // TODO: animate home pokemon's damage
          console.log('animating damage...');
+         this.animateDamage(true);
          this.updateScore();
          if (this.gameState.currentState === 'ENEMY_WINNER')
                this.announceRoundWinner(); // TODO: for enemy
@@ -121,7 +118,6 @@ const battleMixin = {
     },
     choosePCAttack() {
       const randomMoveIndex = this.getRandomInt(0, 3);
-      console.log('random index:' + randomMoveIndex);
       return this.enemybattlePokemon.moves[randomMoveIndex].move.name;
     },
     updateScore() {

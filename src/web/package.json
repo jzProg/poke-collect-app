@@ -14,6 +14,7 @@
     "@smogon/calc": "^0.4.2",
     "axios": "^0.18.1",
     "firebase": "^7.15.1",
+    "jquery": "^3.5.1",
     "lodash": "^4.17.13",
     "mem": "^4.0.0",
     "pokeapi-js-wrapper": "^1.1.2",
