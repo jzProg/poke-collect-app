@@ -9,7 +9,7 @@
           <button class="next btn btn-primary" @click.prevent="nextPage()" :disabled="!hasNext()">next</button>
          </div>
         <Poke-list :poke-list="showCollection? getCollectionUpdated : getStartersUpdated"
-                   :action-on-click="showCollection ? onClickAction : null"
+                   :action-on-click="showCollection ? onClickAction : onInfo"
                    v-imageloader="loaded"
                    :page="page"
                    :simple-mode="showCollection">
@@ -21,6 +21,9 @@
             :poke-list="getStartersUpdated"
             :selected-pokemon="selectedPokemon"
             @close="showOptions=false" />
+  <PokemonDetails v-if="seeDetails"
+                 @close="seeDetails=false"
+                 :info="selectedPokemon"/>
   <Loading v-if="toLoad"></Loading>
   </div>
 </template>
@@ -35,11 +38,12 @@
   import PokeList from '@/components/PokemonList';
   import Options from '@/components/modals/Options';
   import imagesLoaded from 'vue-images-loaded';
+  import PokemonDetails from '@/components/modals/PokemonDetails';
 
   export default {
     name: 'Home',
     mixins: [uniqueIdGeneratorMixin, pokemonMixin],
-    components: {PokeList, Loading, Sidemenu, Options},
+    components: {PokeList, PokemonDetails, Loading, Sidemenu, Options},
     directives: {
       imageloader: imagesLoaded,
     },
@@ -49,6 +53,7 @@
         collection: [],
         showCollection: false,
         showOptions: false,
+        seeDetails: false,
         page: 0,
         imageLoadedStarters: false,
         selectedPokemon:{},
@@ -84,6 +89,10 @@
       },
       hasNext() {
         return (this.page + 1)*20 < this.getCollectionUpdated.length;
+      },
+      onInfo(name) {
+        this.seeDetails = true;
+        this.selectedPokemon = this.collection.filter(item => item.name === name )[0];
       },
       onClickAction(name){
           this.showOptions = true;
