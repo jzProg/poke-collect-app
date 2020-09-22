@@ -12,7 +12,7 @@ A simple Pokemon web app game written in Vue.js. Users can create account, colle
 
 ## Libraries and APIs
 
-- **PokeAPI** (https://pokeapi.co/), for retrieving the Pokemon data.
+- **pokeapi-js-wrapper** (https://github.com/PokeAPI/pokeapi-js-wrapper) for utilizing the **PokeAPI** (https://pokeapi.co/), in order to retrieve the Pokemon data. 
 - **damage-calc** (https://github.com/smogon/damage-calc), for damage calculation during Pokemon battles.
 - All non action Pokemon images are retrieved from https://pokeres.bastionbot.org.
 
