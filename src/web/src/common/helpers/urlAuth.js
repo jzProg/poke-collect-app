@@ -3,10 +3,10 @@ const urlAuthMixin = {
     isLoggedIn() {
       return localStorage.getItem('token');
     },
-    isPage(path) {
+    isPath(path) {
       const currentPathName = window.location.pathname;
       return path === currentPathName;
-    }
+    },
   }
 };
 
