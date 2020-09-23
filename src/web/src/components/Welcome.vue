@@ -12,7 +12,7 @@
 
   export default {
     name: 'Welcome',
-    mixins: [uniqueIdGeneratorMixin],
+    mixins: [urlAuth],
     components:{
       Login
     },
