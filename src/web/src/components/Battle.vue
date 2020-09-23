@@ -201,6 +201,7 @@
              this.gameState.homePokemonHP = this.defaultHP;
              this.gameState.currentState = this.getNextState();
            });
+//           Tsiko was here
          } else console.log('You cannot choose another pokemon right now!');
        }
     },
