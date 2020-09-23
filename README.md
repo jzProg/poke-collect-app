@@ -1,12 +1,12 @@
 # PokeCollectApp
 
-A simple Pokemon web app game written in Vue.js. Users can create account, collect Pokemon & items and battle other trainers.
+A simple Pokemon web app game written in Vue.js. Users can create account, chat, collect Pokemon & items and battle popular trainers from anime/games.
 
 
 ## Technologies and Tools
 
-- **Webpack**, version 3.6
-- **Vue**, version 2.6
+- **Webpack**, version 3.6.
+- **Vue**, version 2.6.
 - **Firebase**, for data persistence purposes.
 
 
@@ -20,6 +20,6 @@ A simple Pokemon web app game written in Vue.js. Users can create account, colle
 
 - In the **/web/src/common/firebaseConfigProperties.js** file, include valid firebase config keys.
 - cd to */web* folder.
-- Run **npm install**
-- Build with **npm run build** command
-- For *dev server*, run **npm run dev**
+- Run **npm install**.
+- Build with **npm run build** command.
+- For *dev server*, run **npm run dev**.
