@@ -8,7 +8,7 @@
   import  Login  from './Login.vue';
   import { mapActions, mapGetters } from 'vuex';
   import bus from "@/common/eventBus";
-  import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
+  import urlAuth from '@/common/helpers/urlAuth';
 
   export default {
     name: 'Welcome',

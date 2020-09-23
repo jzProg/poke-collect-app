@@ -43,12 +43,13 @@
 
 <script>
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
+  import urlAuth from '@/common/helpers/urlAuth';
   import bus from "@/common/eventBus";
   import { mapActions, mapGetters, mapMutations } from 'vuex';
 
   export default {
     name: 'Register',
-    mixins: [uniqueIdGeneratorMixin],
+    mixins: [uniqueIdGeneratorMixin, urlAuth],
     data () {
       return {
         enteredName: '',
@@ -62,7 +63,7 @@
         if (this.isPath('/register')) {
           console.log('Register --> on Login');
           this.$router.push('getStarted');
-        }      
+        }
       });
     },
     mounted() {
