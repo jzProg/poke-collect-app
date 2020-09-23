@@ -23,3 +23,7 @@ A simple Pokemon web app game written in Vue.js. Users can create account, chat,
 - Run **npm install**.
 - Build with **npm run build** command.
 - For *dev server*, run **npm run dev**.
+
+## Disclaimer
+
+This project is for educational use only. The trademarks belong to The Pokémon Company and Nintendo.
