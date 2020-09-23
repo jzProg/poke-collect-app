@@ -167,7 +167,7 @@ export default new Vuex.Store({
       });
     },
     awardItems({ commit, state }, payload) {
-      var existingItems = state.userInfo.items;
+      var existingItems = state.userInfo.items || [];
       var mergedItems = existingItems.concat(payload.list);
       commit({ type: 'setItems', value: mergedItems });
       var coins = state.userInfo.coins;

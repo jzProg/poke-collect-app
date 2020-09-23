@@ -9,11 +9,11 @@
         </h3>
         <div class="col-md-8 col-xs-4">
           <img :src="require('./assets/pokeball.png')"
-               style="width: 100px; height:100px">
+               id = "appLogo">
         </div>
           <div class="col-md-2 col-xs-4">
           <div id = "profileDiv" v-if="username">
-            <i id = "chatDiv" class="fab fa-rocketchat fa-5x" @click.prevent="loadChat()"></i>
+            <i id = "chatLogo" class="fab fa-rocketchat fa-5x" @click.prevent="loadChat()"></i>
             <div v-if="$route.meta.hasProfileHeader">
                 <a @click.prevent = "showOptions">
                   <img :src = "getImage()"
@@ -192,9 +192,14 @@
   cursor: pointer;
 }
 
-#chatDiv {
+#chatLogo {
   float: left;
   cursor: pointer;
+}
+
+#appLogo {
+  width: 100px;
+  height: 100px;
 }
 
 ::-webkit-scrollbar {
