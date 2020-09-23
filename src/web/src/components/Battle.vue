@@ -38,7 +38,7 @@
                      </span>
                    </div>
                  </div>
-                 <img class="pokemonEnemy col-md-6 col-xs-6" :src="gameState.enemyFaint ? '' : enemybattlePokemon.sprites.front_default" />
+                 <img class="pokemonEnemy col-md-6 col-xs-6" :src="gameState.enemyFaint ? require('../assets/faint.png') : enemybattlePokemon.sprites.front_default" />
                </div>
                <div class="player row" v-if="homebattlePokemon && Object.keys(homebattlePokemon).length">
                  <div class="col-md-6 col-xs-6" style="float:right;width: 30%;">
