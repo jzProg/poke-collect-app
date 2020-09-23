@@ -137,6 +137,7 @@
        }
      },
      beforeRouteEnter(to, from, next) {
+        console.log('beforeRouteEnter');
         next(vm => {
           if (vm.getCurrentOpponentId) next();
           else next('/Game');
@@ -159,6 +160,7 @@
      },
      methods: {
        goToIndex() {
+         console.log('goToIndex');
          this.$router.push('getStarted');
        },
        getScoreStyle(hp) {

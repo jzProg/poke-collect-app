@@ -159,6 +159,7 @@ const battleMixin = {
       const rewardTypeIndex = this.getRandomInt(0, 1); // choose extra reward category (item or pokemon)
       const rewardType = this.gameRewards[rewardTypeIndex].type;
       if (rewardType === this.gameRewards[0].type) {
+        console.log('type ITEM reward');
         const itemObj = {};
         const itemId = this.getRandomInt(1, 100);
         this.getItem(itemId).then((res) => {
@@ -171,6 +172,7 @@ const battleMixin = {
           this.gameState.currentState = this.getNextState(); // game finished -> end
         });
       } else {
+        console.log('type POKEMON reward');
         let pokeObj= {};
         const pokeId = this.getRandomInt(1, 300);
         this.getPokemon(pokeId).then((response) => {
