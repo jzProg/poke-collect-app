@@ -59,8 +59,10 @@
     },
     created() {
       bus.$on('login', () => {
-        console.log('Register --> on Login');
-        this.$router.push('getStarted');
+        if (this.isPath('/register')) {
+          console.log('Register --> on Login');
+          this.$router.push('getStarted');
+        }      
       });
     },
     mounted() {
