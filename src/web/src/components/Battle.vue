@@ -68,8 +68,9 @@
                      <div v-for="(move,index) in homebattlePokemon.moves"
                            class="move"
                            :key="index"
-                           :class="[gameState.currentState !== 'HOME_BATTLE' || (gameState.homeUsedAbilitiesCount[move.move.name] && gameState.homeUsedAbilitiesCount[move.move.name] >= 4) ? 'disabledbutton' : '']"
+                           :class="[(gameState.homeUsedAbilitiesCount[move.move.name] && gameState.homeUsedAbilitiesCount[move.move.name] >= 4) ? 'disabledbutton' : '']"
                            @click.prevent="attack(move.move)"
+                           v-show="gameState.currentState === 'HOME_BATTLE'"
                            v-if="Object.keys(homebattlePokemon).length && index < 4">
                             {{ move.move.name }}
                      </div>
