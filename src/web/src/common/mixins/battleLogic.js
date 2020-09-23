@@ -82,7 +82,7 @@ const battleMixin = {
         const attackerObj = this.prepareBattleObject(this.homebattlePokemon);
         const defenderObj = this.prepareBattleObject(this.enemybattlePokemon);
         this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
-        this.animateDamage(false);
+        if (this.gameState.currentDamage) this.animateDamage(false);
         this.delayCall(() => {
           this.updateScore();
           if (this.gameState.currentState === 'ENEMY_BATTLE') this.delayCall(this.opponentMoves, 2000);
@@ -109,7 +109,7 @@ const battleMixin = {
        const defenderObj = this.prepareBattleObject(this.homebattlePokemon);
        const attackerObj = this.prepareBattleObject(this.enemybattlePokemon);
        this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
-       this.animateDamage(true);
+       if (this.gameState.currentDamage) this.animateDamage(true);
        this.delayCall(() => {
          this.updateScore();
          if (this.gameState.currentState === 'ENEMY_WINNER')

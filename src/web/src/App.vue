@@ -2,19 +2,23 @@
   <div id = "app">
     <div class="header container">
       <div class="row">
-        <h3 style="color:white;float:left;cursor:pointer" class="col-md-2 col-xs-4" @click.prevent="goToHome"><b>PokeCollectApp</b></h3>
+        <h3 id = "logoDiv"
+            class="col-md-2 col-xs-4"
+            @click.prevent="goToHome">
+            <b>PokeCollectApp</b>
+        </h3>
         <div class="col-md-8 col-xs-4">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png"
+          <img :src="require('./assets/pokeball.png')"
                style="width: 100px; height:100px">
         </div>
           <div class="col-md-2 col-xs-4">
-          <div v-if="username" style = "margin-right:2%">
-            <i class="fab fa-rocketchat fa-5x" style="float:left;cursor:pointer" @click.prevent="loadChat()"></i>
+          <div id = "profileDiv" v-if="username">
+            <i id = "chatDiv" class="fab fa-rocketchat fa-5x" @click.prevent="loadChat()"></i>
             <div v-if="$route.meta.hasProfileHeader">
                 <a @click.prevent = "showOptions">
                   <img :src = "getImage()"
                        alt = "profile image"
-                       style = "width:80px; height:80px; border-radius:50px; float:right;cursor:pointer">
+                       id = "profileImg">
                 </a>
             </div>
           </div>
@@ -24,7 +28,7 @@
                        @close = "onOptionsClose">
          </OptionsModal>
          <Chat v-if="showChat"
-                   @close="showChat=false" />
+               @close="showChat=false" />
         </div>
       </div>
     </div>
@@ -80,7 +84,6 @@
     },
     methods: {
       loadChat() {
-        console.log('chatting...');
         this.showChat = true;
       },
       getImage() {
@@ -170,9 +173,34 @@
   line-height: 25px;
   border-radius: 4px;
 }
+
+#logoDiv {
+  color: white;
+  float: left;
+  cursor: pointer;
+}
+
+#profileDiv {
+  margin-right: 2%;
+}
+
+#profileImg {
+  width: 80px;
+  height: 80px;
+  border-radius: 50px;
+  float: right;
+  cursor: pointer;
+}
+
+#chatDiv {
+  float: left;
+  cursor: pointer;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
+
 ::-webkit-scrollbar-track {
   box-shadow: inset 1 0 5px grey;
   border-radius: 100px;

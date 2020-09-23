@@ -140,7 +140,7 @@
         console.log('beforeRouteEnter');
         next(vm => {
           if (vm.getCurrentOpponentId) next();
-          else next('/Game');
+          else next('/game');
         });
      },
      watch: {

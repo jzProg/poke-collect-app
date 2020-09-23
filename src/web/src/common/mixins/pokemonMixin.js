@@ -9,7 +9,6 @@ const pokemonMixin = {
       startersInfo: {
         NUM_OF_STARTERS: 3,
         STANDARD_STARTERS: ['bulbasaur', 'squirtle', 'charmander'],
-        STARTERS_TYPE: '', // TODO change based on POKE API
       },
       coinsInfo: {
         START_COINS: 100,
