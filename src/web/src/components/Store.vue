@@ -37,14 +37,14 @@
     data() {
       return {
         availableItems: [],
-        stoneImages: [],
+        stoneInfo: [],
         showBuyModal: false,
       }
     },
     created() {
       for(var i = 0; i < this.prizes.STONE.items.length; i++) {
-        this.getItem(this.prizes.STONE.items[i].title).then((poke) => {
-         this.stoneImages.push(poke.sprites.default);
+        this.getItem(this.prizes.STONE.items[i].title).then((item) => {
+         this.stoneInfo.push({ image: item.sprites.default, text: item.effect_entries[0].short_effect });
         });
       };
     },
@@ -61,8 +61,9 @@
       },
       buyStones() {
         this.availableItems = this.prizes.STONE;
-        for(var i = 0; i < this.stoneImages.length; i++) {
-          this.availableItems.items[i].image = this.stoneImages[i];
+        for(var i = 0; i < this.stoneInfo.length; i++) {
+          this.availableItems.items[i].image = this.stoneInfo[i].image;
+          this.availableItems.items[i].text = this.stoneInfo[i].text;
         }
         this.showBuyModal = true;
       },

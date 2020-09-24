@@ -35,7 +35,7 @@ const pokemonMixin = {
         STONE: {
          type: 'stone',
          items: [{ title: 'fire-stone', quantity: 1, price: 2500 },
-                  { title: 'water-stone', quantity: 1, price: 2200 },
+                  { title: 'water-stone', quantity: 1, price: 220 },
                   { title: 'thunder-stone', quantity: 1, price: 2700 }],
         }
       },

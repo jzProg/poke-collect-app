@@ -168,14 +168,20 @@ export default new Vuex.Store({
     },
     awardItems({ commit, state }, payload) {
       var existingItems = state.userInfo.items || [];
-      var mergedItems = existingItems.concat(payload.list);
-      commit({ type: 'setItems', value: mergedItems });
+      for (let itemEntry in payload.list) {
+        const indexOfItem = existingItems.map((e) => e.name).indexOf(payload.list[itemEntry].name);
+        if (indexOfItem === -1) existingItems.push(payload.list[itemEntry]);
+        else {
+          existingItems[indexOfItem].quantity += parseInt(payload.list[itemEntry].quantity);
+        }
+      }
+      commit({ type: 'setItems', value: existingItems });
       var coins = state.userInfo.coins;
       if (payload.coins) coins -= payload.coins;
       var id = localStorage.getItem('userId');
       return firebase.database().ref('users/' + id).update({
         coins: coins,
-        items: mergedItems,
+        items: existingItems,
       });
     },
     purchase({ commit, state, dispatch}, payload) {
@@ -186,7 +192,7 @@ export default new Vuex.Store({
         var items = payload.items;
         var newItems = [];
         for (var i = 0; i< items.length; i++) {
-          newItems.push({ type: type, name: items[i].title, image: items[i].image, quantity: items[i].quantity })
+          newItems.push({ type: type, name: items[i].title, image: items[i].image, quantity: parseInt(items[i].quantity), text: items[i].text })
         }
         return dispatch('awardItems', { list: newItems, coins: payload.cost });
       }

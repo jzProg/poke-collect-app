@@ -25,7 +25,6 @@
       }
     },
     created(){
-      console.log(this.getCurrentReward);
       this.type = this.getCurrentReward.rewardType;
       this.list = this.getCurrentReward.rewardId;
     },
