@@ -39,10 +39,11 @@
   import Options from '@/components/modals/Options';
   import imagesLoaded from 'vue-images-loaded';
   import PokemonDetails from '@/components/modals/PokemonDetails';
+  import urlAuth from '@/common/helpers/urlAuth';
 
   export default {
     name: 'Home',
-    mixins: [uniqueIdGeneratorMixin, pokemonMixin],
+    mixins: [uniqueIdGeneratorMixin, pokemonMixin, urlAuth],
     components: {PokeList, PokemonDetails, Loading, Sidemenu, Options},
     directives: {
       imageloader: imagesLoaded,
@@ -63,9 +64,11 @@
     created() {
       if (!this.getLoginUsername) {
         bus.$on('login', (username) => {
-          console.log('Home --> on Login')
-          this.storeUsername(username);
-          this.initData();
+          if (this.isPath('/home')) {
+            console.log('Home --> on Login')
+            this.storeUsername(username);
+            this.initData();
+          }
         });
       } else this.initData();
     },

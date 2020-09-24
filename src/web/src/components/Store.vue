@@ -75,7 +75,7 @@
           var newItems = [];
           var quantity = itemBudle[0].quantity;
           for(var i = 0; i < quantity*this.packInfo.NUM_OF_CARDS; i++) {
-            newItems.push(this.getRandomInt(0, this.totalPokemon));
+            newItems.push(this.chooseRandomPokemon(1, this.totalPokemon));
           };
           this.getPokemonInfoFromList(newItems, itemList);
           itemBudle[0].items = newItems;

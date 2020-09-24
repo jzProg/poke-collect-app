@@ -192,7 +192,7 @@ const battleMixin = {
       } else {
         console.log('type POKEMON reward');
         let pokeObj= {};
-        const pokeId = this.getRandomInt(1, 300);
+        const pokeId = this.chooseRandomPokemon(1, this.totalPokemon);
         this.getPokemon(pokeId).then((response) => {
           this.getPokemonSpecies(pokeId).then((res) => {
             const image = this.getPokemonImage(response.id);

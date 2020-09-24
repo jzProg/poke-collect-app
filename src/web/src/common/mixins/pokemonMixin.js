@@ -1,3 +1,5 @@
+import { mapGetters } from 'vuex';
+
 const Pokedex = require('pokeapi-js-wrapper');
 const P = new Pokedex.Pokedex();
 
@@ -28,13 +30,13 @@ const pokemonMixin = {
       prizes: {
         PACK: {
           type: 'pack',
-          items: [{ title: 'pokemon pack', quantity: 1, price: 50 }],
+          items: [{ title: 'pokemon pack', quantity: 1, price: 700 }],
         },
         STONE: {
          type: 'stone',
-         items: [{ title: 'fire-stone', quantity: 1, price: 480 },
-                  { title: 'water-stone', quantity: 1, price: 550 },
-                  { title: 'thunder-stone', quantity: 1, price: 650 }],
+         items: [{ title: 'fire-stone', quantity: 1, price: 2500 },
+                  { title: 'water-stone', quantity: 1, price: 2200 },
+                  { title: 'thunder-stone', quantity: 1, price: 2700 }],
         }
       },
       avatars: {
@@ -218,7 +220,19 @@ const pokemonMixin = {
           });
         });
       });
-    }
+    },
+    chooseRandomPokemon(min, max) {
+      let randomId = this.getRandomInt(min, max);
+      while(this.getUserPokemon.indexOf(randomId) !== -1) {
+        randomId = this.getRandomInt(min, max);
+      }
+      return randomId;
+    },
+  },
+  computed: {
+    ...mapGetters([
+      'getUserPokemon',
+    ]),
   }
 };
 

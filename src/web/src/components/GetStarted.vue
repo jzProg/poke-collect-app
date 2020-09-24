@@ -44,7 +44,7 @@
         console.log('about to be awarded...You chose: ' + pokeName);
         var listOfStarters = [pokeName];
         for(var i=1; i < this.startersInfo.NUM_OF_STARTERS; i++) {
-          listOfStarters.push(this.getRandomInt(0, this.totalPokemon));
+          listOfStarters.push(this.chooseRandomPokemon(1, this.totalPokemon));
         };
         var randomPokeList =  [];
         this.getPokemonInfoFromList(listOfStarters, randomPokeList);
