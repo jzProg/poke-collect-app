@@ -206,6 +206,7 @@ const battleMixin = {
                this.getItem(pokeObj.held_items[0].item.name).then((res) => {
                  itemObj.name = res.name;
                  itemObj.image = res.sprites.default;
+                 itemObj.text = res.effect_entries[0].short_effect;
                  itemObj.quantity = 1;
                  itemObj.type = res.name.includes('stone') ? this.prizes.STONE.type : this.gameRewards[0].type; // item type
                  this.hasExtra = true;
