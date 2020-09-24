@@ -4,30 +4,45 @@
    <div class="row" style="width: 100%;margin-top:4%" v-if="stones.length">
      <h3><b>Evolution Stones</b></h3>
      <div v-for="(stone, index) in stones" :key="index" :class="['col-md-' + Math.ceil(12/stones.length)]" style="margin-top:4%">
-       <img :src="stone.image" height="70" width="70">
+       <img :src="stone.image" height="70" width="70" @click.prevent="showItem(stone)" style="cursor:pointer">
        <h4>{{ stone.name }}</h4>
      </div>
    </div>
    <div class="row" style="width: 100%;margin-top:4%" v-if="items.length">
      <h3><b>Items</b></h3>
      <div v-for="(item, index) in items" :key="index" :class="['col-md-' + Math.ceil(12/items.length)]" style="margin-top:4%">
-       <img :src="item.image" height="70" width="70">
+       <img :src="item.image" height="70" width="70" @click.prevent="showItem(item)" style="cursor:pointer">
        <h4>{{ item.name }}</h4>
      </div>
    </div>
+   <ItemDetails v-if = "showInfo" :info="info" @close="showInfo = false;"/>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
+  import ItemDetails from '@/components/modals/ItemDetails';
 
   export default {
     name: 'Inventory',
     mixins: [pokemonMixin],
+    components: { ItemDetails },
+    data() {
+      return {
+        showInfo: false,
+        info: {},
+      };
+    },
+    methods: {
+      showItem(item) {
+        this.info = item;
+        this.showInfo = true;
+      },
+    },
     computed: {
       ...mapGetters([
-        'getItems'
+        'getItems',
       ]),
       items() {
         if (!this.getItems) return [];
