@@ -68,12 +68,18 @@
                      <div v-for="(move,index) in homebattlePokemon.moves"
                            class="move"
                            :key="index"
-                           :class="[(gameState.homeUsedAbilitiesCount[move.move.name] && gameState.homeUsedAbilitiesCount[move.move.name] >= 4) ? 'disabledbutton' : '']"
+                           :class="[isAbilityUsedTooMuch(move) ? 'disabledbutton' : '']"
                            @click.prevent="attack(move.move)"
-                           v-show="gameState.currentState === 'HOME_BATTLE'"
+                           v-show="isHomePlayerBattlePhase()"
                            v-if="Object.keys(homebattlePokemon).length && index < 4">
                             {{ move.move.name }}
                      </div>
+                     <img :src="require('../assets/shift.png')"
+                           v-if="isHomePlayerBattlePhase()"
+                           @click.prevent="changePokemon()"
+                           height="30px"
+                           width="30px"
+                           style="margin-top: 1%;background-color: white; cursor:pointer;border-radius:30px">
                      <div class="row">
                        <div v-if="getHomePokemon && !Object.keys(homebattlePokemon).length"
                            v-for="(poke, index) in getHomePokemon":key="index">
@@ -94,7 +100,7 @@
          </div>
        </div>
      </div>
-     <PostGame v-if="gameState.currentState === ''"
+     <PostGame v-if="isGameFinished()"
               :has-winner="gameState.homeScore > gameState.enemyScore"
               @close="hasExtra ? showExtra = true : goToIndex()">
     </PostGame>
@@ -197,14 +203,11 @@
        },
        onPokemonChoosed(poke) {
          if (this.gameState.currentState === 'HOME_OPTION') {
-           this.disabled[poke] = true;
            this.getPokemon(poke).then((response) => {
              this.homebattlePokemon = response;
-             this.gameState.homeUsedAbilitiesCount = {};
-             this.gameState.homePokemonHP = this.defaultHP;
+             this.gameState.homePokemonHP = this.getHPFromHistory(poke) || this.defaultHP;
              this.gameState.currentState = this.getNextState();
            });
-//           Tsiko was here
          } else console.log('You cannot choose another pokemon right now!');
        }
     },

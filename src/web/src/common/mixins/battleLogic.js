@@ -11,6 +11,7 @@ const battleMixin = {
         enemyScore: 0,
         homePokemonHP: 300,
         enemyPokemonHP: 300,
+        homeHPHistory: {},
         enemyPokemonIndex: 0,
         enemyFaint: false,
         availableEnemyPokemon: [1, 2],
@@ -56,7 +57,7 @@ const battleMixin = {
                           if (this.gameState.enemyPokemonHP <= 0) this.gameState.homeScore++;
                           return  this.gameState.enemyPokemonHP > 0 ? 'ENEMY_BATTLE' : 'HOME_WINNER';
       case 'ENEMY_CHOOSE': this.message = this.enemyName + stateMessage + this.enemybattlePokemon.name;
-                          return 'HOME_OPTION'; // or ENEMY_BATTLE (?)
+                          return 'HOME_OPTION';
       case 'ENEMY_BATTLE': this.message = this.enemybattlePokemon.name + stateMessage + this.gameState.currentAttack;
                           return 'ENEMY_DAMAGE_DONE';
       case 'ENEMY_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.defaultHP/10 ? stateMessage[2] : stateMessage[1];
@@ -66,18 +67,17 @@ const battleMixin = {
                           this.gameState.enemyFaint = true;
                           return this.gameState.homeScore === 3 ? 'FINISH' : 'ENEMY_CHOOSE';
       case 'ENEMY_WINNER': this.message = this.homebattlePokemon.name + stateMessage;
-                           this.homebattlePokemon = {};
+                           this.disabled[this.homebattlePokemon.name] = true;
+                           this.homebattlePokemon = {}; //faint
                            return this.gameState.enemyScore === 3 ? 'FINISH' : 'HOME_CHOOSE';
       default: this.message = stateMessage;
-               return ''; //end state
+               return 'END'; //end state
       }
     },
     attack(ability) {
       if (this.gameState.currentState === 'HOME_BATTLE') {
         this.gameState.currentAttack = ability.name;
-        let abilityEntry = this.gameState.homeUsedAbilitiesCount[ability.name];
-        if (abilityEntry) this.gameState.homeUsedAbilitiesCount[ability.name]++;
-        else this.gameState.homeUsedAbilitiesCount[ability.name] = 1;
+        this.keepTrackOfMoveUsage(ability);
         this.gameState.currentState = this.getNextState(); // attacks with ability -> HOME_DAMAGE_DONE
         const attackerObj = this.prepareBattleObject(this.homebattlePokemon);
         const defenderObj = this.prepareBattleObject(this.enemybattlePokemon);
@@ -146,6 +146,24 @@ const battleMixin = {
       console.log('game ended...');
       if (this.gameState.homeScore > this.gameState.enemyScore) this.awarding();
       else this.delayCall(() => { this.gameState.currentState = this.getNextState(); }); // game finished -> end
+    },
+    isGameFinished() {
+      return this.gameState.currentState === 'END';
+    },
+    isHomePlayerBattlePhase() {
+      return this.gameState.currentState === 'HOME_BATTLE';
+    },
+    isAbilityUsedTooMuch(ability) {
+      const pokemonAbilitiesEntries = this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name];
+      if (!pokemonAbilitiesEntries) return false;
+      const abilityUsageCount = pokemonAbilitiesEntries[ability.move.name];
+      return abilityUsageCount && abilityUsageCount >= 4;
+    },
+    changePokemon() {
+      this.storeHPState();
+      this.homebattlePokemon = {};
+      this.gameState.currentState = 'HOME_CHOOSE';
+      this.gameState.currentState = this.getNextState();
     },
     delayCall(callback, duration) {
       setTimeout(() => {
@@ -233,6 +251,21 @@ const battleMixin = {
         }}),
         new Move(gen, move)
       );
+    },
+    keepTrackOfMoveUsage(ability) {
+      let abilityEntry = this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name];
+      if (abilityEntry && abilityEntry[ability.name])
+        this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name][ability.name]++;
+      else {
+        const abilityName = ability.name;
+        this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name] = Object.assign(this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name] || {}, { [abilityName]: 1 });
+      }
+    },
+    storeHPState() {
+      this.gameState.homeHPHistory[this.homebattlePokemon.name] = this.gameState.homePokemonHP;
+    },
+    getHPFromHistory(poke) {
+      return this.gameState.homeHPHistory[poke];
     },
   },
   computed: {
