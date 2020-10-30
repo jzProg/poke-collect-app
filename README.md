@@ -1,4 +1,4 @@
-# PokeCollectApp
+# Poke Collect App
 
 A simple Pokemon web app game written in Vue.js. Users can create account, chat, collect Pokemon & items and battle popular trainers from anime/games.
 
