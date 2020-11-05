@@ -12,7 +12,7 @@ A simple Pokemon web app game written in Vue.js. Users can create account, chat,
 
 ## Libraries and APIs
 
-- **pokeapi-js-wrapper** (https://github.com/PokeAPI/pokeapi-js-wrapper) for utilizing the **PokeAPI** (https://pokeapi.co/), in order to retrieve the Pokemon data. 
+- **pokeapi-js-wrapper** (https://github.com/PokeAPI/pokeapi-js-wrapper) for utilizing the [PokeAPI](https://pokeapi.co/), in order to retrieve the Pokemon data. 
 - **damage-calc** (https://github.com/smogon/damage-calc), for damage calculation during Pokemon battles.
 - All non action Pokemon images are retrieved from https://pokeres.bastionbot.org.
 
@@ -25,11 +25,11 @@ A simple Pokemon web app game written in Vue.js. Users can create account, chat,
 
 ## Setup Instructions
 
-- In the **/web/src/common/firebaseConfigProperties.js** file, include valid firebase config keys.
-- cd to */web* folder.
-- Run **npm install**.
-- Build with **npm run build** command.
-- For *dev server*, run **npm run dev**.
+- In the `/web/src/common/firebaseConfigProperties.js` file, include valid firebase config keys.
+- cd to `/web` folder.
+- Run `npm install`.
+- Build with `npm run build` command.
+- For *dev server*, run `npm run dev`.
 
 ## Disclaimer
 
