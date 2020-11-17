@@ -31,7 +31,7 @@
     <div slot ="footer">
       <input v-if="activeChatId" type="text" placeholder="enter message" v-model="inputMessage" style="width:100%"><br>
       <div class="text-center" style="margin-top:2%" v-if="activeChatId">
-        <button type = "button" class="btn btn-primary" @click.prevent = "send">Send</button>
+        <button type = "button" class="btn btn-primary" @click.prevent = "send" :disabled="!inputMessage">Send</button>
         <button type = "button" class="btn btn-danger" @click.prevent = "back">back</button>
       </div>
       <div class="text-center" v-else>
@@ -86,13 +86,15 @@
           this.showNewChatModal=false;
         },
         send() {
-          const message = {
-            sender: this.getLoginUsername,
-            text: this.inputMessage,
-            date: new Date().getTime()
+          if (this.inputMessage) {
+            const message = {
+              sender: this.getLoginUsername,
+              text: this.inputMessage,
+              date: new Date().getTime()
+            }
+            this.sendMessage({ chatId: this.activeChatId, message: message });
+            this.clearInput();
           }
-          this.sendMessage({ chatId: this.activeChatId, message: message });
-          this.clearInput();
         },
         back() {
           this.activeChatId = '';
