@@ -6,6 +6,7 @@ A simple Pokemon web app game written in Vue.js. Users can create account, chat,
 
 
 ## Technologies and Tools
+<img src="https://img.shields.io/badge/vuejs%20-%2335495e.svg?&style=for-the-badge&logo=vue.js&logoColor=%234FC08D"/><img src="https://img.shields.io/badge/webpack%20-%238DD6F9.svg?&style=for-the-badge&logo=webpack&logoColor=black"/><img src="https://img.shields.io/badge/firebase%20-%23039BE5.svg?&style=for-the-badge&logo=firebase"/>
 
 - **Webpack**, version 3.6.
 - **Vue**, version 2.6.
