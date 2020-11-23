@@ -1,6 +1,7 @@
 # Poke Collect App
 
 [![Build Status](https://travis-ci.org/jzProg/poke-collect-app.svg?branch=master)](https://travis-ci.org/jzProg/poke-collect-app)
+[![Demo](https://img.shields.io/badge/demo-online-green.svg)](https://pokecollectapp.web.app/)
 
 A simple Pokemon web app game written in Vue.js. Users can create account, chat, collect Pokemon & items and battle popular trainers from anime/games.
 
