@@ -223,7 +223,7 @@ const pokemonMixin = {
     },
     chooseRandomPokemon(min, max) {
       let randomId = this.getRandomInt(min, max);
-      while(this.getUserPokemon.indexOf(randomId) !== -1) {
+      while((this.getUserPokemon || []).indexOf(randomId) !== -1) {
         randomId = this.getRandomInt(min, max);
       }
       return randomId;
