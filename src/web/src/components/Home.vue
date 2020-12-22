@@ -162,10 +162,10 @@
 </script>
 
 <style scoped>
-.pokemonDiv.container{
-  float: right;
-  background-color:lightblue
-}
+  .pokemonDiv.container{
+    float: right;
+    background-color:lightblue
+  }
 
   .optionsDiv {
     width: 10%;
@@ -173,6 +173,15 @@
   .pokemonDiv {
     width: 90%;
   }
+
+  @media only screen and (max-width: 1200px) {
+    .optionsDiv {
+      width: 20%;
+    }
+    .pokemonDiv {
+      width: 80%;
+    }
+ }
 
  @media only screen and (max-width: 600px) {
    .optionsDiv {

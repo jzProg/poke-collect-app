@@ -17,7 +17,7 @@
            @click.prevent="setChecked(index);doAction(categories[index].type)">
         <h3><b>{{ categories[index].title }}</b></h3>
         <img :src="categories[index].image"
-              style="width:100px;height:100px">
+             class="categoryImage">
       </div>
     </div><br>
 
@@ -67,18 +67,12 @@
 </script>
 
 <style scoped>
+  .optionsDiv.container{
+    background-color:#4a3f35;
+    color:#ff4301;
+    height:100%;
+  }
 
-  .optionsDiv {
-    width: 10%;
-  }
-  .pokemonDiv {
-    width: 90%;
-  }
-.optionsDiv.container{
-  background-color:#4a3f35;
-  color:#ff4301;
-  height:100%;
-}
   .checked {
     background-color:#ff4301;
     box-shadow: 5px 5px #2f2519;
@@ -86,19 +80,22 @@
     color:white;
   }
 
- @media only screen and (max-width: 600px) {
-   .optionsDiv {
-     width: 30%;
-   }
-   .pokemonDiv {
-     width: 70%;
-   }
-}
-.icon:active{
+  .icon:active {
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+    color:#e9ec08;
+  }
 
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
-  color:#e9ec08;
+  .categoryImage {
+     width: 100px;
+     height: 100px;
+  }
+
+ @media only screen and (max-width: 900px) {
+   .categoryImage {
+      width: 50px;
+      height: 50px;
+   }
 }
 
 </style>
