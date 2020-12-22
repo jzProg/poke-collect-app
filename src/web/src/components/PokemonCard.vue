@@ -1,5 +1,5 @@
 <template>
-  <div id = "pokeContainer" class = "col-md-3" @click.prevent="onChoose(info.name)">
+  <div id = "pokeContainer" class = "col-md-3  col-sm-4" @click.prevent="onChoose(info.name)">
     <div id = 'pokeContent'>
       <div class="upperPart">
         <div id = 'copiesSpan' v-show = 'copies >= 2'>
@@ -57,10 +57,9 @@ import bus from "@/common/eventBus";
 
 <style scoped>
   #pokeContent {
-    max-height: 290px;
     margin-top: 10%;
-
   }
+
   #pokeContent:hover {
     border-style: solid;
     border-color: yellow;
