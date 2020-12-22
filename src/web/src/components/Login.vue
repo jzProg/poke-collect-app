@@ -95,4 +95,10 @@
   .linkSpan {
     margin-top: 1%;
   }
+
+  @media only screen and (max-width: 750px) {
+    #Logo {
+      width: 90%;
+    }
+  }
 </style>

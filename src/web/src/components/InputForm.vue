@@ -45,6 +45,12 @@
     width: 20%;
   }
 
+  @media only screen and (max-width: 750px) {
+    .formContainer {
+      width: 40%;
+    }
+  }
+
   #errorMessageSpan {
     color: red;
   }

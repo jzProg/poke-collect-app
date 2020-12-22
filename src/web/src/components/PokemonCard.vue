@@ -1,33 +1,36 @@
 <template>
-  <div id = "pokeContainer" class = "col-md-4" @click.prevent="onChoose(info.name)">
+  <div id = "pokeContainer" class = "col-md-3" @click.prevent="onChoose(info.name)">
     <div id = 'pokeContent'>
-      <div id = 'copiesSpan' v-show = 'copies >= 2'>
-        x{{ copies || 1 }}
-      </div>
-      <div id = 'nameDiv'>
-        #{{info.id}} - <b>{{ info.name.toUpperCase() }} </b>
-      </div>
-      <div id = 'typeDiv' :style="getTypeStyle()">
-        {{ info.types[0].type.name }}
-      </div>
-      <br>
-      <img :class = "'poke' + info.id"
-           id = "pokeImg"
-           :src = "info.pokeImage"
-           alt = "Pokemon cover">
-      <div id = "statsDiv"
-          class = "container">
-        <div class = "row"
-             v-for = '(row,ind) in Object.keys(info.stats).length/2'
-             :key = "ind">
-          <div class = "col-md-6" v-if = "info.stats[ind*2]">
-             {{ normalizeStat(info.stats[ind*2].stat.name) }}:<span :style="getTypeStyle()">{{ info.stats[ind*2].base_stat}}</span>
-          </div>
-          <div class = "col-md-6" v-if = "info.stats[ind*2 + 1]">
-             {{ normalizeStat(info.stats[ind*2 + 1].stat.name) }}:<span :style="getTypeStyle()">{{ info.stats[ind*2 + 1].base_stat}}</span>
-          </div>
+      <div class="upperPart">
+        <div id = 'copiesSpan' v-show = 'copies >= 2'>
+          x{{ copies || 1 }}
         </div>
+        <div id = 'nameDiv'>
+          #{{info.id}} - <b>{{ info.name.toUpperCase() }} </b>
+        </div>
+        <div id = 'typeDiv' :style="getTypeStyle()">
+          {{ info.types[0].type.name }}
+        </div>
+        <img class = "pokeImage"
+             id = "pokeImg"
+             :src = "info.pokeImage"
+             alt = "Pokemon cover">
       </div>
+      <div class='lowerPart'>
+       <div id = "statsDiv"
+           class = "container">
+         <div class = "row"
+              v-for = '(row,ind) in Object.keys(info.stats).length/2'
+              :key = "ind">
+           <div class = "col-md-6" v-if = "info.stats[ind*2]">
+              {{ normalizeStat(info.stats[ind*2].stat.name) }} <span :style="getTypeStyle()">{{ info.stats[ind*2].base_stat}}</span>
+           </div>
+           <div class = "col-md-6" v-if = "info.stats[ind*2 + 1]">
+              {{ normalizeStat(info.stats[ind*2 + 1].stat.name) }} <span :style="getTypeStyle()">{{ info.stats[ind*2 + 1].base_stat}}</span>
+           </div>
+         </div>
+       </div>
+     </div>
     </div>
   </div>
 </template>
@@ -54,14 +57,12 @@ import bus from "@/common/eventBus";
 
 <style scoped>
   #pokeContent {
-    border-style: solid;
-    min-height: 320px;
-    padding: 5%;
+    max-height: 290px;
     margin-top: 10%;
-    margin-left: 5%;
-    margin-right: 5%;
+
   }
   #pokeContent:hover {
+    border-style: solid;
     border-color: yellow;
     cursor:pointer;
   }
@@ -75,15 +76,17 @@ import bus from "@/common/eventBus";
   #statsDiv {
     width: 100%;
     border-style: double;
-    margin-top: 5%;
+    border-color: gray;
+    padding: 2%;
+    margin-top: 1%;
   }
   #statsDiv .row {
-    margin-bottom:2%;
+    margin-bottom: 1%;
   }
   #close {
     float:right;
     display:inline-block;
-    padding:2px 5px;
+    padding: 2px 5px;
     cursor:pointer;
   }
   #close:hover {
@@ -93,9 +96,16 @@ import bus from "@/common/eventBus";
     text-decoration:none;
     cursor:pointer;
   }
-  #pokeImg {
-    width: 40%;
-    height: 40%;
-    margin-bottom: 2%;
+  .pokeImage {
+    width: 50%;
+  }
+  .upperPart {
+    background-color: white;
+    padding: 2%;
+  }
+  .lowerPart {
+    background-color: #282c34;
+    color: white;
+    padding: 2%;
   }
 </style>

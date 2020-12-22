@@ -3,7 +3,7 @@
     <div class="header container">
       <div class="row">
         <h3 id = "logoDiv"
-            class="col-md-2 col-xs-4"
+            class="col-md-2 col-xs-5"
             @click.prevent="goToHome">
             <b>PokeCollectApp</b>
         </h3>
@@ -11,7 +11,7 @@
           <img :src="require('./assets/pokeball.png')"
                id = "appLogo">
         </div>
-          <div class="col-md-2 col-xs-4">
+          <div class="col-md-2 col-xs-3">
           <div id = "profileDiv" v-if="username">
             <i id = "chatLogo" class="fab fa-rocketchat fa-5x" @click.prevent="loadChat()"></i>
             <div v-if="$route.meta.hasProfileHeader">

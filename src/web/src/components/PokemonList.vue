@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id = 'pokeListContent' class = "container">
-      <div class = "row">
+      <div style = "margin: 0 auto; width:100%">
         <component :is="getMode"
               v-for = '(poke,index) in sortedPokeList'
               v-if = "index >= page*20 && index < 20*(page + 1)"
