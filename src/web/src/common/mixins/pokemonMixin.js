@@ -214,10 +214,10 @@ const pokemonMixin = {
         return Promise.all(listOfPokemon.map(this.getPokemonSpecies)).then(data2 => {
            data2.forEach((res, i) => {
              const image = this.getPokemonImage(data[i].id);
-             Object.assign(data[i], { color: res.color.name, pokeImage: image, description: res.flavor_text_entries[0].flavor_text });
+             Object.assign(data[i], { color: res.color.name, pokeImage: image, description: res.flavor_text_entries[0].flavor_text, level: 1 });
              if (listToFill.filter(e => e.name === data[i].name).length <= 0) {
-               const { id, name, stats, height, weight, types, sprites, moves, base_experience, color, pokeImage, description } = data[i];
-               listToFill.push({ id, name, stats, height, weight, types,
+               const { id, name, stats, height, weight, types, sprites, moves, base_experience, color, pokeImage, description, level } = data[i];
+               listToFill.push({ id, name, stats, height, weight, types, level,
                                  sprites: { back_default: sprites.back_default, front_default: sprites.front_default },
                                  moves: { 0: { move: moves[0].move}, 1: { move: moves[1].move }, 2: { move: moves[2].move }, 3: { move: moves[3].move }},
                                  base_experience, color, pokeImage, description });

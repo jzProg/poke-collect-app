@@ -264,6 +264,7 @@ export default new Vuex.Store({
         image: 'profile_default.png',
         starters: [],
         coins: 0,
+        level: 1,
         initialized: false,
       });
     },
