@@ -76,8 +76,9 @@ import bus from "@/common/eventBus";
     width: 100%;
     border-style: double;
     border-color: gray;
-    padding: 2%;
+    padding: 1%;
     margin-top: 1%;
+    max-height: 82px;
   }
   #statsDiv .row {
     margin-bottom: 1%;
@@ -105,6 +106,6 @@ import bus from "@/common/eventBus";
   .lowerPart {
     background-color: #282c34;
     color: white;
-    padding: 2%;
+    padding: 1%;
   }
 </style>

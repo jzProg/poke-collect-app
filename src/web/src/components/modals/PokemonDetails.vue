@@ -3,7 +3,7 @@
     <span slot = "close" id = 'closeSymbol' @click.prevent = "close">x</span><br>
     <h3 slot = "header">Pokemon Details</h3>
     <div slot = "body">
-      <b>{{info.forms[0].name.charAt(0).toUpperCase()+info.forms[0].name.slice(1)}}</b>
+      <b>{{info.name.charAt(0).toUpperCase() + info.name.slice(1)}}</b>
       <div :style="getTypeStyle()">
        {{ info.types[0].type.name }}
       </div>

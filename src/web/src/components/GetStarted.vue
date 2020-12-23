@@ -14,11 +14,11 @@
 
   export default {
     name: 'GetStarted',
-    mixins: [pokemonMixin, uniqueIdGeneratorMixin],
-    components: {PokeList},
+    mixins: [ pokemonMixin, uniqueIdGeneratorMixin ],
+    components: { PokeList },
     data () {
       return {
-        list:[],
+        list: [],
         page: 0,
       }
     },
@@ -38,7 +38,7 @@
         'setCurrentReward',
       ]),
       ...mapActions([
-        'storePokemon',
+        'storeInitialUserInfo',
       ]),
       awardUser(pokeName) {
         console.log('about to be awarded...You chose: ' + pokeName);
@@ -46,11 +46,12 @@
         for(var i=1; i < this.startersInfo.NUM_OF_STARTERS; i++) {
           listOfStarters.push(this.chooseRandomPokemon(1, this.totalPokemon));
         };
-        var randomPokeList =  [];
-        this.getPokemonInfoFromList(listOfStarters, randomPokeList);
-        this.setCurrentReward({ type: this.prizes.PACK.type, value:  randomPokeList});
-        this.storePokemon({ list: randomPokeList , ids: listOfStarters, coins: this.coinsInfo.START_COINS }).then(() => {
-          this.$router.push('reward');
+        var randomPokeList = [];
+        this.getPokemonInfoFromList(listOfStarters, randomPokeList).then(() => {
+          this.setCurrentReward({ type: this.prizes.PACK.type, value:  randomPokeList});
+          this.storeInitialUserInfo({ list: randomPokeList , coins: this.coinsInfo.START_COINS }).then(() => {
+            this.$router.push('reward');
+          });
         });
       }
     },

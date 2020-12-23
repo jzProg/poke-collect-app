@@ -79,7 +79,7 @@
             newItems.push(this.chooseRandomPokemon(1, this.totalPokemon));
           };
           this.getPokemonInfoFromList(newItems, itemList);
-          itemBudle[0].items = newItems;
+          itemBudle[0].items = itemList;
         } else {
           itemList = itemBudle.map(item => item.image);
         }

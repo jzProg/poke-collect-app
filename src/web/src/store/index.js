@@ -99,7 +99,6 @@ export default new Vuex.Store({
       state.userInfo.pokemon = payload.value;
     },
     addNewPokemon(state, payload) {
-      console.log(payload.value);
       state.userInfo.pokemon.push(payload.value);
     },
     setCurrentReward(state, payload) {
@@ -120,6 +119,14 @@ export default new Vuex.Store({
     },
     setConversations(state, payload) {
       state.chats = payload.value;
+    },
+    replaceStarterPokemon(state, { value }) {
+      console.log(value);
+      const starterToBeRemoved_id = value.pokeId;
+      const starterToBeRemoved_name = value.name;
+      state.userInfo.starters = state.userInfo.starters.filter(starter => starter.id !== starterToBeRemoved_id && starter.name !== starterToBeRemoved_name);
+      const pokemonToBeAddedToStarters = state.pokemonToBeSwitched;
+      state.userInfo.starters.push(pokemonToBeAddedToStarters);
     }
   },
   actions: {
@@ -205,13 +212,8 @@ export default new Vuex.Store({
         image: image,
       });
     },
-    replaceStarter({ commit, state}, payload) {
-      const starterToBeRemoved_id = payload.pokeId;
-      const starterToBeRemoved_name = payload.name;
-      var index = state.userInfo.starters.indexOf(starterToBeRemoved_id);
-      if (index === -1) index = state.userInfo.starters.indexOf(starterToBeRemoved_name);
-      const pokemonToBeAddedToStarters = state.pokemonToBeSwitched.id;
-      state.userInfo.starters.splice(index, 1, pokemonToBeAddedToStarters);
+    replaceStarter({ commit, state, dispatch }, payload) {
+      commit({ type: 'replaceStarterPokemon', value: payload });
       var id = localStorage.getItem('userId');
       return firebase.database().ref('users/' + id).update({
         starters: state.userInfo.starters,
@@ -227,13 +229,13 @@ export default new Vuex.Store({
           });
         }});
     },
-    storePokemon({ commit, dispatch, state }, payload) { //initial pokemon + basic info set (TODO refactor naming)
+    storeInitialUserInfo({ commit, dispatch, state }, payload) {
        commit({ type: 'setUserPokemon', value: payload.list });
        commit({ type: 'setUserBasicInfo', value: true });
        var id = localStorage.getItem('userId');
        return firebase.database().ref('users/' + id).update({
-         pokemon: payload.ids,
-         starters: payload.ids,
+         pokemon: payload.list,
+         starters: payload.list,
          coins: payload.coins,
          initialized: state.userInfo.initialized,
        });

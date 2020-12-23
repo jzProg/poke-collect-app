@@ -198,7 +198,7 @@ const battleMixin = {
             const image = this.getPokemonImage(response.id);
             Object.assign(response, { color: res.color.name, pokeImage: image, description: res.flavor_text_entries[0].flavor_text });
             pokeObj = response;
-            this.awardPokemon({ list: [pokeId]});
+            this.awardPokemon({ list: [pokeObj]});
             this.setCurrentReward({ type: this.gameRewards[1].type, value:  [pokeObj]});
             if (pokeObj.held_items.length) {
                console.log("has extra item: " + pokeObj.held_items[0].item.name);
@@ -221,7 +221,7 @@ const battleMixin = {
     },
     prepareBattleObject(statObj) {
       return  {
-          name: statObj.species.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
+          name: statObj.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
           hp: statObj.stats[0].base_stat,
           atk: statObj.stats[1].base_stat,
           def: statObj.stats[2].base_stat,

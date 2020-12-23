@@ -43,21 +43,19 @@
 
   export default {
     name: 'Home',
-    mixins: [uniqueIdGeneratorMixin, pokemonMixin, urlAuth],
-    components: {PokeList, PokemonDetails, Loading, Sidemenu, Options},
+    mixins: [ uniqueIdGeneratorMixin, pokemonMixin, urlAuth ],
+    components: { PokeList, PokemonDetails, Loading, Sidemenu, Options },
     directives: {
       imageloader: imagesLoaded,
     },
     data() {
       return {
-        starters: [],
-        collection: [],
         showCollection: false,
         showOptions: false,
         seeDetails: false,
         page: 0,
         imageLoadedStarters: false,
-        selectedPokemon:{},
+        selectedPokemon: {},
         imageLoadedCollection: false,
       }
     },
@@ -67,10 +65,9 @@
           if (this.isPath('/home')) {
             console.log('Home --> on Login')
             this.storeUsername(username);
-            this.initData();
           }
         });
-      } else this.initData();
+      }
     },
     methods: {
       loaded() {
@@ -95,25 +92,15 @@
       },
       onInfo(name) {
         this.seeDetails = true;
-        this.selectedPokemon = this.collection.filter(item => item.name === name )[0];
+        this.selectedPokemon = this.getCollectionUpdated.filter(item => item.name === name )[0];
       },
       onClickAction(name){
-          this.showOptions = true;
-          this.selectedPokemon = this.collection.filter(item => item.name === name )[0];
+        this.showOptions = true;
+        this.selectedPokemon = this.getCollectionUpdated.filter(item => item.name === name )[0];
       },
       ...mapActions([
           'storeUsername',
       ]),
-      initData() {
-        this.getStarters();
-        this.getCollection();
-      },
-      getStarters() {
-       this.getPokemonInfoFromList(this.getUserStarters, this.starters);
-      },
-      getCollection() {
-       this.getPokemonInfoFromList(this.getUserPokemon, this.collection);
-      },
       toggleCollection(showCollection) {
         this.showCollection = showCollection;
       },
@@ -152,10 +139,10 @@
         return this.selectedPokemon;
       },
       getStartersUpdated() {
-        return this.starters;
+        return this.getUserStarters;
       },
       getCollectionUpdated() {
-        return this.collection;
+        return this.getUserPokemon;
       },
     },
   }

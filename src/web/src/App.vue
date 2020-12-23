@@ -68,6 +68,7 @@
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           console.log('loggedIn!');
+          // this.logout();
           // User is signed in.
           user = firebase.auth().currentUser;
           user.getIdToken().then((token) => {

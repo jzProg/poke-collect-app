@@ -7,13 +7,13 @@
            <fullscreen ref="fullscreen" @change="fullscreenChange" class="col-md-12 col-xs-12">
              <div class="scoreDiv row" style="background-color:darkgray">
                <div class="profileDiv col-md-6 col-xs-6" style="padding:1%">
-                 <h4><b>Your Scope: {{ parseInt(gameState.homeScore) }}</b></h4>
+                 <h4><b>Your Score: {{ parseInt(gameState.homeScore) }}</b></h4>
                  <img :src = "getImage()"
                       alt = "profile image"
                       style = "width:50px; height:50px; border-radius:50px;"/>
                </div>
                <div class="enemyDiv col-md-6 col-xs-6" style="padding:1%">
-                 <h4><b>{{ enemyName }} Scope: {{ parseInt(gameState.enemyScore) }}</b></h4>
+                 <h4><b>{{ enemyName }} Score: {{ parseInt(gameState.enemyScore) }}</b></h4>
                  <img :src = "image"
                       v-if="image"
                       alt = "profile image"
@@ -138,7 +138,6 @@
           extraItem: {},
           enemyName: '',
           message: '',
-          homePokemon: [],
           enemyPokemon: [],
           disabled: [],
        }
@@ -152,7 +151,6 @@
      },
      watch: {
         getUserStarters(newValue, oldValue) {
-          if(this.getUserStarters) this.getStarters();
           if(this.getUserStarters) this.getEnemyPokemon();
         }
      },
@@ -162,7 +160,6 @@
        this.gameState.currentState = this.getNextState();
      },
      mounted() {
-       this.getStarters();
        this.getEnemyPokemon();
      },
      methods: {
@@ -190,9 +187,6 @@
        toggle () {
         this.$refs['fullscreen'].toggle();
        },
-       getStarters() {
-        this.getPokemonInfoFromList(this.getUserStarters, this.homePokemon);
-       },
        getEnemyPokemon() {
          this.getPokemonInfoFromList(this.getEnemyBattlePokemon, this.enemyPokemon);
        },
@@ -219,7 +213,7 @@
         'getUserImage',
       ]),
       getHomePokemon()  {
-        return this.homePokemon;
+        return this.getUserStarters;
       },
       enemybattlePokemon() {
         if (this.gameState.enemyPokemonIndex === -1) return {};
