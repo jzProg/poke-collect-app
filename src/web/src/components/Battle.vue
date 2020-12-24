@@ -3,7 +3,6 @@
     <div class="row">
        <div class="battleDiv col-md-12">
          <div class="row" style="background-color:black">
-           <fullscreen ref="fullscreen" @change="fullscreenChange" class="col-md-12 col-xs-12">
              <div class="scoreDiv row" style="background-color:darkgray">
                <div class="profileDiv col-md-6 col-xs-6" style="padding:1%">
                  <h4><b>Your Score: {{ parseInt(gameState.homeScore) }}</b></h4>
@@ -30,7 +29,7 @@
                        </div>
                      </div>
                      <span class="name">
-                       <b>{{ enemybattlePokemon.name }} </b>
+                       <b>{{ enemybattlePokemon.name }}</b>
                      </span>
                      <span class="level">
                         Lv{{ enemybattlePokemon.base_experience }}
@@ -73,12 +72,16 @@
                            v-if="Object.keys(homebattlePokemon).length && index < 4">
                             {{ move.move.name }}
                      </div>
-                     <img :src="require('../assets/shift.png')"
-                           v-if="isHomePlayerBattlePhase()"
+                     <span style="cursor: pointer; margin: 2%"
+                           @click.prevent="goToIndex()"
+                           v-show="isHomePlayerBattlePhase()">
+                            walk away <i class="fas fa-walking fa-2x"></i>
+                     </span>
+                     <span style="cursor: pointer; margin: 2%"
                            @click.prevent="changePokemon()"
-                           height="30px"
-                           width="30px"
-                           style="margin-top: 1%;background-color: white; cursor:pointer;border-radius:30px">
+                           v-show="isHomePlayerBattlePhase()">
+                            pokemon <i class="fas fa-exchange-alt fa-2x"></i>
+                     </span>
                      <div class="row">
                        <div v-if="getHomePokemon && !Object.keys(homebattlePokemon).length"
                            v-for="(poke, index) in getHomePokemon":key="index">
@@ -95,7 +98,6 @@
                     </div>
                  </div>
              </div>
-           </fullscreen>
          </div>
        </div>
      </div>
@@ -118,11 +120,9 @@
   import PostGame from '@/components/modals/PostGame';
   import ExtraAward from '@/components/modals/ExtraAward';
   import Pokemon from './Pokemon.vue';
-  import fullscreen from 'vue-fullscreen';
   import Vue from 'vue';
 
   window.$ = window.jQuery = require('jquery');
-  Vue.use(fullscreen);
 
   export default {
      name: 'Battle',
