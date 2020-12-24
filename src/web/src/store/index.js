@@ -175,8 +175,10 @@ export default new Vuex.Store({
     },
     evolvePokemon({ commit, state }, payload) {
       commit({ type: 'replaceCollectionPokemon', value: payload });
-      commit({ type: 'storePokemonToBeSwitched', value: payload.to });
-      commit({ type: 'replaceStarterPokemon', value: { pokeId: payload.from.id, name: payload.from.name }})
+      if (state.userInfo.starters.find(starter => starter.id === payload.from.id)) {
+        commit({ type: 'storePokemonToBeSwitched', value: payload.to });
+        commit({ type: 'replaceStarterPokemon', value: { pokeId: payload.from.id, name: payload.from.name }})
+      }
       var id = localStorage.getItem('userId');
       return firebase.database().ref('users/' + id).update({
         pokemon: state.userInfo.pokemon,

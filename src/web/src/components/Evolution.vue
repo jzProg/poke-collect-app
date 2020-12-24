@@ -21,25 +21,29 @@
       }
     },
     created() {
-      // TODO: add animation
       this.pokeImage = this.getEvolutionData.from;
       this.$nextTick(() => {
-        setTimeout(() => {
-          this.show = false;
-          setTimeout(() => {
-            this.pokeImage = this.getEvolutionData.to;
-            this.show = true;
-            setTimeout(() => {
-              this.toHome();
-            }, 1000);
-          }, 700);
-        }, 500);
+        this.show = false;
+        this.delay(this.hideAndChangeImage, 500);
       });
     },
     methods: {
+      hideAndChangeImage() {
+        this.pokeImage = this.getEvolutionData.to;
+        this.delay(this.showAndGoNextPage, 700);
+      },
+      showAndGoNextPage() {
+        this.show = true;
+        this.delay(this.toHome, 1000);
+      },
       toHome() {
         this.$router.push('reward');
-      }
+      },
+      delay(callback, duration) {
+        setTimeout(() => {
+          callback();
+        }, duration);
+      },
     },
     computed: {
       ...mapGetters([
@@ -52,6 +56,8 @@
 <style scoped>
  .pokeImg {
   margin-top: 2%;
+  width: 20%;
+  height: 20%;
  }
 
 .evolutionAnimation-enter-active {
