@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import uniqueIdGenerator from '../common/helpers/uniqueIdsGenerator';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import bus from "@/common/eventBus";
 
 Vue.use(Vuex);
@@ -121,7 +121,6 @@ export default new Vuex.Store({
       state.chats = payload.value;
     },
     replaceStarterPokemon(state, { value }) {
-      console.log(value);
       const starterToBeRemoved_id = value.pokeId;
       const starterToBeRemoved_name = value.name;
       state.userInfo.starters = state.userInfo.starters.filter(starter => starter.id !== starterToBeRemoved_id && starter.name !== starterToBeRemoved_name);

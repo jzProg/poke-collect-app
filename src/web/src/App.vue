@@ -42,7 +42,9 @@
   import firebaseConfigProperties from "@/common/firebaseConfigProperties";
   import urlAuthMixin from "@/common/helpers/urlAuth";
   import { mapActions, mapGetters, mapMutations } from 'vuex';
-  import firebase from 'firebase';
+  import firebase from "firebase/app";
+  import 'firebase/database';
+  import 'firebase/auth';
   import OptionsModal from '@/components/modals/OptionsModal';
   import Chat from '@/components/modals/Chat';
 
@@ -62,18 +64,15 @@
       if (!firebase.apps.length) {
         console.log('firebase created!');
         firebase.initializeApp(this.config);
-        firebase.analytics();
       }
       const vm = this;
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           console.log('loggedIn!');
-          // this.logout();
           // User is signed in.
           user = firebase.auth().currentUser;
           user.getIdToken().then((token) => {
             localStorage.setItem('token', token);
-            console.log(user.email);
             vm.fetchInitialUserInfo(user.email);
           });
         } else {
