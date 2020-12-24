@@ -15,11 +15,11 @@
 
   export default {
     name: 'Reward',
-    mixins: [pokemonMixin],
-    components: {PokeList},
+    mixins: [ pokemonMixin ],
+    components: { PokeList },
     data () {
       return {
-        list:[],
+        list: [],
         type: '',
         page: 0,
       }

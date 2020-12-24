@@ -1,31 +1,31 @@
 <template>
-  <div id = "pokeContainer" :class="styleClass" @click.prevent="onChoose(info.name)">
-    <div id = 'pokeContent' :class="[(!actionOnClick) ? 'noHover' : '']">
+  <div id="pokeContainer" :class="styleClass" @click.prevent="onChoose(info.name)">
+    <div id='pokeContent' :class="[(!actionOnClick) ? 'noHover' : '']">
       <div :class="['upperPart', (info.is_legendary || info.is_mythical) ? 'legendaryUpper' : '']">
-        <div id = 'copiesSpan' v-show = 'info.copies >= 2'>
+        <div id='copiesSpan' v-show='info.copies >= 2'>
           x{{ info.copies || 1 }}
         </div>
-        <div id = 'nameDiv'>
+        <div id='nameDiv'>
           #{{info.id}} - <b>{{ info.name.toUpperCase() }} </b>
         </div>
-        <div id = 'typeDiv' :style="getTypeStyle()">
+        <div id='typeDiv' :style="getTypeStyle()">
           {{ info.types[0].type.name }}
         </div>
-        <img class = "pokeImage"
-             id = "pokeImg"
-             :src = "info.pokeImage"
-             alt = "Pokemon cover">
+        <img class="pokeImage"
+             id="pokeImg"
+             :src="info.pokeImage"
+             alt="Pokemon cover">
       </div>
       <div :class="['lowerPart', info.is_legendary ? 'legendaryLow' : info.is_mythical ? 'mythicalLow' : '' ]">
-       <div id = "statsDiv"
-           class = "container">
-         <div class = "row"
-              v-for = '(row,ind) in Object.keys(info.stats).length/2'
-              :key = "ind">
-           <div class = "col-md-6" v-if = "info.stats[ind*2]">
+       <div id="statsDiv"
+           class="container">
+         <div class="row"
+              v-for='(row,ind) in Object.keys(info.stats).length/2'
+              :key="ind">
+           <div class="col-md-6" v-if = "info.stats[ind*2]">
               {{ normalizeStat(info.stats[ind*2].stat.name) }} <span :style="getTypeStyle()">{{ info.stats[ind*2].base_stat}}</span>
            </div>
-           <div class = "col-md-6" v-if = "info.stats[ind*2 + 1]">
+           <div class="col-md-6" v-if = "info.stats[ind*2 + 1]">
               {{ normalizeStat(info.stats[ind*2 + 1].stat.name) }} <span :style="getTypeStyle()">{{ info.stats[ind*2 + 1].base_stat}}</span>
            </div>
          </div>

@@ -1,7 +1,6 @@
 <template>
   <div id="containerDiv" class="container" style="width:100%">
     <div class="row">
-      <!--button type="button" @click.prevent="toggle()">full</button-->
        <div class="battleDiv col-md-12">
          <div class="row" style="background-color:black">
            <fullscreen ref="fullscreen" @change="fullscreenChange" class="col-md-12 col-xs-12">
@@ -143,7 +142,6 @@
        }
      },
      beforeRouteEnter(to, from, next) {
-        console.log('beforeRouteEnter');
         next(vm => {
           if (vm.getCurrentOpponentId) next();
           else next('/game');
@@ -164,7 +162,6 @@
      },
      methods: {
        goToIndex() {
-         console.log('goToIndex');
          this.$router.push('getStarted');
        },
        getScoreStyle(hp) {
@@ -183,9 +180,6 @@
          this.fullscreen = !this.fullscreen;
          if (this.fullscreen) document.getElementById('game').style.height = "850px";
          else document.getElementById('game').style.height = "480px";
-       },
-       toggle () {
-        this.$refs['fullscreen'].toggle();
        },
        getEnemyPokemon() {
          this.getPokemonInfoFromList(this.getEnemyBattlePokemon, this.enemyPokemon);
@@ -448,6 +442,5 @@
  #options {
    width: 100% !important;
  }
-
 }
 </style>

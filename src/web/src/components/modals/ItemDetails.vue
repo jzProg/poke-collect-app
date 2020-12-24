@@ -56,7 +56,6 @@
           const poke = this.evolveCandidates.filter(candidate => candidate.id === pokeId)[0];
           this.getNextEvolution(poke).then(res => {
             const evolveTo = this.getNextForm(res.chain, poke.name, this.info.name);
-            console.log(`${poke.name} evolves to ${evolveTo}`);
             this.removeItem({ item: this.info.name });
             let pokeObj = [];
             this.getPokemonInfoFromList([ evolveTo ], pokeObj).then(() => {
