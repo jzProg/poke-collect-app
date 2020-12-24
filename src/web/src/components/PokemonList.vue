@@ -7,7 +7,7 @@
               v-if = "index >= page*20 && index < 20*(page + 1)"
               :key = "index"
               :styleClass="getStyle()"
-              :action-on-click="onPokemonClick"
+              :action-on-click="(actionOnClick) ? onPokemonClick : false"
               :info="poke"
               :copies = "1">
         </component>
@@ -25,10 +25,11 @@ export default {
   props: ['pokeList', 'actionOnClick', 'simpleMode', 'page'],
   methods: {
     onPokemonClick(pokeName) {
-      if (this.actionOnClick) this.actionOnClick(pokeName);
+      this.actionOnClick(pokeName);
     },
     getStyle() {
-      const size = Math.floor(12/this.pokeList.length);
+      let size = 4;
+      if (this.pokeList.length === 1) size = 12;
       return [`col-md-${size - 1}`, `col-sm-${size}`];
     }
   },

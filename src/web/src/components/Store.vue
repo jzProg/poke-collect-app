@@ -78,15 +78,20 @@
           for(var i = 0; i < quantity*this.packInfo.NUM_OF_CARDS; i++) {
             newItems.push(this.chooseRandomPokemon(1, this.totalPokemon));
           };
-          this.getPokemonInfoFromList(newItems, itemList);
-          itemBudle[0].items = itemList;
+          this.getPokemonInfoFromList(newItems, itemList).then(() => {
+              itemBudle[0].items = itemList;
+              this.purchase({ items: itemBudle, type: rewardType, cost: coins }).then(() => {
+                this.setCurrentReward({ value: itemList, type: rewardType });
+                this.$router.push('reward');
+              });
+          });
         } else {
           itemList = itemBudle.map(item => item.image);
+          this.purchase({ items: itemBudle, type: rewardType, cost: coins }).then(() => {
+            this.setCurrentReward({ value: itemList, type: rewardType });
+            this.$router.push('reward');
+          });
         }
-        this.purchase({ items: itemBudle, type: rewardType, cost: coins }).then(() => {
-          this.setCurrentReward({ value: itemList, type: rewardType });
-          this.$router.push('reward');
-        });
       }
     },
     computed: {

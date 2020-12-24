@@ -1,6 +1,6 @@
 <template>
   <div id = "pokeContainer" :class="styleClass" @click.prevent="onChoose(info.name)">
-    <div id = 'pokeContent'>
+    <div id = 'pokeContent' :class="[(!actionOnClick) ? 'noHover' : '']">
       <div :class="['upperPart', info.is_legendary ? 'legendaryUpper' : '']">
         <div id = 'copiesSpan' v-show = 'copies >= 2'>
           x{{ copies || 1 }}
@@ -58,13 +58,17 @@ import bus from "@/common/eventBus";
 <style scoped>
   #pokeContent {
     margin-top: 10%;
+    cursor: pointer;
   }
 
-  #pokeContent:hover {
-    border-style: solid;
-    border-color: yellow;
-    cursor:pointer;
+  .noHover {
+    pointer-events: none;
   }
+
+  .upperPart:hover {
+    background-color: yellow;
+  }
+
   #copiesSpan {
     background-color: orange;
     color: white;
