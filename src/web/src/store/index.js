@@ -24,7 +24,9 @@ export default new Vuex.Store({
     errorLoginMessage: '',
     errorRegisterMessage: '',
     pokemonToBeSwitched: {},
+    evolutionData: {},
     chats: [],
+
   },
   getters: {
     getItems(state) {
@@ -69,6 +71,9 @@ export default new Vuex.Store({
     getAvailableChats(state) {
       return state.chats;
     },
+    getEvolutionData(state) {
+      return state.evolutionData;
+    }
   },
   mutations: {
     setItems(state, payload) {
@@ -120,12 +125,20 @@ export default new Vuex.Store({
     setConversations(state, payload) {
       state.chats = payload.value;
     },
+    storeEvolutionData(state, { from, to }) {
+      state.evolutionData = { from, to };
+    },
     replaceStarterPokemon(state, { value }) {
       const starterToBeRemoved_id = value.pokeId;
       const starterToBeRemoved_name = value.name;
       state.userInfo.starters = state.userInfo.starters.filter(starter => starter.id !== starterToBeRemoved_id && starter.name !== starterToBeRemoved_name);
       const pokemonToBeAddedToStarters = state.pokemonToBeSwitched;
       state.userInfo.starters.push(pokemonToBeAddedToStarters);
+    },
+    replaceCollectionPokemon(state, { value }) {
+      const { from, to } = value;
+      state.userInfo.pokemon = state.userInfo.pokemon.filter(poke => poke.id !== from.id);
+      state.userInfo.pokemon.push(to);
     }
   },
   actions: {
@@ -159,6 +172,16 @@ export default new Vuex.Store({
             }
           });
         }});
+    },
+    evolvePokemon({ commit, state }, payload) {
+      commit({ type: 'replaceCollectionPokemon', value: payload });
+      commit({ type: 'storePokemonToBeSwitched', value: payload.to });
+      commit({ type: 'replaceStarterPokemon', value: { pokeId: payload.from.id, name: payload.from.name }})
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('users/' + id).update({
+        pokemon: state.userInfo.pokemon,
+        starters: state.userInfo.starters
+      });
     },
     awardPokemon({ commit, state }, payload) {
       var existingPokemon = state.userInfo.pokemon;

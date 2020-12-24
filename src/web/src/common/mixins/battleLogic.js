@@ -178,47 +178,25 @@ const battleMixin = {
       const rewardType = this.gameRewards[rewardTypeIndex].type;
       if (rewardType === this.gameRewards[0].type) {
         console.log('type ITEM reward');
-        const itemObj = {};
         const itemId = this.getRandomInt(1, 100);
-        this.getItem(itemId).then((res) => {
-          itemObj.name = res.name;
-          itemObj.image = res.sprites.default;
-          itemObj.quantity = 1;
-          itemObj.type = rewardType;
-          this.awardItems({ list: [itemObj]});
-          this.setCurrentReward({ type: this.gameRewards[0].type, value:  [itemObj]});
+        this.getItem(itemId).then(res => {
+          this.awardItem(res, rewardType, false);
           this.gameState.currentState = this.getNextState(); // game finished -> end
         });
       } else {
         console.log('type POKEMON reward');
-        let pokeObj= {};
+        let pokeObj= [];
         const pokeId = this.chooseRandomPokemon(1, this.totalPokemon);
-        this.getPokemon(pokeId).then((response) => {
-          this.getPokemonSpecies(pokeId).then((res) => {
-            const image = this.getPokemonImage(response.id);
-            Object.assign(response, { color: res.color.name, pokeImage: image, description: res.flavor_text_entries[0].flavor_text, level: 1 });
-            const { id, name, stats, height, weight, types, sprites, moves, base_experience, color, pokeImage, description, level } = response;
-            this.awardPokemon({ list: [{ id, name, stats, height, weight, types, level,
-                              sprites: { back_default: sprites.back_default, front_default: sprites.front_default },
-                              moves: { 0: { move: moves[0].move}, 1: { move: moves[1].move }, 2: { move: moves[2].move }, 3: { move: moves[3].move }},
-                              base_experience, color, pokeImage, description }]});
-            this.setCurrentReward({ type: this.gameRewards[1].type, value:  [pokeObj]});
-            if (pokeObj.held_items.length) {
-               console.log("has extra item: " + response.held_items[0].item.name);
-               const itemObj = {};
-               this.getItem(response.held_items[0].item.name).then((res) => {
-                 itemObj.name = res.name;
-                 itemObj.image = res.sprites.default;
-                 itemObj.text = res.effect_entries[0].short_effect;
-                 itemObj.quantity = 1;
-                 itemObj.type = res.name.includes('stone') ? this.prizes.STONE.type : this.gameRewards[0].type; // item type
-                 this.hasExtra = true;
-                 this.extraItem = itemObj;
-                 this.awardItems({ list: [itemObj]});
-                 this.gameState.currentState = this.getNextState(); // game finished -> end
-               });
-            } else this.gameState.currentState = this.getNextState(); // game finished -> end
-          });
+        this.getPokemonInfoFromList([ pokeId ], pokeObj).then(() => {
+          this.awardPokemon({ list: pokeObj });
+          this.setCurrentReward({ type: this.gameRewards[1].type, value: pokeObj });
+          if (pokeObj.held_items.length) {
+             console.log("has extra item: " + pokeObj.held_items[0].item.name);
+             this.getItem(pokeObj.held_items.item.name).then(res => {
+               this.awardItem(res, res.name.includes('stone') ? this.prizes.STONE.type : this.gameRewards[0].type, true);
+               this.gameState.currentState = this.getNextState(); // game finished -> end
+             });
+          } else this.gameState.currentState = this.getNextState(); // game finished -> end
         });
       }
     },
@@ -232,6 +210,20 @@ const battleMixin = {
           spd: statObj.stats[4].base_stat,
           spe: statObj.stats[5].base_stat,
       };
+    },
+    awardItem(item, type, isExtra) {
+      const itemObj = {};
+      itemObj.name = item.name;
+      itemObj.image = item.sprites.default;
+      itemObj.text = item.effect_entries[0].short_effect;
+      itemObj.quantity = 1;
+      itemObj.type = type;
+      if (isExtra) {
+        this.hasExtra = true;
+        this.extraItem = itemObj;
+      }
+      this.awardItems({ list: [itemObj]});
+      this.setCurrentReward({ type: this.gameRewards[0].type, value:  [itemObj]});
     },
     calcDamage(attacker, defender, move) {
       const gen = Generations.get(5);

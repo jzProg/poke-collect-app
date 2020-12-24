@@ -15,7 +15,7 @@
        <h4>{{ item.name }}</h4>
      </div>
    </div>
-   <ItemDetails v-if = "showInfo" :info="info" @close="showInfo = false;"/>
+   <ItemDetails v-if = "showInfo" :info="info" :is-stone="info.type === prizes.STONE.type" @close="showInfo = false;"/>
   </div>
 </template>
 

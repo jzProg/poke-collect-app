@@ -1,7 +1,7 @@
 <template>
-  <div id = "pokeContainer" class = "col-md-3  col-sm-4" @click.prevent="onChoose(info.name)">
+  <div id = "pokeContainer" :class="styleClass" @click.prevent="onChoose(info.name)">
     <div id = 'pokeContent'>
-      <div class="upperPart">
+      <div :class="['upperPart', info.is_legendary ? 'legendaryUpper' : '']">
         <div id = 'copiesSpan' v-show = 'copies >= 2'>
           x{{ copies || 1 }}
         </div>
@@ -16,7 +16,7 @@
              :src = "info.pokeImage"
              alt = "Pokemon cover">
       </div>
-      <div class='lowerPart'>
+      <div :class="['lowerPart', info.is_legendary ? 'legendaryLow' : '' ]">
        <div id = "statsDiv"
            class = "container">
          <div class = "row"
@@ -40,7 +40,7 @@ import bus from "@/common/eventBus";
 
   export default {
     name: 'PokemonCard',
-    props: ['info', 'copies', 'actionOnClick'],
+    props: ['info', 'copies', 'actionOnClick', 'styleClass'],
     methods: {
       onChoose(name) {
         this.actionOnClick(name);
@@ -70,7 +70,8 @@ import bus from "@/common/eventBus";
     color: white;
     width: 10%;
     float: left;
-    border-radius: 40%;
+    padding: 1%;
+    border-radius: 50%;
   }
   #statsDiv {
     width: 100%;
@@ -106,5 +107,14 @@ import bus from "@/common/eventBus";
     background-color: #282c34;
     color: white;
     padding: 1%;
+  }
+
+  .legendaryLow {
+    background-color: #b29600;
+  }
+
+  .legendaryUpper {
+    background-color: #282c34;
+    color: white;
   }
 </style>

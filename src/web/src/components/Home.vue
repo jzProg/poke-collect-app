@@ -12,7 +12,7 @@
                    :action-on-click="showCollection ? onClickAction : onInfo"
                    v-imageloader="loaded"
                    :page="page"
-                   :simple-mode="showCollection">
+                   :simple-mode="!showCollection">
        </Poke-list >
       </div>
     </div>

@@ -9,6 +9,7 @@ import Battle from '@/components/Battle';
 import Game from '@/components/Game';
 import Store from '@/components/Store';
 import Inventory from '@/components/Inventory';
+import Evolution from '@/components/Evolution';
 
 Vue.use(Router);
 
@@ -94,6 +95,15 @@ const router =  new Router({
       name: 'Inventory',
       component: Inventory,
       meta: { hasProfileHeader: false },
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem('token')) next();
+        else next('/');
+      }
+    },
+    {
+      path: '/evolution',
+      name: 'Evolution',
+      component: Evolution,
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem('token')) next();
         else next('/');

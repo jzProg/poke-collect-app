@@ -34,9 +34,11 @@ const pokemonMixin = {
         },
         STONE: {
          type: 'stone',
-         items: [{ title: 'fire-stone', quantity: 1, price: 2500 },
-                  { title: 'water-stone', quantity: 1, price: 220 },
-                  { title: 'thunder-stone', quantity: 1, price: 2700 }],
+         items: [{ title: 'fire-stone', evolution: ['eevee', 'growlithe', 'pansear', 'vulpix'], quantity: 1, price: 2500 },
+                  { title: 'water-stone', evolution: ['eevee', 'lombre', 'panpour', 'poliwhirl', 'shellder', 'staryu'], quantity: 1, price: 2200 },
+                  { title: 'moon-stone', evolution: ['clefairy', 'jigglypuff', 'munna', 'nidorina', 'nidorino', 'skitty'], quantity: 1, price: 1800 },
+                  { title: 'leaf-stone', evolution: ['exeggcute', 'gloom', 'nuzleaf', 'pansage', 'weepinbell'], quantity: 1, price: 1500 },
+                  { title: 'thunder-stone', evolution: ['eelektrik', 'pikachu', 'eelektross', 'eevee'], quantity: 1, price: 2700 }],
         }
       },
       avatars: {
@@ -214,10 +216,17 @@ const pokemonMixin = {
         return Promise.all(listOfPokemon.map(this.getPokemonSpecies)).then(data2 => {
            data2.forEach((res, i) => {
              const image = this.getPokemonImage(data[i].id);
-             Object.assign(data[i], { color: res.color.name, pokeImage: image, description: res.flavor_text_entries[0].flavor_text, level: 1 });
+             const evolutionChainParts = res.evolution_chain.url.split('/');
+             const evolutionChainId = parseInt(evolutionChainParts[evolutionChainParts.length - 2], 10);
+             Object.assign(data[i], { color: res.color.name,
+                                      pokeImage: image,
+                                      description: res.flavor_text_entries[0].flavor_text,
+                                      level: 1,
+                                      is_legendary: res.is_legendary,
+                                      evolutionChainId });
              if (listToFill.filter(e => e.name === data[i].name).length <= 0) {
-               const { id, name, stats, height, weight, types, sprites, moves, base_experience, color, pokeImage, description, level } = data[i];
-               listToFill.push({ id, name, stats, height, weight, types, level,
+               const { id, name, stats, height, weight, types, sprites, moves, base_experience, color, pokeImage, description, level, evolutionChainId, is_legendary, held_items } = data[i];
+               listToFill.push({ id, name, stats, height, weight, types, level, is_legendary, evolutionChainId, held_items,
                                  sprites: { back_default: sprites.back_default, front_default: sprites.front_default },
                                  moves: { 0: { move: moves[0].move}, 1: { move: moves[1].move }, 2: { move: moves[2].move }, 3: { move: moves[3].move }},
                                  base_experience, color, pokeImage, description });
@@ -233,6 +242,18 @@ const pokemonMixin = {
       }
       return randomId;
     },
+    getNextEvolution({ evolutionChainId }) {
+      return P.getEvolutionChainById(evolutionChainId);
+    },
+    getNextForm({ species, evolves_to }, name, stoneName) {
+      let evolveToByStone;
+      if (species.name === name) {
+        evolveToByStone = evolves_to.filter(ev => ev.evolution_details[0].item && ev.evolution_details[0].item.name === stoneName)[0];
+        return evolveToByStone.species.name;
+      }
+      evolveToByStone = evolves_to[0];
+      return this.getNextForm(evolveToByStone, name, stoneName);
+    }
   },
   computed: {
     ...mapGetters([
