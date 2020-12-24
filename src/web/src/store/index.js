@@ -142,6 +142,17 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    removeItem({ commit, state }, payload) {
+      var existingItems = state.userInfo.items || [];
+      const indexOfItem = existingItems.map(e => e.name).indexOf(payload.item);
+      if (existingItems[indexOfItem].quantity > 1) existingItems[indexOfItem].quantity -= 1;
+      else delete existingItems[indexOfItem];
+      commit({ type: 'setItems', value: existingItems });
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('users/' + id).update({
+        items: existingItems,
+      });
+    },
     fetchConversations({ commit, state }, payload) {
       firebase.database().ref('chats/').on("value", (chatObject) => {
         if (chatObject.val()) {

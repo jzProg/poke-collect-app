@@ -35,12 +35,12 @@ import bus from "@/common/eventBus";
 </script>
 
 <style scoped>
-#pokeImageContainer{
-  background:url("http://www.pngall.com/wp-content/uploads/4/Pokemon-Pokeball-Transparent.png");
-  background-size: cover;
-  width:200px;
-  height:200px;
-}
+  #pokeImageContainer{
+    background:url("http://www.pngall.com/wp-content/uploads/4/Pokemon-Pokeball-Transparent.png");
+    background-size: cover;
+    width:200px;
+    height:200px;
+  }
   #pokeContent {
     margin-top: 10%;
     margin-left: 5%;
