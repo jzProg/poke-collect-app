@@ -1,13 +1,15 @@
 <template>
-  <div id = 'container'>
-    <div id="video_container">
-      <video id="video" class="showP">
-      <source src="../../src/assets/loginGif.mp4" type="video/mp4"></video>
-      <img id="Logo" class='hideP' src="../../src/assets/PokeZagg.png"></img>
-    </div>
-    <InputForm :fields="formItems" :error-message="getErrorLoginMessage" :on-focus="removeErrorMessage" :on-submit="login" />
-    <div class="linkSpan">
-      <router-link :to = "{ path:'register' }"> Not registered? Sign up here </router-link>
+  <div id='container' class="container">
+    <div class="row">
+      <div id="video_container">
+        <video id="video" class="showP">
+        <source src="../../src/assets/loginGif.mp4" type="video/mp4"></video>
+        <img id="Logo" class='hideP' src="../../src/assets/PokeZagg.png"></img>
+      </div>
+      <InputForm :fields="formItems" :error-message="getErrorLoginMessage" :on-focus="removeErrorMessage" :on-submit="login" />
+      <div class="linkSpan">
+        <router-link :to = "{ path:'register' }"> Not registered? Sign up here </router-link>
+      </div>
     </div>
   </div>
 </template>

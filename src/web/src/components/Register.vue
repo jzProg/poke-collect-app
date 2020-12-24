@@ -1,9 +1,11 @@
 <template>
- <div id = 'container'>
-  <h1 class = 'text-center'>Be A Member!</h1>
-  <InputForm :fields="formItems" :error-message="getErrorRegisterMessage" :on-focus="removeErrorMessage" :on-submit="register" />
-  <div class="linkSpan">
-    <router-link :to = "{ path:'/' }"> Already an account? Sign in here</router-link>
+ <div id='container' class="container">
+   <div class="row">
+    <h1 class='text-center'>Be A Member!</h1>
+    <InputForm :fields="formItems" :error-message="getErrorRegisterMessage" :on-focus="removeErrorMessage" :on-submit="register" />
+    <div class="linkSpan">
+      <router-link :to = "{ path:'/' }"> Already an account? Sign in here</router-link>
+    </div>
   </div>
  </div>
 </template>
