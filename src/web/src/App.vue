@@ -71,6 +71,7 @@
           console.log('loggedIn!');
           // User is signed in.
           user = firebase.auth().currentUser;
+          console.log(user);
           user.getIdToken().then((token) => {
             localStorage.setItem('token', token);
             vm.fetchInitialUserInfo(user.email);
@@ -116,7 +117,8 @@
         firebase.database().ref('users/').on("value", (userObject) => {
           if (userObject.val()) {
             Object.values(userObject.val()).forEach((user) => {
-              if (user.mail === mail) {
+              console.log(user.mail);
+              if (user.mail.toLowerCase() === mail.toLowerCase()) {
                 console.log('user found!');
                 localStorage.setItem('userId', user.userId);
                 this.setUserPokemon({ value: user.pokemon });
