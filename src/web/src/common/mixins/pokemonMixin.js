@@ -225,8 +225,8 @@ const pokemonMixin = {
                                       is_legendary: res.is_legendary,
                                       evolutionChainId });
              if (listToFill.filter(e => e.name === data[i].name).length <= 0) {
-               const { id, name, stats, height, weight, types, sprites, moves, base_experience, color, pokeImage, description, level, evolutionChainId, is_legendary, held_items } = data[i];
-               listToFill.push({ id, name, stats, height, weight, types, level, is_legendary, evolutionChainId, held_items,
+               const { id, name, stats, height, weight, types, sprites, moves, base_experience, color, pokeImage, description, level, evolutionChainId, is_legendary, is_mythical, held_items } = data[i];
+               listToFill.push({ id, name, stats, height, weight, types, level, is_legendary, evolutionChainId, held_items, is_mythical,
                                  sprites: { back_default: sprites.back_default, front_default: sprites.front_default },
                                  moves: { 0: { move: moves[0] ? moves[0].move : ''},
                                           1: { move: moves[1] ? moves[1].move : ''},

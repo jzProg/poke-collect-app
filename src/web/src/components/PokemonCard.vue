@@ -1,7 +1,7 @@
 <template>
   <div id = "pokeContainer" :class="styleClass" @click.prevent="onChoose(info.name)">
     <div id = 'pokeContent' :class="[(!actionOnClick) ? 'noHover' : '']">
-      <div :class="['upperPart', info.is_legendary ? 'legendaryUpper' : '']">
+      <div :class="['upperPart', (info.is_legendary || info.is_mythical) ? 'legendaryUpper' : '']">
         <div id = 'copiesSpan' v-show = 'copies >= 2'>
           x{{ copies || 1 }}
         </div>
@@ -16,7 +16,7 @@
              :src = "info.pokeImage"
              alt = "Pokemon cover">
       </div>
-      <div :class="['lowerPart', info.is_legendary ? 'legendaryLow' : '' ]">
+      <div :class="['lowerPart', info.is_legendary ? 'legendaryLow' : info.is_mythical ? 'mythicalLow' : '' ]">
        <div id = "statsDiv"
            class = "container">
          <div class = "row"
@@ -87,6 +87,11 @@ import bus from "@/common/eventBus";
   #statsDiv .row {
     margin-bottom: 1%;
   }
+
+   .mythicalLow #statsDiv {
+    border-color: black;
+   }
+
   #close {
     float:right;
     display:inline-block;
@@ -120,5 +125,9 @@ import bus from "@/common/eventBus";
   .legendaryUpper {
     background-color: #282c34;
     color: white;
+  }
+
+  .mythicalLow {
+    background-color: gray;
   }
 </style>
