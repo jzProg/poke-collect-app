@@ -36,7 +36,7 @@ export default {
   computed: {
    sortedPokeList() {
      return this.pokeList.sort((poke1, poke2) => {
-       return poke1.order > poke2.order;
+       return poke1.id > poke2.id;
      });
    },
    getMode() {
