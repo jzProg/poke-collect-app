@@ -222,11 +222,13 @@ const pokemonMixin = {
                                       pokeImage: image,
                                       description: res.flavor_text_entries[0].flavor_text,
                                       level: 1,
+                                      copies: 1,
                                       is_legendary: res.is_legendary,
+                                      is_mythical: res.is_mythical,
                                       evolutionChainId });
              if (listToFill.filter(e => e.name === data[i].name).length <= 0) {
-               const { id, name, stats, height, weight, types, sprites, moves, base_experience, color, pokeImage, description, level, evolutionChainId, is_legendary, is_mythical, held_items } = data[i];
-               listToFill.push({ id, name, stats, height, weight, types, level, is_legendary, evolutionChainId, held_items, is_mythical,
+               const { id, name, stats, height, weight, types, sprites, moves, base_experience, color, pokeImage, description, level, copies, evolutionChainId, is_legendary, is_mythical, held_items } = data[i];
+               listToFill.push({ id, name, stats, height, weight, types, level, is_legendary, evolutionChainId, held_items, is_mythical, copies,
                                  sprites: { back_default: sprites.back_default, front_default: sprites.front_default },
                                  moves: { 0: { move: moves[0] ? moves[0].move : ''},
                                           1: { move: moves[1] ? moves[1].move : ''},

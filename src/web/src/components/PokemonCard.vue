@@ -2,8 +2,8 @@
   <div id = "pokeContainer" :class="styleClass" @click.prevent="onChoose(info.name)">
     <div id = 'pokeContent' :class="[(!actionOnClick) ? 'noHover' : '']">
       <div :class="['upperPart', (info.is_legendary || info.is_mythical) ? 'legendaryUpper' : '']">
-        <div id = 'copiesSpan' v-show = 'copies >= 2'>
-          x{{ copies || 1 }}
+        <div id = 'copiesSpan' v-show = 'info.copies >= 2'>
+          x{{ info.copies || 1 }}
         </div>
         <div id = 'nameDiv'>
           #{{info.id}} - <b>{{ info.name.toUpperCase() }} </b>

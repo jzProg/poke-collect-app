@@ -137,8 +137,11 @@ export default new Vuex.Store({
     },
     replaceCollectionPokemon(state, { value }) {
       const { from, to } = value;
-      state.userInfo.pokemon = state.userInfo.pokemon.filter(poke => poke.id !== from.id);
-      state.userInfo.pokemon.push(to);
+      if (state.userInfo.pokemon.copies && state.userInfo.pokemon.copies > 1) state.userInfo.pokemon.copies--;
+      else state.userInfo.pokemon = state.userInfo.pokemon.filter(poke => poke.id !== from.id);
+      const indexOfDuplicate = state.userInfo.pokemon.findIndex(poke => poke.id === to.id);
+      if (indexOfDuplicate !== -1) state.userInfo.pokemon[indexOfDuplicate].copies = 2;
+      else state.userInfo.pokemon.push(to);
     }
   },
   actions: {
