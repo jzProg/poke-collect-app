@@ -78,7 +78,6 @@ import bus from "@/common/eventBus";
     border-color: gray;
     padding: 1%;
     margin-top: 1%;
-    max-height: 82px;
   }
   #statsDiv .row {
     margin-bottom: 1%;
