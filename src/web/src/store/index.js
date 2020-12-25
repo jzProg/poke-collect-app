@@ -80,6 +80,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    setUserLevel(state, payload) {
+      state.userInfo.level = payload.value;
+    },
     setItems(state, payload) {
       state.userInfo.items = payload.value;
     },

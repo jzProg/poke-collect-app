@@ -38,17 +38,17 @@
 
 <script>
   import Vue from 'vue';
-  import bus from "@/common/eventBus";
-  import firebaseConfigProperties from "@/common/firebaseConfigProperties";
-  import urlAuthMixin from "@/common/helpers/urlAuth";
   import { mapActions, mapGetters, mapMutations } from 'vuex';
   import firebase from "firebase/app";
   import 'firebase/database';
   import 'firebase/auth';
+  import { VBToggle } from 'bootstrap-vue';
+  import 'bootstrap-vue/dist/bootstrap-vue.css';
+  import bus from "@/common/eventBus";
+  import firebaseConfigProperties from "@/common/firebaseConfigProperties";
+  import urlAuthMixin from "@/common/helpers/urlAuth";
   import ProfileModal from '@/components/modals/ProfileModal';
   import Chat from '@/components/modals/Chat';
-  import 'bootstrap-vue/dist/bootstrap-vue.css';
-  import { VBToggle  } from 'bootstrap-vue';
 
   export default {
     name: 'app',
@@ -105,6 +105,7 @@
           'setUserCoins',
           'setUserImage',
           'setItems',
+          'setUserLevel',
       ]),
       ...mapActions([
         'userLogout',
@@ -127,6 +128,7 @@
                 this.setUserPokemon({ value: user.pokemon });
                 this.setUserStarters({ value: user.starters });
                 this.setUserBasicInfo({ value: user.initialized });
+                this.setUserLevel({ value: user.level });
                 this.setUserCoins({ value: user.coins });
                 this.setUserImage({ value: user.image });
                 this.setItems({ value: user.items });

@@ -33,34 +33,37 @@
 
   export default {
     name: 'Sidemenu',
-    props:['coins','startGame','doAction'],
+    props: [ 'coins','startGame','doAction' ],
     data() {
       return {
-       show: true,
-       checkedCategory: 0,
-       categories: [{
-                      image: require('../assets/pikatsu.png'),
-                      title: 'Your Starters',
-                      type: 'STARTERS',
-                    },
-                    {
-                      image: require('../assets/collectionpokeballs.png'),
-                      title: 'Your Collection',
-                      type: 'COLLECTION',
-                    },
-                    {
-                      image: require('../assets/backpack.png'),
-                      title: 'Your Inventory',
-                      type: 'ITEMS',
+         show: true,
+         checkedCategory: 0,
+         categories: [
+            {
+              image: require('../assets/pikatsu.png'),
+              title: 'Your Starters',
+              type: 'STARTERS',
+            },
+            {
+              image: require('../assets/collectionpokeballs.png'),
+              title: 'Your Collection',
+              type: 'COLLECTION',
+            },
+            {
+              image: require('../assets/backpack.png'),
+              title: 'Your Inventory',
+              type: 'ITEMS',
 
-                  },
-                  {image: require('../assets/battle.png'),
-                  title: 'Battle',
-                  type: 'MODES'
-                  }
-            ]}
-          },
-    methods: {
+            },
+            {
+              image: require('../assets/battle.png'),
+              title: 'Battle',
+              type: 'MODES'
+             }
+          ]
+        }
+     },
+     methods: {
       setChecked(index) {
         this.checkedCategory = index;
       }
