@@ -191,8 +191,8 @@ const battleMixin = {
           this.awardPokemon({ list: pokeObj });
           this.setCurrentReward({ type: this.gameRewards[1].type, value: pokeObj });
           if (pokeObj[0].held_items.length) {
-             console.log("has extra item: " + pokeObj.held_items[0].item.name);
-             this.getItem(pokeObj.held_items.item.name).then(res => {
+             console.log("has extra item: " + pokeObj[0].held_items[0].item.name);
+             this.getItem(pokeObj[0].held_items.item.name).then(res => {
                this.awardItem(res, res.name.includes('stone') ? this.prizes.STONE.type : this.gameRewards[0].type, true);
                this.gameState.currentState = this.getNextState(); // game finished -> end
              });
