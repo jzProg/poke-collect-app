@@ -2,7 +2,7 @@
   <div>
    <b-sidebar id="sidebar-variant"
               bg-variant="dark"
-              width="180px"
+              width="170px"
               noHeader
               text-variant="light"
               shadow>
