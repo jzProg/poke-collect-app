@@ -1,4 +1,4 @@
-import {calculate, Generations, Pokemon, Move} from '@smogon/calc';
+import { calculate, Generations, Pokemon, Move } from '@smogon/calc';
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 const battleMixin = {

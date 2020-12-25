@@ -1,30 +1,34 @@
 <template>
   <div>
-  <Sidemenu :coins="getUserCoins" :doAction="actionFor" :startGame="startGame" ></Sidemenu>
-  <div class="pokemonDiv container">
-    <div class="row" style="width: 100%">
-      <div class="col-md-12">
-        <div class="pagination" v-if="showCollection && getCollectionUpdated.length > 20">
-          <button class="prev btn btn-primary" @click.prevent="prevPage()" :disabled="!hasPrev()">prev</button>
-          <button class="next btn btn-primary" @click.prevent="nextPage()" :disabled="!hasNext()">next</button>
-         </div>
-        <Poke-list :poke-list="showCollection? getCollectionUpdated : getStartersUpdated"
-                   :action-on-click="showCollection ? onClickAction : onInfo"
-                   v-imageloader="loaded"
-                   :page="page"
-                   :simple-mode="!showCollection">
-       </Poke-list >
+    <Sidemenu :coins="getUserCoins" :doAction="actionFor" :startGame="startGame" />
+    <div class="pokemonDiv container">
+      <div class="row" style="width: 100%">
+        <div class="col-md-12">
+          <div class="pagination" v-if="showCollection && getCollectionUpdated.length > 20">
+            <span class="navArrow" @click.prevent="prevPage()" :disabled="!hasPrev()">
+              <i class="fas fa-caret-left fa-3x" :disabled="!hasPrev()"/>
+            </span>
+            <span class="navArrow" @click.prevent="nextPage()" :disabled="!hasNext()">
+            <i class="fas fa-caret-right fa-3x" />
+            </span>
+           </div>
+           <Poke-list :poke-list="showCollection? getCollectionUpdated : getStartersUpdated"
+                     :action-on-click="showCollection ? onClickAction : onInfo"
+                     v-imageloader="loaded"
+                     :page="page"
+                     :simple-mode="!showCollection">
+          </Poke-list>
+        </div>
       </div>
     </div>
-  </div>
-  <Options v-if="showOptions"
-            :poke-list="getStartersUpdated"
-            :selected-pokemon="selectedPokemon"
-            @close="showOptions=false" />
-  <PokemonDetails v-if="seeDetails"
-                 @close="seeDetails=false"
-                 :info="selectedPokemon"/>
-  <Loading v-if="toLoad"></Loading>
+    <Options v-if="showOptions"
+              :poke-list="getStartersUpdated"
+              :selected-pokemon="selectedPokemon"
+              @close="showOptions=false" />
+    <PokemonDetails v-if="seeDetails"
+                   @close="seeDetails=false"
+                   :info="selectedPokemon"/>
+    <Loading v-if="toLoad" />
   </div>
 </template>
 
@@ -159,6 +163,16 @@
   }
   .pokemonDiv {
     width: 90%;
+  }
+
+  .navArrow {
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  span[disabled] {
+    opacity: 0.5;
+    pointer-events: none;
   }
 
   @media only screen and (max-width: 1200px) {

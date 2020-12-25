@@ -2,11 +2,11 @@
   <div id="pokeContainer" :class="styleClass" @click.prevent="onChoose(info.name)">
     <div id='pokeContent' :class="[(!actionOnClick) ? 'noHover' : '']">
       <div :class="['upperPart', (info.is_legendary || info.is_mythical) ? 'legendaryUpper' : '']">
-        <div id='copiesSpan' v-show='info.copies >= 2'>
-          x{{ info.copies || 1 }}
+        <div id='copiesSpan' v-show="info.copies > 1">
+          x{{ info.copies }}
         </div>
         <div id='nameDiv'>
-          #{{info.id}} - <b>{{ info.name.toUpperCase() }} </b>
+          #{{ info.id }} - <b>{{ info.name.toUpperCase() }} </b>
         </div>
         <div id='typeDiv' :style="getTypeStyle()">
           {{ info.types[0].type.name }}
@@ -17,15 +17,14 @@
              alt="Pokemon cover">
       </div>
       <div :class="['lowerPart', info.is_legendary ? 'legendaryLow' : info.is_mythical ? 'mythicalLow' : '' ]">
-       <div id="statsDiv"
-           class="container">
+       <div id="statsDiv" class="container">
          <div class="row"
-              v-for='(row,ind) in Object.keys(info.stats).length/2'
+              v-for="(row, ind) in Object.keys(info.stats).length/2"
               :key="ind">
-           <div class="col-md-6" v-if = "info.stats[ind*2]">
+           <div class="col-md-6" v-if="info.stats[ind*2]">
               {{ normalizeStat(info.stats[ind*2].stat.name) }} <span :style="getTypeStyle()">{{ info.stats[ind*2].base_stat}}</span>
            </div>
-           <div class="col-md-6" v-if = "info.stats[ind*2 + 1]">
+           <div class="col-md-6" v-if="info.stats[ind*2 + 1]">
               {{ normalizeStat(info.stats[ind*2 + 1].stat.name) }} <span :style="getTypeStyle()">{{ info.stats[ind*2 + 1].base_stat}}</span>
            </div>
          </div>
@@ -36,11 +35,11 @@
 </template>
 
 <script>
-import bus from "@/common/eventBus";
+  import bus from "@/common/eventBus";
 
   export default {
     name: 'PokemonCard',
-    props: ['info', 'copies', 'actionOnClick', 'styleClass'],
+    props: ['info', 'actionOnClick', 'styleClass'],
     methods: {
       onChoose(name) {
         this.actionOnClick(name);
@@ -57,7 +56,7 @@ import bus from "@/common/eventBus";
 
 <style scoped>
   #pokeContent {
-    margin-top: 10%;
+    margin-top: 5%;
     cursor: pointer;
   }
 
@@ -93,10 +92,10 @@ import bus from "@/common/eventBus";
    }
 
   #close {
-    float:right;
-    display:inline-block;
+    float: right;
+    display: inline-block;
     padding: 2px 5px;
-    cursor:pointer;
+    cursor: pointer;
   }
   #close:hover {
     color: red;

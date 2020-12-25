@@ -6,12 +6,11 @@
            :class="classFlag ? 'pokeImgForBattle' : 'pokeImgForCollection'"
            alt="Pokemon cover">
     </div>
-
   </div>
 </template>
 
 <script>
-import bus from "@/common/eventBus";
+  import bus from "@/common/eventBus";
 
   export default {
     name: 'Pokemon',
@@ -29,10 +28,10 @@ import bus from "@/common/eventBus";
 
 <style scoped>
   #pokeImageContainer{
-    background:url("http://www.pngall.com/wp-content/uploads/4/Pokemon-Pokeball-Transparent.png");
+    background: url("http://www.pngall.com/wp-content/uploads/4/Pokemon-Pokeball-Transparent.png");
     background-size: cover;
-    width:200px;
-    height:200px;
+    width: 200px;
+    height: 200px;
   }
 
   #pokeContent {
@@ -42,14 +41,14 @@ import bus from "@/common/eventBus";
   }
 
   #pokeContent:hover {
-    cursor:pointer;
+    cursor: pointer;
   }
 
   #close {
-    float:right;
-    display:inline-block;
-    padding:2px 5px;
-    cursor:pointer;
+    float: right;
+    display: inline-block;
+    padding: 2px 5px;
+    cursor: pointer;
   }
 
   #close:hover {
@@ -57,8 +56,8 @@ import bus from "@/common/eventBus";
   }
 
   a:hover {
-    text-decoration:none;
-    cursor:pointer;
+    text-decoration: none;
+    cursor: pointer;
   }
 
   .pokeImgForCollection {
