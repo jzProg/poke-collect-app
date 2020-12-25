@@ -1,38 +1,38 @@
 <template>
-  <div id = "app">
-    <div class="header container">
-      <div class="row">
-        <h3 id = "logoDiv"
-            class="col-md-2 col-xs-5"
+  <div id="app">
+    <div class="NavHeader">
+        <h3 id="logoDiv"
             @click.prevent="goToHome">
             <b>PokeCollectApp</b>
         </h3>
-        <div class="col-md-8 col-xs-4">
-          <img :src="require('./assets/pokeball.png')"
-               id = "appLogo">
+        <div :class="['appLogo', !username ? 'appLogoCenter' : '']">
+          <img :src="require('./assets/pokeball.png')" height="100px" width="100px">
         </div>
-          <div class="col-md-2 col-xs-3">
-          <div id = "profileDiv" v-if="username">
-            <i id = "chatLogo" class="fab fa-rocketchat fa-5x" @click.prevent="loadChat()"></i>
+          <div id="profileDiv" v-if="username">
+            <b-button class="profileItem" v-b-toggle.sidebar-variant><i class="fas fa-bars"></i></b-button>
+            <i class="fab fa-rocketchat fa-5x profileItem" @click.prevent="loadChat()"></i>
             <div v-if="$route.meta.hasProfileHeader">
-                <a @click.prevent = "showOptions">
-                  <img :src = "getImage()"
-                       alt = "profile image"
-                       id = "profileImg">
+                <a @click.prevent="showOptions">
+                  <img :src="getImage()"
+                       alt="profile image"
+                       class="profileItem"
+                       id="profileImg">
                 </a>
             </div>
           </div>
-          <ProfileModal v-if = "showOptionsModal"
-                       :username = "username"
-                       :logout = "logout"
-                       @close = "onOptionsClose">
+          <ProfileModal v-if="showOptionsModal"
+                       :username="username"
+                       :logout="logout"
+                       class="fragment"
+                       @close="onOptionsClose">
          </ProfileModal>
          <Chat v-if="showChat"
+               class="fragment"
                @close="showChat=false" />
-        </div>
-      </div>
     </div>
-    <router-view/>
+    <div class="fragment">
+      <router-view/>
+    </div>
   </div>
 </template>
 
@@ -47,9 +47,14 @@
   import 'firebase/auth';
   import ProfileModal from '@/components/modals/ProfileModal';
   import Chat from '@/components/modals/Chat';
+  import 'bootstrap-vue/dist/bootstrap-vue.css';
+  import { VBToggle  } from 'bootstrap-vue';
 
   export default {
     name: 'app',
+    directives: {
+      'b-toggle': VBToggle
+    },
     mixins: [firebaseConfigProperties, urlAuthMixin],
     components: { ProfileModal, Chat },
     data() {
@@ -153,67 +158,72 @@
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-align: center;
     color: #2c3e50;
-
   }
 
- .header {
-  width: 100%;
-  overflow: hidden;
-  background-color: black;
- }
+  body {
+    background-color: lightblue;
+  }
 
-.header .row img {
-  color: black;
-  text-align: center;
-  padding: 12px;
-  text-decoration: none;
-  font-size: 18px;
-  line-height: 25px;
-  border-radius: 4px;
-}
+  .NavHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background-color: black;
+    align-content: space-between;
+  }
 
-#logoDiv {
-  color: white;
-  float: left;
-  cursor: pointer;
-}
+  .profileItem {
+    margin: 2%;
+    cursor: pointer;
+  }
 
-#profileDiv {
-  margin-right: 2%;
-}
+  #logoDiv {
+   color: white;
+   cursor: pointer;
+   margin-left: 2%;
+   flex: 3;
+  }
 
-#profileImg {
-  width: 80px;
-  height: 80px;
-  border-radius: 50px;
-  float: right;
-  cursor: pointer;
-}
+  #profileDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+  }
 
-#chatLogo {
-  float: left;
-  cursor: pointer;
-}
+  #profileImg {
+    width: 80px;
+    height: 80px;
+    border-radius: 50px;
+  }
 
-#appLogo {
-  width: 100px;
-  height: 100px;
-}
+  .appLogo {
+    flex: 3;
+  }
 
-::-webkit-scrollbar {
-  width: 10px;
-}
+  .appLogoCenter {
+     flex: 4;
+  }
 
-::-webkit-scrollbar-track {
-  box-shadow: inset 1 0 5px grey;
-  border-radius: 100px;
-}
+  .fragment {
+    text-align: center;
+  }
 
-::-webkit-scrollbar-thumb {
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
-}
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 1 0 5px grey;
+    border-radius: 100px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  }
 </style>

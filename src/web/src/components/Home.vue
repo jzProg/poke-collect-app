@@ -19,7 +19,7 @@
                      :simple-mode="!showCollection">
           </Poke-list>
         </div>
-      </div>
+       </div>
     </div>
     <Options v-if="showOptions"
               :poke-list="getStartersUpdated"

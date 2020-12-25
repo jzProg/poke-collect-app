@@ -1,31 +1,32 @@
 <template>
-  <div class="optionsDiv container"
-       style="float: left;">
-    <div class="row"
-         style="width: 100%">
-      <div class="coinsDiv col-md-12">
-        <h2><b>{{ coins }} </b></h2>
-        <i class="fas fa-coins fa-5x" style="color:yellow"></i>
-      </div>
-    </div><br>
-    <div class="row"
-         style="width: 100%"
-         v-for="(category, index) in categories"
-         :key="index">
-      <div :class="['col-md-12 icon', checkedCategory === index? 'checked' : '']"
-           style="cursor:pointer; margin-left:5%; padding: 5%;"
-           @click.prevent="setChecked(index);doAction(categories[index].type)">
-        <h3><b>{{ categories[index].title }}</b></h3>
-        <img :src="categories[index].image"
-             class="categoryImage">
-      </div>
-    </div><br>
-
+  <div>
+   <b-sidebar id="sidebar-variant"
+              bg-variant="dark"
+              width="180px"
+              noHeader
+              text-variant="light"
+              shadow>
+              <div class="px-3 py-2 optionsDiv">
+                 <div class="item">
+                   <h2><b>{{ coins }} </b></h2>
+                   <i class="fas fa-coins fa-5x" style="color:yellow"></i>
+                 </div>
+                 <div class="item"
+                      v-for="(category, index) in categories"
+                      :key="index">
+                   <div :class="['item', checkedCategory === index? 'checked' : '']"
+                        style="cursor:pointer;"
+                        @click.prevent="setChecked(index);doAction(categories[index].type)">
+                     <h3><b>{{ categories[index].title }}</b></h3>
+                     <b-img :src="categories[index].image" class="categoryImage"/>
+                   </div>
+                 </div>
+              </div>
+      </b-sidebar>
     </div>
-
 </template>
-<script>
 
+<script>
   import Loading from '@/components/modals/Loading';
   import bus from "@/common/eventBus";
   import { mapActions, mapGetters } from 'vuex';
@@ -35,29 +36,30 @@
     props:['coins','startGame','doAction'],
     data() {
       return {
-         checkedCategory: 0,
-         categories: [{
-                        image: require('../assets/pikatsu.png'),
-                        title: 'Your Starters',
-                        type: 'STARTERS',
-                      },
-                      {
-                        image: require('../assets/collectionpokeballs.png'),
-                        title: 'Your Collection',
-                        type: 'COLLECTION',
-                      },
-                      {
-                        image: require('../assets/backpack.png'),
-                        title: 'Your Inventory',
-                        type: 'ITEMS',
-
+       show: true,
+       checkedCategory: 0,
+       categories: [{
+                      image: require('../assets/pikatsu.png'),
+                      title: 'Your Starters',
+                      type: 'STARTERS',
                     },
-                    {image: require('../assets/battle.png'),
-                    title: 'Battle',
-                    type: 'MODES'
-                    }
-              ]}
-            },
+                    {
+                      image: require('../assets/collectionpokeballs.png'),
+                      title: 'Your Collection',
+                      type: 'COLLECTION',
+                    },
+                    {
+                      image: require('../assets/backpack.png'),
+                      title: 'Your Inventory',
+                      type: 'ITEMS',
+
+                  },
+                  {image: require('../assets/battle.png'),
+                  title: 'Battle',
+                  type: 'MODES'
+                  }
+            ]}
+          },
     methods: {
       setChecked(index) {
         this.checkedCategory = index;
@@ -67,10 +69,16 @@
 </script>
 
 <style scoped>
-  .optionsDiv.container{
-    background-color:#4a3f35;
+  .optionsDiv {
+    background-color:#4a3f35 !important;
     color:#ff4301;
-    height:100%;
+    padding: 2%;
+    height: 100%;
+  }
+
+  .item {
+    margin: 1%;
+    padding: 2%;
   }
 
   .checked {
