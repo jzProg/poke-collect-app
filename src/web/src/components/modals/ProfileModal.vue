@@ -96,7 +96,7 @@
   .profileImg {
     width: 50%;
     height: 50%;
-    border-radius: 50px;
+    border-radius: 50%;
     margin: 2%;
   }
 </style>
