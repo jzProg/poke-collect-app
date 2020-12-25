@@ -51,6 +51,7 @@
     methods: {
       ...mapMutations([
         'setCurrentReward',
+        'setLoad'
       ]),
       ...mapActions([
         'purchase',
@@ -71,6 +72,7 @@
         console.log("buying items...");
       },
       onBuyAction(itemBudle, rewardType, coins) {
+        this.setLoad({ value: true });
         var itemList = [];
         if (rewardType === this.prizes.PACK.type) {
           var newItems = [];
@@ -82,6 +84,7 @@
               itemBudle[0].items = itemList;
               this.purchase({ items: itemBudle, type: rewardType, cost: coins }).then(() => {
                 this.setCurrentReward({ value: itemList, type: rewardType });
+                this.setLoad({ value: false });
                 this.$router.push('reward');
               });
           });
@@ -89,6 +92,7 @@
           itemList = itemBudle.map(item => item.image);
           this.purchase({ items: itemBudle, type: rewardType, cost: coins }).then(() => {
             this.setCurrentReward({ value: itemList, type: rewardType });
+            this.setLoad({ value: false });
             this.$router.push('reward');
           });
         }

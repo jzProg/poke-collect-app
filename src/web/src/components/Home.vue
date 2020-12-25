@@ -28,17 +28,15 @@
     <PokemonDetails v-if="seeDetails"
                    @close="seeDetails=false"
                    :info="selectedPokemon"/>
-    <Loading v-if="toLoad" />
   </div>
 </template>
 
 <script>
   import Sidemenu from '@/components/SideMenu';
-  import Loading from '@/components/modals/Loading';
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
   import bus from "@/common/eventBus";
-  import { mapActions, mapGetters } from 'vuex';
+  import { mapActions, mapGetters, mapMutations } from 'vuex';
   import PokeList from '@/components/PokemonList';
   import Options from '@/components/modals/Options';
   import imagesLoaded from 'vue-images-loaded';
@@ -48,7 +46,7 @@
   export default {
     name: 'Home',
     mixins: [ uniqueIdGeneratorMixin, pokemonMixin, urlAuth ],
-    components: { PokeList, PokemonDetails, Loading, Sidemenu, Options },
+    components: { PokeList, PokemonDetails, Sidemenu, Options },
     directives: {
       imageloader: imagesLoaded,
     },
@@ -64,6 +62,7 @@
       }
     },
     created() {
+      this.setLoad({ value: true });
       if (!this.getLoginUsername) {
         bus.$on('login', (username) => {
           if (this.isPath('/home')) {
@@ -74,6 +73,9 @@
       }
     },
     methods: {
+      ...mapMutations([
+        'setLoad'
+      ]),
       loaded() {
         console.log('loaded.....');
         if (this.showCollection) {
@@ -81,6 +83,7 @@
         } else {
           this.imageLoadedStarters = true;
         }
+        this.setLoad({ value: false });
       },
       nextPage() {
         this.page += 1;
@@ -106,6 +109,7 @@
           'storeUsername',
       ]),
       toggleCollection(showCollection) {
+        this.setLoad({ value: true });
         this.showCollection = showCollection;
       },
       actionFor(category) {
@@ -133,12 +137,6 @@
         'getLoginUsername',
         'getUserCoins'
       ]),
-      toLoad() {
-        if(this.showCollection) {
-          return !this.imageLoadedCollection;
-        }
-        return !this.imageLoadedStarters;
-      },
       getSelectedPokemon() {
         return this.selectedPokemon;
       },

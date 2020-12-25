@@ -27,9 +27,12 @@ export default new Vuex.Store({
     pokemonToBeSwitched: {},
     evolutionData: {},
     chats: [],
-
+    load: false,
   },
   getters: {
+    getLoad(state) {
+      return state.load;
+    },
     getItems(state) {
       return state.userInfo.items;
     },
@@ -80,6 +83,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    setLoad(state, payload) {
+      state.load = payload.value;
+    },
     setUserLevel(state, payload) {
       state.userInfo.level = payload.value;
     },

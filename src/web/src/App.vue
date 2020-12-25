@@ -33,6 +33,7 @@
     <div class="fragment">
       <router-view/>
     </div>
+    <Loading v-if="getLoad" />
   </div>
 </template>
 
@@ -49,6 +50,7 @@
   import urlAuthMixin from "@/common/helpers/urlAuth";
   import ProfileModal from '@/components/modals/ProfileModal';
   import Chat from '@/components/modals/Chat';
+  import Loading from '@/components/modals/Loading';
 
   export default {
     name: 'app',
@@ -56,7 +58,7 @@
       'b-toggle': VBToggle
     },
     mixins: [firebaseConfigProperties, urlAuthMixin],
-    components: { ProfileModal, Chat },
+    components: { ProfileModal, Chat, Loading },
     data() {
       return {
         username: '',
@@ -149,7 +151,8 @@
     },
     computed: {
       ...mapGetters([
-        'getUserImage'
+        'getUserImage',
+        'getLoad'
       ]),
     }
 }

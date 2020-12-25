@@ -113,7 +113,7 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex';
+  import { mapGetters, mapMutations } from 'vuex';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
   import battleMixin from '@/common/mixins/battleLogic';
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
@@ -131,7 +131,6 @@
      data() {
        return {
           image: '',
-          fullscreen: false,
           hasExtra: false,
           showExtra: false,
           extraItem: {},
@@ -153,6 +152,7 @@
         }
      },
      created() {
+       this.setLoad({ value: true });
        this.getAvatarImage();
        this.enemyName = this.avatars[this.getCurrentOpponentId].name;
        this.gameState.currentState = this.getNextState();
@@ -161,6 +161,9 @@
        this.getEnemyPokemon();
      },
      methods: {
+       ...mapMutations([
+         'setLoad'
+       ]),
        goToIndex() {
          this.$router.push('getStarted');
        },
@@ -176,13 +179,10 @@
        getAvatarImage() {
          this.image = require(`@/assets/${this.avatars[this.getCurrentOpponentId].image}`);
        },
-       fullscreenChange() {
-         this.fullscreen = !this.fullscreen;
-         if (this.fullscreen) document.getElementById('game').style.height = "850px";
-         else document.getElementById('game').style.height = "480px";
-       },
        getEnemyPokemon() {
-         this.getPokemonInfoFromList(this.getEnemyBattlePokemon, this.enemyPokemon);
+         this.getPokemonInfoFromList(this.getEnemyBattlePokemon, this.enemyPokemon).then(() => {
+           this.setLoad({ value: false });
+         });
        },
        animateDamage(isHome) {
          const targetElement = isHome? $('.pokemonHome') : $('.pokemonEnemy');
