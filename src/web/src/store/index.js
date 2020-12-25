@@ -15,6 +15,7 @@ export default new Vuex.Store({
       pokemon: [],
       starters: [],
       coins: 0,
+      level: 1,
       items: [],
       initialized: false,
       currentOpponentId: 0,
@@ -73,6 +74,9 @@ export default new Vuex.Store({
     },
     getEvolutionData(state) {
       return state.evolutionData;
+    },
+    getUserLevel(state) {
+      return state.userInfo.level;
     }
   },
   mutations: {

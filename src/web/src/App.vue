@@ -22,11 +22,11 @@
                 </a>
             </div>
           </div>
-          <OptionsModal v-if = "showOptionsModal"
+          <ProfileModal v-if = "showOptionsModal"
                        :username = "username"
                        :logout = "logout"
                        @close = "onOptionsClose">
-         </OptionsModal>
+         </ProfileModal>
          <Chat v-if="showChat"
                @close="showChat=false" />
         </div>
@@ -45,13 +45,13 @@
   import firebase from "firebase/app";
   import 'firebase/database';
   import 'firebase/auth';
-  import OptionsModal from '@/components/modals/OptionsModal';
+  import ProfileModal from '@/components/modals/ProfileModal';
   import Chat from '@/components/modals/Chat';
 
   export default {
     name: 'app',
     mixins: [firebaseConfigProperties, urlAuthMixin],
-    components: { OptionsModal, Chat },
+    components: { ProfileModal, Chat },
     data() {
       return {
         username: '',
@@ -115,7 +115,7 @@
         console.log('fetching user info...');
         firebase.database().ref('users/').on("value", (userObject) => {
           if (userObject.val()) {
-            Object.values(userObject.val()).forEach((user) => {          
+            Object.values(userObject.val()).forEach((user) => {
               if (user.mail.toLowerCase() === mail.toLowerCase()) {
                 console.log('user found!');
                 localStorage.setItem('userId', user.userId);
