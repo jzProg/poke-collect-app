@@ -190,7 +190,7 @@ const battleMixin = {
         this.getPokemonInfoFromList([ pokeId ], pokeObj).then(() => {
           this.awardPokemon({ list: pokeObj });
           this.setCurrentReward({ type: this.gameRewards[1].type, value: pokeObj });
-          if (pokeObj.held_items.length) {
+          if (pokeObj[0].held_items.length) {
              console.log("has extra item: " + pokeObj.held_items[0].item.name);
              this.getItem(pokeObj.held_items.item.name).then(res => {
                this.awardItem(res, res.name.includes('stone') ? this.prizes.STONE.type : this.gameRewards[0].type, true);
