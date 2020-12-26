@@ -20,6 +20,8 @@ export default new Vuex.Store({
       initialized: false,
       currentOpponentId: 0,
       chat: {},
+      wins: 0,
+      loses: 0
     },
     enemybattlePokemon: [],
     errorLoginMessage: '',
@@ -166,6 +168,17 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    updateStats({ commit, state }, payload) {
+      const { result } = payload.value;
+      const wins = result === 'wins' ? state.userInfo.wins + 1 : state.userInfo.wins;
+      const loses = result === 'loses' ? state.userInfo.loses + 1: state.userInfo.loses;
+      const stats = { wins, loses };
+      commit({ type: 'setUserStats', value: stats });
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('users/' + id).update({
+        stats: stats,
+      });
+    },
     removeItem({ commit, state }, payload) {
       var existingItems = state.userInfo.items || [];
       const indexOfItem = existingItems.map(e => e.name).indexOf(payload.item);

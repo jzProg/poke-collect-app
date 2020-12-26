@@ -42,6 +42,7 @@ const battleMixin = {
     ...mapActions([
       'awardPokemon',
       'awardItems',
+      'updateStats'
     ]),
     getNextState() {
       const currentState = this.gameState.currentState;
@@ -144,8 +145,13 @@ const battleMixin = {
     },
     endGame() {
       console.log('game ended...');
-      if (this.gameState.homeScore > this.gameState.enemyScore) this.awarding();
-      else this.delayCall(() => { this.gameState.currentState = this.getNextState(); }); // game finished -> end
+      if (this.gameState.homeScore > this.gameState.enemyScore) {
+        this.updateStats({ value: { result: 'wins' } });
+        this.awarding();
+      } else {
+        this.updateStats({ value: { result: 'loses' } });
+        this.delayCall(() => { this.gameState.currentState = this.getNextState(); }); // game finished -> end
+      }
     },
     isGameFinished() {
       return this.gameState.currentState === 'END';
@@ -192,7 +198,7 @@ const battleMixin = {
           this.setCurrentReward({ type: this.gameRewards[1].type, value: pokeObj });
           if (pokeObj[0].held_items.length) {
              console.log("has extra item: " + pokeObj[0].held_items[0].item.name);
-             this.getItem(pokeObj[0].held_items.item.name).then(res => {
+             this.getItem(pokeObj[0].held_items[0].item.name).then(res => {
                this.awardItem(res, res.name.includes('stone') ? this.prizes.STONE.type : res.name.includes('candy') ? this.prizes.CANDY.type : this.gameRewards[0].type, true);
                this.gameState.currentState = this.getNextState(); // game finished -> end
              });
@@ -224,6 +230,13 @@ const battleMixin = {
       }
       this.awardItems({ list: [itemObj]});
       this.setCurrentReward({ type: this.gameRewards[0].type, value:  [itemObj]});
+    },
+    walkAway() {
+      this.updateStats({ value: { result: 'loses' } });
+      this.goToIndex();
+    },
+    goToIndex() {
+      this.$router.push('getStarted');
     },
     calcDamage(attacker, defender, move) {
       const gen = Generations.get(5);

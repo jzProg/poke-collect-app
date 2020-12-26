@@ -73,7 +73,7 @@
                             {{ move.move.name }}
                      </div>
                      <span style="cursor: pointer; margin: 2%"
-                           @click.prevent="goToIndex()"
+                           @click.prevent="walkAway()"
                            v-show="isHomePlayerBattlePhase()">
                             walk away <i class="fas fa-walking fa-2x"></i>
                      </span>
@@ -164,9 +164,6 @@
        ...mapMutations([
          'setLoad'
        ]),
-       goToIndex() {
-         this.$router.push('getStarted');
-       },
        getScoreStyle(hp) {
          const score = hp;
          const full = this.defaultHP;
