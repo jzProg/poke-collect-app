@@ -15,6 +15,13 @@
        <h4>{{ item.name }}</h4>
      </div>
    </div>
+   <div class="row" style="width: 100%;margin-top:4%" v-if="candies.length">
+     <h3><b>Candies</b></h3>
+     <div v-for="(candy, index) in candies" :key="index" :class="['col-md-' + Math.ceil(12/candies.length)]" style="margin-top:4%">
+       <img :src="candy.image" height="70" width="70" @click.prevent="showItem(candy)" style="cursor:pointer">
+       <h4>{{ candy.name }}</h4>
+     </div>
+   </div>
    <ItemDetails v-if = "showInfo" :info="info" :is-stone="info.type === prizes.STONE.type" @close="showInfo = false;"/>
   </div>
 </template>
@@ -51,6 +58,10 @@
       stones() {
         if (!this.getItems) return [];
         return this.getItems.filter(item => item.type === this.prizes.STONE.type);
+      },
+      candies() {
+        if (!this.getItems) return [];
+        return this.getItems.filter(item => item.type === this.prizes.CANDY.type);
       }
     }
   }

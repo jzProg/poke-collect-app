@@ -180,7 +180,7 @@ const battleMixin = {
         console.log('type ITEM reward');
         const itemId = this.getRandomInt(1, 100);
         this.getItem(itemId).then(res => {
-          this.awardItem(res, rewardType, false);
+          this.awardItem(res, res.name.includes('stone') ? this.prizes.STONE.type : res.name.includes('candy') ? this.prizes.CANDY.type : rewardType, false);
           this.gameState.currentState = this.getNextState(); // game finished -> end
         });
       } else {
@@ -193,7 +193,7 @@ const battleMixin = {
           if (pokeObj[0].held_items.length) {
              console.log("has extra item: " + pokeObj[0].held_items[0].item.name);
              this.getItem(pokeObj[0].held_items.item.name).then(res => {
-               this.awardItem(res, res.name.includes('stone') ? this.prizes.STONE.type : this.gameRewards[0].type, true);
+               this.awardItem(res, res.name.includes('stone') ? this.prizes.STONE.type : res.name.includes('candy') ? this.prizes.CANDY.type : this.gameRewards[0].type, true);
                this.gameState.currentState = this.getNextState(); // game finished -> end
              });
           } else this.gameState.currentState = this.getNextState(); // game finished -> end

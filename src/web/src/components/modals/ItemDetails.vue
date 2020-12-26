@@ -38,7 +38,7 @@
         };
       },
       created() {
-        this.getPokemonToEvolve();
+        if (this.isStone) this.getPokemonToEvolve();
       },
       methods: {
         ...mapActions([

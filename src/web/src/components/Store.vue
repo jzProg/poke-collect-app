@@ -13,10 +13,10 @@
        <img src="../assets/stone2.png" @click.prevent="buyStones()" height="200px" width="200px">
        <h4>Buy Stones and evolve your pokemon!</h4>
      </div>
-     <div id="item" class="col-md-4" style="opacity:0.5">
-       <h3><b>Items</b></h3><br>
-       <img src="../assets/berry.png" @click.prevent="buyItems()" height="200px" width="200px">
-       <h4>Buy items</h4>
+     <div id="item" class="col-md-4" style="cursor:pointer">
+       <h3><b>Rare Candies</b></h3><br>
+       <img src="../assets/candy.png" @click.prevent="buyCandies()" height="200px" width="200px">
+       <h4>Buy candies to level up your pokemon!</h4>
      </div>
    </div>
    <BuyModal v-if="showBuyModal" :items="availableItems" :buyAction="onBuyAction" @close="showBuyModal = false"></BuyModal>
@@ -38,15 +38,19 @@
       return {
         availableItems: [],
         stoneInfo: [],
+        candyInfo: {},
         showBuyModal: false,
       }
     },
     created() {
       for(var i = 0; i < this.prizes.STONE.items.length; i++) {
-        this.getItem(this.prizes.STONE.items[i].title).then((item) => {
+        this.getItem(this.prizes.STONE.items[i].title).then(item => {
          this.stoneInfo.push({ image: item.sprites.default, text: item.effect_entries[0].short_effect });
         });
       };
+      this.getItem(this.prizes.CANDY.items[0].title).then(candy => {
+        this.candyInfo = { image: candy.sprites.default, text: candy.effect_entries[0].short_effect };
+      });
     },
     methods: {
       ...mapMutations([
@@ -68,8 +72,11 @@
         }
         this.showBuyModal = true;
       },
-      buyItems() {
-        console.log("buying items...");
+      buyCandies() {
+        this.availableItems = this.prizes.CANDY;
+        this.availableItems.items[0].image = this.candyInfo.image;
+        this.availableItems.items[0].text = this.candyInfo.text;
+        this.showBuyModal = true;
       },
       onBuyAction(itemBudle, rewardType, coins) {
         this.setLoad({ value: true });
@@ -88,7 +95,7 @@
                 this.$router.push('reward');
               });
           });
-        } else {
+        } else { // stone or candy
           itemList = itemBudle.map(item => item.image);
           this.purchase({ items: itemBudle, type: rewardType, cost: coins }).then(() => {
             this.setCurrentReward({ value: itemList, type: rewardType });

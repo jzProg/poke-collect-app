@@ -28,6 +28,10 @@ const pokemonMixin = {
         }
       ],
       prizes: {
+        CANDY: {
+          type: 'candy',
+          items: [{ title: 'rare-candy', quantity: 1, price: 100 }],
+        },
         PACK: {
           type: 'pack',
           items: [{ title: 'pokemon pack', quantity: 1, price: 700 }],
