@@ -33,6 +33,9 @@ export default new Vuex.Store({
     getLoad(state) {
       return state.load;
     },
+    getUserInfo(state) {
+      return state.userInfo;
+    },
     getItems(state) {
       return state.userInfo.items;
     },
@@ -83,6 +86,11 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    setUserStats(state, payload) {
+      const { wins, loses } = payload.value;
+      state.userInfo.wins =  wins;
+      state.userInfo.loses =  loses;
+    },
     setLoad(state, payload) {
       state.load = payload.value;
     },

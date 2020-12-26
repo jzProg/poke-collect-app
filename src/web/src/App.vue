@@ -108,6 +108,7 @@
           'setUserImage',
           'setItems',
           'setUserLevel',
+          'setUserStats'
       ]),
       ...mapActions([
         'userLogout',
@@ -133,6 +134,7 @@
                 this.setUserLevel({ value: user.level });
                 this.setUserCoins({ value: user.coins });
                 this.setUserImage({ value: user.image });
+                this.setUserStats({ value: user.stats });
                 this.setItems({ value: user.items });
                 this.username = user.username;
                 this.setLoginUsername({ value: user.username });

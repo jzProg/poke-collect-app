@@ -14,9 +14,11 @@
                     :choose-action="onChangeAvatar"
                     @confirm="onChangeAvatar"
                     @close="showChangeAvatar = false"/>
-      <h3>Lvl <b>{{ getUserLevel }}</b></h3>
-      <h4># Pokemon: <b>{{ getUserPokemon.length }}</b>/{{ totalPokemon }}</h4>
-      <h4>{{ getUserCoins }} <i class="fas fa-coins" style="color:yellow"></i></h4>
+      <h3>Lvl <b>{{ getUserInfo.level }}</b></h3>
+      <h4># Pokemon: <b>{{ getUserInfo.pokemon.length }}</b>/{{ totalPokemon }}</h4>
+      <h4 v-if="getUserInfo.wins">wins: <b>{{ getUserInfo.wins }}</b></h4>
+      <h4 v-if="getUserInfo.loses">loses: <b>{{ getUserInfo.loses }}</b></h4>
+      <h4>{{ getUserInfo.coins }} <i class="fas fa-coins" style="color:yellow"></i></h4>
     </div>
     <div slot="footer" class="text-center row">
       <div class="col-md-12" style="padding: 1%">
@@ -58,7 +60,7 @@
         this.$router.push('Game');
       },
       getImage() {
-        return require(`@/assets/profileAvatar/${this.getUserImage}`);
+        return require(`@/assets/profileAvatar/${this.getUserInfo.image}`);
       },
       goToPage(page) {
         this.$router.push(`\${page}`);
@@ -75,7 +77,7 @@
         });
       },
       onChangeAvatar(index) {
-        this.changeAvatar({image: index});
+        this.changeAvatar({ image: index });
       },
       close() {
         this.$emit('close');
@@ -83,10 +85,7 @@
     },
     computed: {
       ...mapGetters([
-        'getUserPokemon',
-        'getUserCoins',
-        'getUserImage',
-        'getUserLevel',
+        'getUserInfo',
       ]),
     },
   }
