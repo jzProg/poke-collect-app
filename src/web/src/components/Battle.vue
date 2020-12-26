@@ -32,7 +32,7 @@
                        <b>{{ enemybattlePokemon.name }}</b>
                      </span>
                      <span class="level">
-                        Lv{{ enemybattlePokemon.base_experience }}
+                        Lv{{ enemybattlePokemon.level }}
                      </span>
                    </div>
                  </div>
@@ -51,7 +51,7 @@
                        <b>{{ homebattlePokemon.name }} </b>
                      </span>
                      <span class="level">
-                       Lv{{ homebattlePokemon.base_experience }}
+                       Lv{{ homebattlePokemon.level }}
                      </span>
                    </div>
                  </div>
@@ -188,11 +188,9 @@
        },
        onPokemonChoosed(poke) {
          if (this.gameState.currentState === 'HOME_OPTION') {
-           this.getPokemon(poke).then((response) => {
-             this.homebattlePokemon = response;
-             this.gameState.homePokemonHP = this.getHPFromHistory(poke) || this.defaultHP;
-             this.gameState.currentState = this.getNextState();
-           });
+           this.homebattlePokemon = this.getHomePokemon.filter(starter => starter.name === poke)[0];
+           this.gameState.homePokemonHP = this.getHPFromHistory(poke) || this.defaultHP;
+           this.gameState.currentState = this.getNextState();
          } else console.log('You cannot choose another pokemon right now!');
        }
     },

@@ -146,10 +146,10 @@ const battleMixin = {
     endGame() {
       console.log('game ended...');
       if (this.gameState.homeScore > this.gameState.enemyScore) {
-        this.updateStats({ value: { result: 'wins' } });
+        this.updateStats({ value: { result: 'wins' }});
         this.awarding();
       } else {
-        this.updateStats({ value: { result: 'loses' } });
+        this.updateStats({ value: { result: 'loses' }});
         this.delayCall(() => { this.gameState.currentState = this.getNextState(); }); // game finished -> end
       }
     },
@@ -232,7 +232,7 @@ const battleMixin = {
       this.setCurrentReward({ type: this.gameRewards[0].type, value:  [itemObj]});
     },
     walkAway() {
-      this.updateStats({ value: { result: 'loses' } });
+      this.updateStats({ value: { result: 'loses' }});
       this.goToIndex();
     },
     goToIndex() {

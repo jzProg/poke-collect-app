@@ -1,9 +1,11 @@
 import { mapGetters } from 'vuex';
+import formulaMixin from '@/common/mixins/formulas';
 
 const Pokedex = require('pokeapi-js-wrapper');
 const P = new Pokedex.Pokedex();
 
 const pokemonMixin = {
+  mixins: [formulaMixin],
   data() {
     return {
       totalPokemon: 300, // TODO map by region (?)
@@ -225,14 +227,17 @@ const pokemonMixin = {
              Object.assign(data[i], { color: res.color.name,
                                       pokeImage: image,
                                       description: res.flavor_text_entries[0].flavor_text,
-                                      level: 1,
+                                      level: this.getInitialLevel(res.growth_rate.name, data[i].base_experience),
+                                      growth_rate: res.growth_rate.name,
                                       copies: 1,
                                       is_legendary: res.is_legendary,
                                       is_mythical: res.is_mythical,
                                       evolutionChainId });
              if (listToFill.filter(e => e.name === data[i].name).length <= 0) {
-               const { id, name, stats, height, weight, types, sprites, moves, base_experience, color, pokeImage, description, level, copies, evolutionChainId, is_legendary, is_mythical, held_items } = data[i];
-               listToFill.push({ id, name, stats, height, weight, types, level, is_legendary, evolutionChainId, held_items, is_mythical, copies,
+               const { id, name, stats, height, weight, types, sprites, moves, base_experience, color, pokeImage,
+                       description, level, copies, evolutionChainId, is_legendary, is_mythical, held_items, growth_rate } = data[i];
+               listToFill.push({ id, name, stats, height, weight, types, level, is_legendary,
+                                 evolutionChainId, held_items, is_mythical, copies, growth_rate,
                                  sprites: { back_default: sprites.back_default, front_default: sprites.front_default },
                                  moves: { 0: { move: moves[0] ? moves[0].move : ''},
                                           1: { move: moves[1] ? moves[1].move : ''},
@@ -243,6 +248,18 @@ const pokemonMixin = {
            });
         });
       });
+    },
+    getInitialLevel(type, baseXP) {
+      let xp;
+      let resultLevel;
+      for (let level = 1; level <= 100; level++) {
+        xp = this.getExperienceBasedlevel(type, level);
+        if (xp >= baseXP) {
+          resultLevel = level;
+          break
+        }
+      }
+      return resultLevel;
     },
     chooseRandomPokemon(min, max) {
       let randomId = this.getRandomInt(min, max);
