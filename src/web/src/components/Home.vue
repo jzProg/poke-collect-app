@@ -15,7 +15,7 @@
            <Poke-list :poke-list="showCollection? getCollectionUpdated : getStartersUpdated"
                      :action-on-click="showCollection ? onClickAction : onInfo"
                      v-imageloader="loaded"
-                     :page="page"
+                     :page="page[showCollection]"
                      :simple-mode="!showCollection">
           </Poke-list>
         </div>
@@ -55,7 +55,7 @@
         showCollection: false,
         showOptions: false,
         seeDetails: false,
-        page: 0,
+        page: { false: 0, true: 0 }, // page per tab
         imageLoadedStarters: false,
         selectedPokemon: {},
         imageLoadedCollection: false,
@@ -86,16 +86,16 @@
         this.setLoad({ value: false });
       },
       nextPage() {
-        this.page += 1;
+        this.page[this.showCollection] += 1;
       },
       prevPage() {
-        this.page -= 1;
+        this.page[this.showCollection] -= 1;
       },
       hasPrev() {
-        return this.page > 0;
+        return this.page[this.showCollection] > 0;
       },
       hasNext() {
-        return (this.page + 1)*20 < this.getCollectionUpdated.length;
+        return (this.page[this.showCollection] + 1)*20 < this.getCollectionUpdated.length;
       },
       onInfo(name) {
         this.seeDetails = true;
