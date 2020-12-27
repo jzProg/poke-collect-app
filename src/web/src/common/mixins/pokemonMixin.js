@@ -284,9 +284,15 @@ const pokemonMixin = {
       let evolveToByLevelUp;
       if (species.name === name) {
         evolveToByLevelUp = evolves_to.filter(ev => ev.evolution_details[0].trigger && ev.evolution_details[0].trigger.name === 'level-up')[0];
-        if (!evolveToByLevelUp) return undefined;
+        if (!evolveToByLevelUp) {
+          this.evolutionErrorMessage = `${name} doesn't have next form...`;
+          return null;
+        }
         const { min_level } = evolveToByLevelUp.evolution_details[0];
-        if (level < min_level) return null;
+        if (level < min_level) {
+          this.evolutionErrorMessage = `${name} hasn't reached the minimum level (${min_level}) to evolve...`;
+          return null;
+        }
         return evolveToByLevelUp.species.name;
       }
       evolveToByLevelUp = evolves_to[0];

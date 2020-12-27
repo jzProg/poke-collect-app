@@ -55,11 +55,8 @@
                 Evolve <i class="fas fa-street-view"></i>
         </button>
       </div>
-      <span style="color: red" v-if="hasEvolutionLevelErrorMessage">
-        {{ info.name }} hasn't reached the minimum level to evolve...
-      </span>
-      <span style="color: red" v-if="hasEvolutionErrorMessage">
-        {{ info.name }} doesn't have next form...
+      <span style="color: red" v-if="evolutionErrorMessage">
+        {{ evolutionErrorMessage }}
       </span>
     </div>
   </Modal>
@@ -81,8 +78,7 @@
         return {
           image: '',
           showLevelUp: false,
-          hasEvolutionErrorMessage: false,
-          hasEvolutionLevelErrorMessage: false,
+          evolutionErrorMessage: '',
           candy: {},
         }
       },
@@ -120,7 +116,6 @@
             const evolveTo = this.getNextFormByLevelUp(res.chain, this.info.name, this.info.level);
             if (!evolveTo) {
               this.setLoad({ value: false });
-              (evolveTo === undefined) ? this.hasEvolutionErrorMessage = true : this.hasEvolutionLevelErrorMessage = true
               return;
             }
             let pokeObj = [];
