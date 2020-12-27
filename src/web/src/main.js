@@ -7,15 +7,17 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import store from './store';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
-import { BSidebar, BImg, BButton, BNavbar, BNavbarBrand, BNavbarToggle, BNavItem  } from 'bootstrap-vue';
+import { BSidebar, BImg, BButton, BNavbar, BNavbarNav, BNavbarBrand, BNavbarToggle, BNavItem, BCollapse  } from 'bootstrap-vue';
 
 Vue.component('b-sidebar', BSidebar);
 Vue.component('b-img', BImg);
 Vue.component('b-button', BButton);
-Vue.component('b-navbar', BNavbar)
-Vue.component('b-navbar-toggle', BNavbarToggle)
-Vue.component('b-nav-item', BNavItem)
-Vue.component('b-navbar-brand', BNavbarBrand)
+Vue.component('b-navbar', BNavbar);
+Vue.component('b-navbar-nav', BNavbarNav);
+Vue.component('b-navbar-toggle', BNavbarToggle);
+Vue.component('b-nav-item', BNavItem);
+Vue.component('b-navbar-brand', BNavbarBrand);
+Vue.component('b-collapse', BCollapse);
 
 Vue.use(VueAxios, axios);
 

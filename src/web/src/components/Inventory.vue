@@ -1,17 +1,20 @@
 <template>
   <div class="container">
-    <h1 style="margin-bottom:5%">
+    <h1>
       <img src="../assets/bag.png" height="70px" width="70px">
       <b>Inventory</b>
     </h1>
-    <div class="row"
-         v-for="(category, ind) in categories"
-         :key="ind"
-         style="width: 100%; margin-top: 4%"
-         v-if="getItems.filter(item => item.type === category.filter).length">
-      <h3><b>{{ category.text }}</b></h3>
-      <div v-for="(it, index) in getItems.filter(item => item.type === category.filter)"
-           :key="index"
+    <div class="row" style="background-color: #E6E6FA; width: 100%; border-radius: 15px">
+      <div v-for="(category, ind) in categories"
+          :key="ind"
+          :class="['col-md-4', (ind === selected)? 'selected' : '']"
+          @click.prevent="choose(ind)"
+          style="cursor: pointer">
+         <h3><b>{{ category.text }}</b></h3>
+      </div>
+    </div>
+    <div class="row">
+      <div v-for="(it, index) in getItems.filter(item => item && item.type === categories[selected].filter)"
            class="col-md-3"
            style="margin-top: 4%">
         <img :src="it.image"
@@ -40,6 +43,7 @@
     components: { ItemDetails },
     data() {
       return {
+        selected: 0,
         showInfo: false,
         info: {},
         categories: [{ text: 'Evolution Stones', filter: 'stone' },
@@ -48,6 +52,9 @@
       };
     },
     methods: {
+      choose(index) {
+        this.selected = index;
+      },
       showItem(item) {
         this.info = item;
         this.showInfo = true;
@@ -56,7 +63,13 @@
     computed: {
       ...mapGetters([
         'getItems',
-      ])
+      ]),
     }
   }
 </script>
+
+<style scoped>
+  .selected {
+    background-color: lightgray;
+  }
+</style>
