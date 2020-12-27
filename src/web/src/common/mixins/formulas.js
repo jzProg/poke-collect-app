@@ -12,8 +12,9 @@ const formulaMixin = {
     }
   },
   methods: {
-    getBattleExperience(battleInfo) {
-       return 2; // TODO: calculate based on https://bulbapedia.bulbagarden.net/wiki/Experience
+    getBattleExperience({ pokemonNotFainted, ...rest }) {
+       const sum = Object.values(rest).reduce((a, b) => Number(a) *  Number(b));
+       return Math.floor(sum/(7*parseInt(pokemonNotFainted, 10)));
     },
     getExperienceBasedlevel(growthRateType, level) {
       switch (growthRateType) {

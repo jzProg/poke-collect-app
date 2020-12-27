@@ -227,7 +227,7 @@ const pokemonMixin = {
              Object.assign(data[i], { color: res.color.name,
                                       pokeImage: image,
                                       description: res.flavor_text_entries[0].flavor_text,
-                                      level: this.getInitialLevel(res.growth_rate.name, data[i].base_experience),
+                                      level: this.getLevelBasedOnXP(res.growth_rate.name, data[i].base_experience),
                                       growth_rate: res.growth_rate.name,
                                       copies: 1,
                                       is_legendary: res.is_legendary,
@@ -249,7 +249,7 @@ const pokemonMixin = {
         });
       });
     },
-    getInitialLevel(type, baseXP) {
+    getLevelBasedOnXP(type, baseXP) {
       let xp;
       let resultLevel;
       for (let level = 1; level <= 100; level++) {

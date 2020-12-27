@@ -7,6 +7,7 @@ const battleMixin = {
       homebattlePokemon: {},
       defaultHP: 300,
       gameState: {
+        faintedInfo: { totalPokemonFainted: 0, xp: 0, level: 0  },
         homeScore: 0,
         enemyScore: 0,
         homePokemonHP: 300,
@@ -42,7 +43,8 @@ const battleMixin = {
     ...mapActions([
       'awardPokemon',
       'awardItems',
-      'updateStats'
+      'updateStats',
+      'updateXPs'
     ]),
     getNextState() {
       const currentState = this.gameState.currentState;
@@ -66,8 +68,14 @@ const battleMixin = {
                                 return  this.gameState.homePokemonHP > 0 ? 'HOME_OPTION' : 'ENEMY_WINNER';
       case 'HOME_WINNER': this.message = this.enemybattlePokemon.name + stateMessage;
                           this.gameState.enemyFaint = true;
+                          this.gameState.faintedInfo.totalPokemonFainted++;
+                          this.gameState.faintedInfo.xp += this.enemybattlePokemon.base_experience;
+                          this.gameState.faintedInfo.level += this.enemybattlePokemon.level;
                           return this.gameState.homeScore === 3 ? 'FINISH' : 'ENEMY_CHOOSE';
       case 'ENEMY_WINNER': this.message = this.homebattlePokemon.name + stateMessage;
+                           this.gameState.faintedInfo.totalPokemonFainted++;
+                           this.gameState.faintedInfo.xp += this.homebattlePokemon.base_experience;
+                           this.gameState.faintedInfo.level += this.homebattlePokemon.level;
                            this.disabled[this.homebattlePokemon.name] = true;
                            this.homebattlePokemon = {}; //faint
                            return this.gameState.enemyScore === 3 ? 'FINISH' : 'HOME_CHOOSE';
@@ -208,24 +216,39 @@ const battleMixin = {
       }
     },
     prepareStatsObject() {
-      // TODO: update Vuex
-      // TODO: battleInfo
-      // TODO: track each pokemon game actions
-      // TODO: update formula in formulas.js
       for (const poke of this.getHomePokemon) {
-        const battleInfo = {};
+        if (!this.gameState.homeUsedAbilitiesCount.hasOwnProperty(poke.name)) { // if not participate
+          continue;
+        }
+        const battleInfo = {
+          pokemonNotFainted: 6 - this.gameState.faintedInfo.totalPokemonFainted,
+          isWild: 1.5,
+          baseXPofFainted: this.gameState.faintedInfo.xp,
+          holdingEgg: 1,
+          affection: 1,
+          LvLofFainted: this.gameState.faintedInfo.level,
+          pointPower: 1,
+          // LvLofVictorious: 0,
+          originalTrainer: 1,
+          pastLevel: 1
+        };
+        console.log(battleInfo);
         const newXP = poke.base_experience + this.getBattleExperience(battleInfo);
+        console.log(this.getBattleExperience(battleInfo));
         const stats = {
           image: poke.pokeImage,
-          oldXP: poke.base_experience,
+          oldXP: poke.XP || poke.base_experience,
           newXP
         };
-        const requiredXPToLevelUp = this.getExperienceBasedlevel(poke.level + 1); // check XP required for next level
-        if (requiredXPToLevelUp <= newXP) {
+        const newLevel = this.getLevelBasedOnXP(poke.growth_rate, newXP);
+        let hasLevelUp = false;
+        if (newLevel !== poke.level) {
           console.log('level Up!');
+          hasLevelUp = true;
           stats.oldLvl = poke.level,
           stats.newLvl = poke.level + 1
         }
+        this.updateXPs({ name: poke.name, newXP, hasLevelUp });
         this.pokeStats.push(stats);
       }
     },

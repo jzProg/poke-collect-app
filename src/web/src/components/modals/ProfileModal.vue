@@ -57,13 +57,14 @@
         'changeAvatar',
       ]),
       startNewGame() {
-        this.$router.push('Game');
+        this.goToPage('game');
+        this.close();
       },
       getImage() {
         return require(`@/assets/profileAvatar/${this.getUserInfo.image}`);
       },
       goToPage(page) {
-        this.$router.push(`\${page}`);
+        this.$router.push(`/${page}`);
       },
       changePic() {
         this.showChangeAvatar = true;
