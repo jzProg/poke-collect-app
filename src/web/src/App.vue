@@ -9,8 +9,8 @@
           <img :src="require('./assets/pokeball.png')" height="100px" width="100px">
         </div>
           <div id="profileDiv" v-if="username">
-            <b-button class="profileItem" v-b-toggle.sidebar-variant><i class="fas fa-bars"></i></b-button>
-            <i class="fab fa-rocketchat fa-5x profileItem" @click.prevent="loadChat()"></i>
+            <b-button class="profileItem" v-b-toggle.sidebar-variant><i class="fas fa-bars"/></b-button>
+            <i class="fab fa-rocketchat fa-5x profileItem" @click.prevent="loadChat()"/>
             <div v-if="$route.meta.hasProfileHeader">
                 <a @click.prevent="showOptions">
                   <img :src="getImage()"
@@ -24,11 +24,10 @@
                        :username="username"
                        :logout="logout"
                        class="fragment"
-                       @close="onOptionsClose">
-         </ProfileModal>
-         <Chat v-if="showChat"
+                       @close="onOptionsClose"/>
+          <Chat v-if="showChat"
                class="fragment"
-               @close="showChat=false" />
+               @close="showChat=false"/>
     </div>
     <div class="fragment">
       <router-view/>
@@ -36,7 +35,7 @@
     <Congrats v-if="showCongrats && !getUserInfo.seenCongrats && getUserInfo.pokemon.length === totalPokemon"
               :total="totalPokemon"
               @close="onCongrats()"/>
-    <Loading v-if="getLoad" />
+    <Loading v-if="getLoad"/>
   </div>
 </template>
 

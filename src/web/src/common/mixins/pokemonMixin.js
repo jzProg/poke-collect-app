@@ -40,6 +40,7 @@ const pokemonMixin = {
         },
         STONE: {
          type: 'stone',
+         text: 'Evolution Stones',
          items: [{ title: 'fire-stone', evolution: ['eevee', 'growlithe', 'pansear', 'vulpix'], quantity: 1, price: 2500 },
                   { title: 'water-stone', evolution: ['eevee', 'lombre', 'panpour', 'poliwhirl', 'shellder', 'staryu'], quantity: 1, price: 2200 },
                   { title: 'moon-stone', evolution: ['clefairy', 'jigglypuff', 'munna', 'nidorina', 'nidorino', 'skitty'], quantity: 1, price: 1800 },
