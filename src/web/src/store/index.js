@@ -168,15 +168,17 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    updateXPs({ commit, state }, payload) {
-      const { name, newXP, hasLevelUp } = payload;
-      const newPokemon = state.userInfo.pokemon.filter(poke => poke.name === name)[0];
-      newPokemon.XP = newXP;
-      if (hasLevelUp) newPokemon.level = parseInt(newPokemon.level, 10) + 1;
-      commit({ type: 'replaceCollectionPokemon', value: { from: newPokemon, to: newPokemon }});
-      if (state.userInfo.starters.find(starter => starter.name === name || newPokemon.id === starter.id)) {
-        commit({ type: 'storePokemonToBeSwitched', value: newPokemon });
-        commit({ type: 'replaceStarterPokemon', value: { pokeId: newPokemon.id, name: newPokemon.name }})
+    updateXPs({ commit, state }, { value }) {
+      for (const pokemon of value) {
+        const { name, newXP, hasLevelUp } = pokemon;
+        const newPokemon = state.userInfo.pokemon.filter(poke => poke.name === name)[0];
+        newPokemon.XP = newXP;
+        if (hasLevelUp) newPokemon.level = parseInt(newPokemon.level, 10) + 1;
+        commit({ type: 'replaceCollectionPokemon', value: { from: newPokemon, to: newPokemon }});
+        if (state.userInfo.starters.find(starter => starter.name === name || newPokemon.id === starter.id)) {
+          commit({ type: 'storePokemonToBeSwitched', value: newPokemon });
+          commit({ type: 'replaceStarterPokemon', value: { pokeId: newPokemon.id, name: newPokemon.name }})
+        }
       }
       var id = localStorage.getItem('userId');
       return firebase.database().ref('users/' + id).update({

@@ -217,27 +217,29 @@ const battleMixin = {
       }
     },
     prepareStatsObject() {
+      const battleInfo = {
+        pokemonNotFainted: 6 - this.gameState.faintedInfo.totalPokemonFainted,
+        isWild: 1.5,
+        baseXPofFainted: this.gameState.faintedInfo.xp,
+        holdingEgg: 1,
+        affection: 1,
+        LvLofFainted: this.gameState.faintedInfo.level,
+        pointPower: 1,
+        // LvLofVictorious: 0,
+        originalTrainer: 1,
+        pastLevel: 1
+      };
+      const battleXP = this.getBattleExperience(battleInfo);
       for (const poke of this.getHomePokemon) {
         if (!this.gameState.homeUsedAbilitiesCount.hasOwnProperty(poke.name)) { // if not participate
           continue;
         }
-        const battleInfo = {
-          pokemonNotFainted: 6 - this.gameState.faintedInfo.totalPokemonFainted,
-          isWild: 1.5,
-          baseXPofFainted: this.gameState.faintedInfo.xp,
-          holdingEgg: 1,
-          affection: 1,
-          LvLofFainted: this.gameState.faintedInfo.level,
-          pointPower: 1,
-          // LvLofVictorious: 0,
-          originalTrainer: 1,
-          pastLevel: 1
-        };
-        const newXP = (poke.XP || poke.base_experience) + this.getBattleExperience(battleInfo);
+        const newXP = (poke.XP || poke.base_experience) + battleXP;
         const stats = {
           image: poke.pokeImage,
           oldXP: poke.XP || poke.base_experience,
-          newXP
+          newXP,
+          name: poke.name,
         };
         const newLevel = this.getLevelBasedOnXP(poke.growth_rate, newXP);
         let hasLevelUp = false;
@@ -247,9 +249,10 @@ const battleMixin = {
           stats.oldLvl = poke.level,
           stats.newLvl = poke.level + 1
         }
-        this.updateXPs({ name: poke.name, newXP, hasLevelUp });
+        stats.hasLevelUp = hasLevelUp;
         this.pokeStats.push(stats);
       }
+      this.updateXPs({ value: this.pokeStats });
     },
     prepareBattleObject(statObj) {
       return  {
