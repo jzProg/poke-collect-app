@@ -279,6 +279,18 @@ const pokemonMixin = {
       }
       evolveToByStone = evolves_to[0];
       return this.getNextForm(evolveToByStone, name, stoneName);
+    },
+    getNextFormByLevelUp({ species, evolves_to }, name, level) {
+      let evolveToByLevelUp;
+      if (species.name === name) {
+        evolveToByLevelUp = evolves_to.filter(ev => ev.evolution_details[0].trigger && ev.evolution_details[0].trigger.name === 'level-up')[0];
+        if (!evolveToByLevelUp) return undefined;
+        const { min_level } = evolveToByLevelUp.evolution_details[0];
+        if (level < min_level) return null;
+        return evolveToByLevelUp.species.name;
+      }
+      evolveToByLevelUp = evolves_to[0];
+      return this.getNextFormByLevelUp(evolveToByLevelUp, name, level);
     }
   },
   computed: {

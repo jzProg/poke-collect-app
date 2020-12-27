@@ -55,8 +55,11 @@
                 Evolve <i class="fas fa-street-view"></i>
         </button>
       </div>
-      <span style="color: red" v-if="hasEvolutionErrorMessage">
+      <span style="color: red" v-if="hasEvolutionLevelErrorMessage">
         {{ info.name }} hasn't reached the minimum level to evolve...
+      </span>
+      <span style="color: red" v-if="hasEvolutionErrorMessage">
+        {{ info.name }} doesn't have next form...
       </span>
     </div>
   </Modal>
@@ -79,6 +82,7 @@
           image: '',
           showLevelUp: false,
           hasEvolutionErrorMessage: false,
+          hasEvolutionLevelErrorMessage: false,
           candy: {},
         }
       },
@@ -88,10 +92,13 @@
       methods: {
         ...mapActions([
           'levelUpPokemon',
+          'evolvePokemon',
           'removeItem',
         ]),
         ...mapMutations([
-          'setLoad'
+          'setLoad',
+          'storeEvolutionData',
+          'setCurrentReward',
         ]),
         onLevelUp(quantity) {
           this.levelUpPokemon({ name: this.info.name, quantity }).then(() => {
@@ -110,17 +117,17 @@
         evolve() {
           this.setLoad({ value: true });
           this.getNextEvolution(this.info).then(res => {
-            const evolveTo = null; //this.getNextForm(res.chain, poke.name, 'levelUp');
-            if (evolveTo === null) {
+            const evolveTo = this.getNextFormByLevelUp(res.chain, this.info.name, this.info.level);
+            if (!evolveTo) {
               this.setLoad({ value: false });
-              this.hasEvolutionErrorMessage = true;
+              (evolveTo === undefined) ? this.hasEvolutionErrorMessage = true : this.hasEvolutionLevelErrorMessage = true
               return;
             }
             let pokeObj = [];
             this.getPokemonInfoFromList([ evolveTo ], pokeObj).then(() => {
               this.setLoad({ value: false });
-              this.evolvePokemon({ from: poke, to: pokeObj[0] });
-              this.storeEvolutionData({ from: poke.pokeImage, to: pokeObj[0].pokeImage });
+              this.evolvePokemon({ from: this.info, to: pokeObj[0] });
+              this.storeEvolutionData({ from: this.info.pokeImage, to: pokeObj[0].pokeImage });
               this.setCurrentReward({ type: this.prizes.PACK.type, value:  pokeObj });
               this.$router.push('evolution');
             });
