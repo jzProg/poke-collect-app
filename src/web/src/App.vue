@@ -9,7 +9,11 @@
           <img :src="require('./assets/pokeball.png')" height="100px" width="100px">
         </div>
           <div id="profileDiv" v-if="username">
-            <b-button class="profileItem" v-b-toggle.sidebar-variant><i class="fas fa-bars"/></b-button>
+            <b-button class="profileItem"
+                      v-if="$route.meta.hasProfileHeader"
+                      v-b-toggle.sidebar-variant>
+              <i class="fas fa-bars"/>
+            </b-button>
             <i class="fab fa-rocketchat fa-4x profileItem" @click.prevent="loadChat()"/>
             <div v-if="$route.meta.hasProfileHeader">
                 <a @click.prevent="showOptions">
