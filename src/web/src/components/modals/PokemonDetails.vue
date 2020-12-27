@@ -1,58 +1,131 @@
 <template>
   <Modal :width="'400px'">
-    <span slot = "close" id = 'closeSymbol' @click.prevent = "close">x</span><br>
-    <h3 slot = "header">Pokemon Details</h3>
-    <div slot = "body">
+    <span slot="close" id='closeSymbol' @click.prevent="close">x</span><br>
+    <h3 slot="header">Pokemon Details</h3>
+    <div slot="body">
       <b>{{info.name.charAt(0).toUpperCase() + info.name.slice(1)}}</b>
       <div :style="getTypeStyle()">
        {{ info.types[0].type.name }}
       </div>
+      <div>lvl<b>{{ info.level }}</b></div>
       <i>{{ info.weight }} kg</i><br>
       <img :src="image" class="pokeImg row" style="margin-top: 10%"><br>
       <i style="font-size: 90%">{{ info.description }}</i>
       <div style="margin-top: 5%">
-        <div class = "row"
-             v-for = "(row,ind) in Object.keys(info.stats).length/2"
-             :key = "ind">
-          <div class = "col-md-6" v-if = "info.stats[ind*2]">
+        <div class="row"
+             v-for="(row,ind) in Object.keys(info.stats).length/2"
+             :key="ind">
+          <div class="col-md-6" v-if="info.stats[ind*2]">
              {{ normalizeStat(info.stats[ind*2].stat.name) }} <span :style="getTypeStyle()">{{ info.stats[ind*2].base_stat}}</span>
           </div>
-          <div class = "col-md-6" v-if = "info.stats[ind*2 + 1]">
+          <div class="col-md-6" v-if="info.stats[ind*2 + 1]">
              {{ normalizeStat(info.stats[ind*2 + 1].stat.name) }} <span :style="getTypeStyle()">{{ info.stats[ind*2 + 1].base_stat}}</span>
           </div>
         </div>
       </div>
+      <LevelUp v-if="showLevelUp"
+              @close="showLevelUp = false"
+              @levelUp="onLevelUp"
+              :candies="candy"
+              :poke="info"/>
     </div>
-    <div slot = "footer" class="text-center">
-     <div :style="getStyle()"
-         v-for="(move,index) in info.moves"
-         v-if="index < 4">
-         {{ move.move.name }}
-     </div>
+    <div slot="footer" class="text-center">
+      <div class="row"
+          style="margin: 0 auto;"
+          v-for="(move,index) in Object.keys(info.moves).length/2"
+          :key="index"
+          v-if="index < 4">
+          <div class="col-md-6" :style="getStyle()" v-if="info.moves[index*2]">
+              {{ info.moves[index*2].move.name }}
+          </div>
+          <div class="col-md-6" :style="getStyle()" v-if="info.moves[index*2 + 1]">
+              {{ info.moves[index*2 + 1].move.name }}
+          </div>
+      </div>
+      <div class="row" style="margin: 0 auto; margin-top: 1%">
+        <button type="button"
+                class="btn btn-primary"
+                :disabled="!hasCandies()"
+                @click.prevent="levelUp()">
+                Level Up <i class="fas fa-level-up-alt"></i>
+        </button>
+        <button type="button"
+                class="btn btn-success"
+                @click.prevent="evolve()">
+                Evolve <i class="fas fa-street-view"></i>
+        </button>
+      </div>
+      <span style="color: red" v-if="hasEvolutionErrorMessage">
+        {{ info.name }} hasn't reached the minimum level to evolve...
+      </span>
     </div>
   </Modal>
 </template>
 
 <script>
-
-import Modal from './GenericModalStructure.vue';
-import PokemonCard from '@/components/PokemonCard.vue';
-import pokemonMixin from '@/common/mixins/pokemonMixin';
+  import { mapGetters, mapMutations, mapActions } from 'vuex';
+  import Modal from './GenericModalStructure.vue';
+  import PokemonCard from '@/components/PokemonCard.vue';
+  import pokemonMixin from '@/common/mixins/pokemonMixin';
+  import LevelUp from '@/components/modals/LevelUp';
 
   export default {
       name: 'PokemonDetails',
       props: ['info'],
       mixins: [pokemonMixin],
-      components: { Modal, PokemonCard },
+      components: { Modal, PokemonCard, LevelUp },
       data() {
         return {
           image: '',
+          showLevelUp: false,
+          hasEvolutionErrorMessage: false,
+          candy: {},
         }
       },
       created() {
         this.image = this.getPokemonImage(this.info.id);
       },
       methods: {
+        ...mapActions([
+          'levelUpPokemon',
+          'removeItem',
+        ]),
+        ...mapMutations([
+          'setLoad'
+        ]),
+        onLevelUp(quantity) {
+          this.levelUpPokemon({ name: this.info.name, quantity }).then(() => {
+            this.removeItem({ item: this.prizes.CANDY.items[0].title }).then(() => {
+              this.showLevelUp = false;
+            });
+          });
+        },
+        hasCandies() {
+          return this.getItems.filter(item => item.type === this.prizes.CANDY.type).length;
+        },
+        levelUp() {
+          this.candy = this.getItems.filter(item => item.type === this.prizes.CANDY.type).slice();
+          this.showLevelUp = true;
+        },
+        evolve() {
+          this.setLoad({ value: true });
+          this.getNextEvolution(this.info).then(res => {
+            const evolveTo = null; //this.getNextForm(res.chain, poke.name, 'levelUp');
+            if (evolveTo === null) {
+              this.setLoad({ value: false });
+              this.hasEvolutionErrorMessage = true;
+              return;
+            }
+            let pokeObj = [];
+            this.getPokemonInfoFromList([ evolveTo ], pokeObj).then(() => {
+              this.setLoad({ value: false });
+              this.evolvePokemon({ from: poke, to: pokeObj[0] });
+              this.storeEvolutionData({ from: poke.pokeImage, to: pokeObj[0].pokeImage });
+              this.setCurrentReward({ type: this.prizes.PACK.type, value:  pokeObj });
+              this.$router.push('evolution');
+            });
+          });
+        },
         normalizeStat(stat) {
           return stat.includes('-') ? stat.substring(0, 2).toUpperCase() + stat.substring(stat.indexOf('-')) : stat;
         },
@@ -60,12 +133,21 @@ import pokemonMixin from '@/common/mixins/pokemonMixin';
           return { 'color' : this.info.color };
         },
         getStyle() {
-          return { 'background-color' : 'lightgray', 'color' : this.info.color, 'border-radius' : '2px', 'width' : '50%', 'margin' : '0 auto 2%' };
+          return { 'background-color' : 'lightgray',
+                   'color' : this.info.color,
+                   'border-style' : 'solid',
+                   'border-color' : 'white'
+                  };
         },
         close() {
           this.$emit('close');
         },
       },
+      computed: {
+        ...mapGetters([
+          'getItems',
+        ]),
+      }
   }
 </script>
 <style scoped>

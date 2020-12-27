@@ -168,6 +168,21 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    levelUpPokemon({ commit, state }, payload) {
+      const { name, quantity } = payload;
+      const newPokemon = state.userInfo.pokemon.filter(poke => poke.name === name)[0];
+      newPokemon.level = parseInt(newPokemon.level, 10) + parseInt(quantity, 10);
+      commit({ type: 'replaceCollectionPokemon', value: { from: newPokemon, to: newPokemon }});
+      if (state.userInfo.starters.find(starter => starter.name === name || newPokemon.id === starter.id)) {
+        commit({ type: 'storePokemonToBeSwitched', value: newPokemon });
+        commit({ type: 'replaceStarterPokemon', value: { pokeId: newPokemon.id, name: newPokemon.name }})
+      }
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('users/' + id).update({
+        pokemon: state.userInfo.pokemon,
+        starters: state.userInfo.starters
+      });
+    },
     updateStats({ commit, state }, payload) {
       const { result } = payload.value;
       const wins = result === 'wins' ? state.userInfo.wins + 1 : state.userInfo.wins;
