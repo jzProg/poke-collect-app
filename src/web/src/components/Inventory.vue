@@ -4,7 +4,7 @@
       <img src="../assets/bag.png" height="70px" width="70px">
       <b>Inventory</b>
     </h1>
-    <div class="row" style="background-color: #E6E6FA; width: 100%; border-radius: 15px">
+    <div class="row nav">
       <div v-for="(category, ind) in categories"
           :key="ind"
           :class="['col-md-4', (ind === selected)? 'selected' : '']"
@@ -15,8 +15,7 @@
     </div>
     <div class="row">
       <div v-for="(it, index) in getItems.filter(item => item && item.type === categories[selected].filter)"
-           class="col-md-3"
-           style="margin-top: 4%">
+           class="col-md-3 item">
         <img :src="it.image"
              height="70"
              width="70"
@@ -71,5 +70,16 @@
 <style scoped>
   .selected {
     background-color: lightgray;
+    border-radius: 5px;
+  }
+
+  .nav {
+    background-color: #E6E6FA;
+    width: 100%;
+    border-radius: 15px;
+  }
+
+  .item {
+    margin-top: 4%;
   }
 </style>
