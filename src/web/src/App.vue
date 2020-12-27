@@ -33,6 +33,9 @@
     <div class="fragment">
       <router-view/>
     </div>
+    <Congrats v-if="showCongrats && !getUserInfo.seenCongrats && getUserInfo.pokemon.length === totalPokemon"
+              :total="totalPokemon"
+              @close="onCongrats()"/>
     <Loading v-if="getLoad" />
   </div>
 </template>
@@ -51,19 +54,22 @@
   import ProfileModal from '@/components/modals/ProfileModal';
   import Chat from '@/components/modals/Chat';
   import Loading from '@/components/modals/Loading';
+  import Congrats from '@/components/modals/Congrats';
+  import pokemonMixin from '@/common/mixins/pokemonMixin';
 
   export default {
     name: 'app',
     directives: {
       'b-toggle': VBToggle
     },
-    mixins: [firebaseConfigProperties, urlAuthMixin],
-    components: { ProfileModal, Chat, Loading },
+    mixins: [firebaseConfigProperties, urlAuthMixin, pokemonMixin],
+    components: { ProfileModal, Chat, Loading, Congrats },
     data() {
       return {
         username: '',
         showOptionsModal: false,
         showChat: false,
+        showCongrats: true
       };
     },
     created() {
@@ -90,6 +96,10 @@
       });
     },
     methods: {
+      onCongrats() {
+        this.showCongrats = false;
+        this.updateSeenCongrats({ value: true });
+      },
       loadChat() {
         this.showChat = true;
       },
@@ -108,11 +118,13 @@
           'setUserImage',
           'setItems',
           'setUserLevel',
-          'setUserStats'
+          'setUserStats',
+          'setSeenCongrats'
       ]),
       ...mapActions([
         'userLogout',
         'clearUserData',
+        'updateSeenCongrats'
       ]),
       showOptions() {
        this.showOptionsModal = true;
@@ -136,6 +148,7 @@
                 this.setUserImage({ value: user.image });
                 this.setUserStats({ value: user.stats });
                 this.setItems({ value: user.items });
+                this.setSeenCongrats({ value: user.seenCongrats });
                 this.username = user.username;
                 this.setLoginUsername({ value: user.username });
                 bus.$emit('login', user.username);
@@ -154,7 +167,8 @@
     computed: {
       ...mapGetters([
         'getUserImage',
-        'getLoad'
+        'getLoad',
+        'getUserInfo'
       ]),
     }
 }

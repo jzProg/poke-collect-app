@@ -21,7 +21,8 @@ export default new Vuex.Store({
       currentOpponentId: 0,
       chat: {},
       wins: 0,
-      loses: 0
+      loses: 0,
+      seenCongrats: false,
     },
     enemybattlePokemon: [],
     errorLoginMessage: '',
@@ -88,6 +89,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    setSeenCongrats(state, payload) {
+      state.userInfo.seenCongrats = payload.value;
+    },
     setUserStats(state, payload) {
       const { wins, loses } = payload.value;
       state.userInfo.wins =  wins;
@@ -168,6 +172,12 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    updateSeenCongrats({ commit, state }, { value }) {
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('users/' + id).update({
+        seenCongrats: value,
+      });
+    },
     updateXPs({ commit, state }, { value }) {
       for (const pokemon of value) {
         const { name, newXP, hasLevelUp } = pokemon;
