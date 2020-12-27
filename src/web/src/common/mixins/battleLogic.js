@@ -100,7 +100,7 @@ const battleMixin = {
       this.gameState.currentState = this.getNextState(); // chooses next pokemon -> HOME_OPTION
       if (this.gameState.currentState === 'HOME_OPTION') {
         this.delayCall(() => {
-            this.gameState.currentState = this.getNextState(); // HOME_OPTION -> HOME_BATTLE
+          this.gameState.currentState = this.getNextState(); // HOME_OPTION -> HOME_BATTLE
         });
       }
     },
@@ -145,6 +145,7 @@ const battleMixin = {
     },
     endGame() {
       console.log('game ended...');
+      this.prepareStatsObject();
       if (this.gameState.homeScore > this.gameState.enemyScore) {
         this.updateStats({ value: { result: 'wins' }});
         this.awarding();
@@ -197,13 +198,35 @@ const battleMixin = {
           this.awardPokemon({ list: pokeObj });
           this.setCurrentReward({ type: this.gameRewards[1].type, value: pokeObj });
           if (pokeObj[0].held_items.length) {
-             console.log("has extra item: " + pokeObj[0].held_items[0].item.name);
+             console.log(`has extra item: ${pokeObj[0].held_items[0].item.name}`);
              this.getItem(pokeObj[0].held_items[0].item.name).then(res => {
                this.awardItem(res, res.name.includes('stone') ? this.prizes.STONE.type : res.name.includes('candy') ? this.prizes.CANDY.type : this.gameRewards[0].type, true);
                this.gameState.currentState = this.getNextState(); // game finished -> end
              });
           } else this.gameState.currentState = this.getNextState(); // game finished -> end
         });
+      }
+    },
+    prepareStatsObject() {
+      // TODO: update Vuex
+      // TODO: battleInfo
+      // TODO: track each pokemon game actions
+      // TODO: update formula in formulas.js
+      for (const poke of this.getHomePokemon) {
+        const battleInfo = {};
+        const newXP = poke.base_experience + this.getBattleExperience(battleInfo);
+        const stats = {
+          image: poke.pokeImage,
+          oldXP: poke.base_experience,
+          newXP
+        };
+        const requiredXPToLevelUp = this.getExperienceBasedlevel(poke.level + 1); // check XP required for next level
+        if (requiredXPToLevelUp <= newXP) {
+          console.log('level Up!');
+          stats.oldLvl = poke.level,
+          stats.newLvl = poke.level + 1
+        }
+        this.pokeStats.push(stats);
       }
     },
     prepareBattleObject(statObj) {

@@ -77,7 +77,6 @@
         if (user) {
           console.log('loggedIn!');
           // User is signed in.
-          //this.logout();
           user = firebase.auth().currentUser;
           user.getIdToken().then((token) => {
             localStorage.setItem('token', token);
