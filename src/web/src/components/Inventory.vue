@@ -76,6 +76,7 @@
   .nav {
     background-color: #E6E6FA;
     width: 100%;
+    margin: 0 auto;
     border-radius: 15px;
   }
 
