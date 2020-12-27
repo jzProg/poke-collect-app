@@ -225,7 +225,7 @@ export default new Vuex.Store({
     removeItem({ commit, state }, payload) {
       var existingItems = state.userInfo.items || [];
       const indexOfItem = existingItems.map(e => e.name).indexOf(payload.item);
-      if (existingItems[indexOfItem].quantity > 1) existingItems[indexOfItem].quantity -= 1;
+      if (existingItems[indexOfItem].quantity > payload.quantity) existingItems[indexOfItem].quantity -= payload.quantity;
       else delete existingItems[indexOfItem];
       commit({ type: 'setItems', value: existingItems });
       var id = localStorage.getItem('userId');

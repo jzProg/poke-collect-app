@@ -98,7 +98,7 @@
         ]),
         onLevelUp(quantity) {
           this.levelUpPokemon({ name: this.info.name, quantity }).then(() => {
-            this.removeItem({ item: this.prizes.CANDY.items[0].title }).then(() => {
+            this.removeItem({ item: this.prizes.CANDY.items[0].title, quantity }).then(() => {
               this.showLevelUp = false;
             });
           });
