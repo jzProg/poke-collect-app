@@ -1,120 +1,133 @@
 <template>
   <div id="containerDiv" class="container" style="width:100%">
-    <div class="row">
-       <div class="battleDiv col-md-12">
-         <div class="row" style="background-color:black">
-             <div class="scoreDiv row" style="background-color:darkgray">
-               <div class="profileDiv col-md-6 col-xs-6" style="padding:1%">
-                 <h4><b>Your Score: {{ parseInt(gameState.homeScore) }}</b></h4>
-                 <img :src = "getImage()"
-                      alt = "profile image"
-                      style = "width:50px; height:50px; border-radius:50px;"/>
-               </div>
-               <div class="enemyDiv col-md-6 col-xs-6" style="padding:1%">
-                 <h4><b>{{ enemyName }} Score: {{ parseInt(gameState.enemyScore) }}</b></h4>
-                 <img :src = "image"
-                      v-if="image"
-                      alt = "profile image"
-                      style = "width:50px; height:50px; border-radius:50px"/>
-               </div>
-             </div>
-             <div class="gameDiv row" id="game">
-               <div class="opponent">
-                 <div class="col-md-6 col-xs-6" style="float:left; width:30%;">
-                   <div class="statBox" v-if="enemybattlePokemon && Object.keys(enemybattlePokemon).length">
-                     <div class="progress">
-                       <span class="hpSpan"><b>HP</b></span>
-                       <div class="hpDiv">
-                         <div class="progDiv":style="getScoreStyle(this.gameState.enemyPokemonHP)"></div>
-                       </div>
+    <div class="scoreDiv row" style="background-color:darkgray">
+
+      <div class="profileDiv col-md-6 col-xs-6" style="padding:1%">
+        <h4><b>Your Score: {{ parseInt(gameState.homeScore) }}</b></h4>
+        <img :src = "getImage()"
+             alt = "profile image"
+             style = "width:50px; height:50px; border-radius:50px;"/>
+      </div>
+      <div class="enemyDiv col-md-6 col-xs-6" style="padding:1%">
+        <h4><b>{{ enemyName }} Score: {{ parseInt(gameState.enemyScore) }}</b></h4>
+        <img :src = "image"
+             v-if="image"
+             alt = "profile image"
+             style = "width:50px; height:50px; border-radius:50px"/>
+      </div>
+    </div>
+    <fullscreen class="row" ref="fullscreen" @change="fullscreenChange">
+      <div class="battleDiv col-md-12">
+        <div class="row" style="padding: 1%">
+          <button id="fullscreenBtn"
+                  class="btn btn-primary"
+                  type="button"
+                  @click.prevent="toggle">
+            <i class="fas fa-expand"/>
+          </button>
+        </div>
+        <div class="row" style="background-color:black; height: 100%">
+          <div :class="['gameDiv', 'row', (fullscreen) ? 'fullscreen': '']" id="game">
+            <div class="opponent col-md-12">
+              <div class="statContainer col-md-6 col-xs-6" style="float:left">
+                <div class="statBox" v-if="enemybattlePokemon && Object.keys(enemybattlePokemon).length">
+                  <div class="progress">
+                    <span class="hpSpan"><b>HP</b></span>
+                    <div class="hpDiv">
+                      <div class="progDiv":style="getScoreStyle(this.gameState.enemyPokemonHP)"></div>
+                    </div>
+                  </div>
+                  <span class="name">
+                    <b>{{ enemybattlePokemon && enemybattlePokemon.name }}</b>
+                  </span>
+                  <span class="level">
+                     Lv{{ enemybattlePokemon && enemybattlePokemon.level }}
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-6 col-xs-6" style="">
+                <img class="pokemonEnemy" :src="gameState.enemyFaint ? require('../assets/faint.png') : enemybattlePokemon && enemybattlePokemon.sprites.front_default" />
+              </div>
+            </div>
+            <div class="player col-md-12" v-if="homebattlePokemon && Object.keys(homebattlePokemon).length">
+              <div class="statContainer col-md-6 col-xs-6" style="float:right">
+                <div class="statBox">
+                  <div class="progress">
+                    <span class="hpSpan"><b>HP</b></span>
+                    <div class="hpDiv">
+                      <div class="progDiv" :style="getScoreStyle(this.gameState.homePokemonHP)"></div>
+                    </div>
+                  </div>
+                  <span class="name">
+                    <b>{{ homebattlePokemon.name }} </b>
+                  </span>
+                  <span class="level">
+                    Lv{{ homebattlePokemon.level }}
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-6 col-xs-6">
+              <img class="pokemonHome" :src="homebattlePokemon.sprites.back_default" />
+              </div>
+            </div>
+          </div>
+          <div :class="['messageDiv', 'row', (fullscreen)? 'fullscreen': '']">
+              <div id="battleMessage" class="col-md-6 col-xs-6">
+                  {{ message }}
+              </div>
+              <div id="options" class="col-md-6 col-xs-6" style="width: 50%;float:right">
+                  <div v-for="(move,index) in homebattlePokemon.moves"
+                        class="move"
+                        :key="index"
+                        :class="[isAbilityUsedTooMuch(move) ? 'disabledbutton' : '']"
+                        @click.prevent="attack(move.move)"
+                        v-show="isHomePlayerBattlePhase()"
+                        v-if="Object.keys(homebattlePokemon).length && index < 4">
+                         {{ move.move.name }}
+                  </div>
+                  <span style="cursor: pointer; margin: 2%"
+                        @click.prevent="onWalkAway()"
+                        v-show="isHomePlayerBattlePhase()">
+                         walk away <i class="fas fa-walking fa-2x"></i>
+                  </span>
+                  <span style="cursor: pointer; margin: 2%"
+                        @click.prevent="changePokemon()"
+                        v-show="isHomePlayerBattlePhase()">
+                         pokemon <i class="fas fa-exchange-alt fa-2x"></i>
+                  </span>
+                  <div class="row">
+                    <div v-if="getHomePokemon && !Object.keys(homebattlePokemon).length"
+                        v-for="(poke, index) in getHomePokemon":key="index">
+                      <div class="startersDiv">
+                        <Pokemon :info="poke"
+                                 class="col-md-4 col-xs-4"
+                                 :classFlag="true"
+                                 :action-on-click="onPokemonChoosed"
+                                 :disabled="disabled[poke.name]"
+                                 id="starter">
+                       </Pokemon>
                      </div>
-                     <span class="name">
-                       <b>{{ enemybattlePokemon && enemybattlePokemon.name }}</b>
-                     </span>
-                     <span class="level">
-                        Lv{{ enemybattlePokemon && enemybattlePokemon.level }}
-                     </span>
-                   </div>
-                 </div>
-                 <img class="pokemonEnemy col-md-6 col-xs-6" :src="gameState.enemyFaint ? require('../assets/faint.png') : enemybattlePokemon && enemybattlePokemon.sprites.front_default" />
-               </div>
-               <div class="player row" v-if="homebattlePokemon && Object.keys(homebattlePokemon).length">
-                 <div class="col-md-6 col-xs-6" style="float:right;width: 30%;">
-                   <div class="statBox">
-                     <div class="progress">
-                       <span class="hpSpan"><b>HP</b></span>
-                       <div class="hpDiv">
-                         <div class="progDiv" :style="getScoreStyle(this.gameState.homePokemonHP)"></div>
-                       </div>
-                     </div>
-                     <span class="name">
-                       <b>{{ homebattlePokemon.name }} </b>
-                     </span>
-                     <span class="level">
-                       Lv{{ homebattlePokemon.level }}
-                     </span>
-                   </div>
-                 </div>
-                 <img class="pokemonHome col-md-6 col-xs-6" :src="homebattlePokemon.sprites.back_default" />
-               </div>
-             </div>
-             <div class="messageDiv row">
-                 <div id="battleMessage" class="col-md-6 col-xs-6">
-                     {{ message }}
-                 </div>
-                 <div id="options" class="col-md-6 col-xs-6" style="width: 50%;float:right">
-                     <div v-for="(move,index) in homebattlePokemon.moves"
-                           class="move"
-                           :key="index"
-                           :class="[isAbilityUsedTooMuch(move) ? 'disabledbutton' : '']"
-                           @click.prevent="attack(move.move)"
-                           v-show="isHomePlayerBattlePhase()"
-                           v-if="Object.keys(homebattlePokemon).length && index < 4">
-                            {{ move.move.name }}
-                     </div>
-                     <span style="cursor: pointer; margin: 2%"
-                           @click.prevent="onWalkAway()"
-                           v-show="isHomePlayerBattlePhase()">
-                            walk away <i class="fas fa-walking fa-2x"></i>
-                     </span>
-                     <span style="cursor: pointer; margin: 2%"
-                           @click.prevent="changePokemon()"
-                           v-show="isHomePlayerBattlePhase()">
-                            pokemon <i class="fas fa-exchange-alt fa-2x"></i>
-                     </span>
-                     <div class="row">
-                       <div v-if="getHomePokemon && !Object.keys(homebattlePokemon).length"
-                           v-for="(poke, index) in getHomePokemon":key="index">
-                         <div class="startersDiv">
-                           <Pokemon :info="poke"
-                                    class="col-md-4 col-xs-4"
-                                    :classFlag="true"
-                                    :action-on-click="onPokemonChoosed"
-                                    :disabled="disabled[poke.name]"
-                                    id="starter">
-                          </Pokemon>
-                        </div>
-                       </div>
                     </div>
                  </div>
-             </div>
-         </div>
-       </div>
-     </div>
-     <PostGame v-if="isGameFinished()"
-              :has-winner="gameState.homeScore > gameState.enemyScore"
-              :stat-update="prepareStatsObject"
-              @close="showStats = true"/>
-     <Stats v-if="showStats"
-             :battle-pokemon="pokeStats"
-             @close="hasExtra ? showExtra = true : goToIndex()"/>
-     <ExtraAward v-if="showExtra"
-               :poke="getCurrentReward.rewardId[0].name"
-               :item="extraItem"
-               @close="goToIndex()"/>
+              </div>
+          </div>
+        </div>
+      </div>
+    </fullscreen>
+    <PostGame v-if="isGameFinished()"
+            :has-winner="gameState.homeScore > gameState.enemyScore"
+            :stat-update="prepareStatsObject"
+            @close="showStats = true"/>
+    <Stats v-if="showStats"
+           :battle-pokemon="pokeStats"
+           @close="hasExtra ? showExtra = true : goToIndex()"/>
+    <ExtraAward v-if="showExtra"
+             :poke="getCurrentReward.rewardId[0].name"
+             :item="extraItem"
+             @close="goToIndex()"/>
     <Confirm v-if="showConfirm"
-             @confirm="walkAway()"
-             @close="showConfirm = false"/>
+           @confirm="walkAway()"
+           @close="showConfirm = false"/>
   </div>
 </template>
 
@@ -128,6 +141,10 @@
   import Stats from '@/components/modals/Stats';
   import Confirm from '@/components/modals/Confirm';
   import Pokemon from '@/components/Pokemon';
+  import fullscreen from 'vue-fullscreen';
+  import Vue from 'vue';
+
+  Vue.use(fullscreen);
 
   window.$ = window.jQuery = require('jquery');
 
@@ -137,6 +154,7 @@
      components: { Pokemon, PostGame, ExtraAward, Stats, Confirm },
      data() {
        return {
+          fullscreen: false,
           image: '',
           hasExtra: false,
           showExtra: false,
@@ -171,6 +189,13 @@
        this.getEnemyPokemon();
      },
      methods: {
+       toggle () {
+        this.fullscreen = !this.fullscreen;
+        this.$refs['fullscreen'].toggle();
+      },
+      fullscreenChange (fullscreen) {
+        this.fullscreen = fullscreen
+      },
        ...mapMutations([
          'setLoad'
        ]),
@@ -234,25 +259,34 @@
   border-radius: 8px 8px 0 0;
   height: 480px;
   width: 70%;
+  margin: 0 auto;
   margin-top: 1%;
-  margin-right: 15%;
-  margin-left:15%
+}
+
+.gameDiv.fullscreen {
+  margin-top: 3%;
+  height: 70% !important;
+  width: 100% !important;
+}
+
+.messageDiv.fullscreen {
+  height: 10% !important;
+  width: 100% !important;
 }
 
 .opponent {
-  height: 60%;
-}
-
-.player {
-  height: 60%;
+  height:60%
 }
 
 .pokemonEnemy {
   height:150px;
   width:150px;
   float:right;
-  margin-top:12%;
-  margin-right:15%;
+  margin-top:20%;
+}
+
+.statContainer {
+  width: 30%;
 }
 
 .pokemonHome {
@@ -271,14 +305,14 @@
   color: #fff;
   height: 120px;
   width: 70%;
-  margin-right: 15%;
-  margin-left:15%
+  margin: 0 auto;
 }
 
 .battleDiv {
   width:100%;
-  min-height:920px;
+  height:100%;
   background-color:black;
+  padding-bottom: 5%;
 }
 
 .player .statBox {
@@ -360,6 +394,11 @@
   border: 7px solid black;
 }
 
+#fullscreenBtn {
+  background-color: gray;
+  color: black;
+}
+
 #battleMessage {
   font-size: 24px;
   width: 50%;
@@ -371,7 +410,11 @@
     opacity: 0.4;
 }
 
-@media only screen and (max-width: 992px) {
+@media only screen and (max-width: 1200px) {
+
+  .statContainer {
+    width: 40% !important;
+  }
 
   .move {
     font-size: 12px !important;
@@ -395,6 +438,11 @@
    height: 300px;
    margin-top: 20;
    margin-right: 0;
+   width: 100%;
+ }
+
+ .messageDiv {
+   width: 100%;
  }
 
  .opponent .statBox {
@@ -403,7 +451,10 @@
 
  .player .statBox {
    width: 100% !important;
-   margin-top: 30%;
+ }
+
+ .statContainer {
+   width: 40% !important;
  }
 
  .statBox .progress .hpSpan {
@@ -415,10 +466,6 @@
  }
 
  .opponent {
-   height: 50% !important;
- }
-
- .player {
    height: 50% !important;
  }
 
