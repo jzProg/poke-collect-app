@@ -10,7 +10,7 @@
         </div>
           <div id="profileDiv" v-if="username">
             <b-button class="profileItem" v-b-toggle.sidebar-variant><i class="fas fa-bars"/></b-button>
-            <i class="fab fa-rocketchat fa-5x profileItem" @click.prevent="loadChat()"/>
+            <i class="fab fa-rocketchat fa-4x profileItem" @click.prevent="loadChat()"/>
             <div v-if="$route.meta.hasProfileHeader">
                 <a @click.prevent="showOptions">
                   <img :src="getImage()"
@@ -245,5 +245,12 @@
     -webkit-border-radius: 10px;
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  }
+
+  @media only screen and (max-width: 980px) {
+    .appLogo img {
+      width: 50px !important;
+      height: 50px !important;
+    }
   }
 </style>
