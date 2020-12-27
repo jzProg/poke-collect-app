@@ -73,7 +73,7 @@
                             {{ move.move.name }}
                      </div>
                      <span style="cursor: pointer; margin: 2%"
-                           @click.prevent="walkAway()"
+                           @click.prevent="onWalkAway()"
                            v-show="isHomePlayerBattlePhase()">
                             walk away <i class="fas fa-walking fa-2x"></i>
                      </span>
@@ -112,6 +112,9 @@
                :poke="getCurrentReward.rewardId[0].name"
                :item="extraItem"
                @close="goToIndex()"/>
+    <Confirm v-if="showConfirm"
+             @confirm="walkAway()"
+             @close="showConfirm = false"/>
   </div>
 </template>
 
@@ -123,21 +126,22 @@
   import PostGame from '@/components/modals/PostGame';
   import ExtraAward from '@/components/modals/ExtraAward';
   import Stats from '@/components/modals/Stats';
-  import Pokemon from './Pokemon.vue';
-  import Vue from 'vue';
+  import Confirm from '@/components/modals/Confirm';
+  import Pokemon from '@/components/Pokemon';
 
   window.$ = window.jQuery = require('jquery');
 
   export default {
      name: 'Battle',
      mixins: [pokemonMixin, battleMixin, uniqueIdGeneratorMixin],
-     components: { Pokemon, PostGame, ExtraAward, Stats },
+     components: { Pokemon, PostGame, ExtraAward, Stats, Confirm },
      data() {
        return {
           image: '',
           hasExtra: false,
           showExtra: false,
           showStats: false,
+          showConfirm: false,
           extraItem: {},
           enemyName: '',
           message: '',
@@ -170,6 +174,9 @@
        ...mapMutations([
          'setLoad'
        ]),
+       onWalkAway() {
+         this.showConfirm = true;
+       },
        getScoreStyle(hp) {
          const score = hp;
          const full = this.defaultHP;
