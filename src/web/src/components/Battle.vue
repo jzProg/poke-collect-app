@@ -19,9 +19,9 @@
                </div>
              </div>
              <div class="gameDiv row" id="game">
-               <div class="opponent" v-if="enemybattlePokemon && Object.keys(enemybattlePokemon).length">
+               <div class="opponent">
                  <div class="col-md-6 col-xs-6" style="float:left; width:30%;">
-                   <div class="statBox">
+                   <div class="statBox" v-if="enemybattlePokemon && Object.keys(enemybattlePokemon).length">
                      <div class="progress">
                        <span class="hpSpan"><b>HP</b></span>
                        <div class="hpDiv">
@@ -29,14 +29,14 @@
                        </div>
                      </div>
                      <span class="name">
-                       <b>{{ enemybattlePokemon.name }}</b>
+                       <b>{{ enemybattlePokemon && enemybattlePokemon.name }}</b>
                      </span>
                      <span class="level">
-                        Lv{{ enemybattlePokemon.level }}
+                        Lv{{ enemybattlePokemon && enemybattlePokemon.level }}
                      </span>
                    </div>
                  </div>
-                 <img class="pokemonEnemy col-md-6 col-xs-6" :src="gameState.enemyFaint ? require('../assets/faint.png') : enemybattlePokemon.sprites.front_default" />
+                 <img class="pokemonEnemy col-md-6 col-xs-6" :src="gameState.enemyFaint ? require('../assets/faint.png') : enemybattlePokemon && enemybattlePokemon.sprites.front_default" />
                </div>
                <div class="player row" v-if="homebattlePokemon && Object.keys(homebattlePokemon).length">
                  <div class="col-md-6 col-xs-6" style="float:right;width: 30%;">
@@ -103,6 +103,7 @@
      </div>
      <PostGame v-if="isGameFinished()"
               :has-winner="gameState.homeScore > gameState.enemyScore"
+              :stat-update="prepareStatsObject"
               @close="showStats = true"/>
      <Stats v-if="showStats"
              :battle-pokemon="pokeStats"
@@ -153,7 +154,7 @@
      },
      watch: {
         getUserStarters(newValue, oldValue) {
-          if(this.getUserStarters) this.getEnemyPokemon();
+          this.getEnemyPokemon();
         }
      },
      created() {

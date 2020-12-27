@@ -153,13 +153,13 @@ const battleMixin = {
     },
     endGame() {
       console.log('game ended...');
-      this.prepareStatsObject();
       if (this.gameState.homeScore > this.gameState.enemyScore) {
-        this.updateStats({ value: { result: 'wins' }});
         this.awarding();
       } else {
-        this.updateStats({ value: { result: 'loses' }});
-        this.delayCall(() => { this.gameState.currentState = this.getNextState(); }); // game finished -> end
+        this.delayCall(() => {
+          this.updateStats({ value: { result: 'loses' }});
+          this.gameState.currentState = this.getNextState();
+        }); // game finished -> end
       }
     },
     isGameFinished() {
@@ -187,6 +187,7 @@ const battleMixin = {
     },
     awarding() {
       console.log('about to award...');
+      this.updateStats({ value: { result: 'wins' }});
       const existingCoins = this.getUserCoins;
       this.setUserCoins({ value: existingCoins + this.coinsInfo.REWARD_COINS }); // assign reward coins to user
       const rewardTypeIndex = this.getRandomInt(0, 1); // choose extra reward category (item or pokemon)
@@ -232,9 +233,7 @@ const battleMixin = {
           originalTrainer: 1,
           pastLevel: 1
         };
-        console.log(battleInfo);
-        const newXP = poke.base_experience + this.getBattleExperience(battleInfo);
-        console.log(this.getBattleExperience(battleInfo));
+        const newXP = (poke.XP || poke.base_experience) + this.getBattleExperience(battleInfo);
         const stats = {
           image: poke.pokeImage,
           oldXP: poke.XP || poke.base_experience,
@@ -270,11 +269,12 @@ const battleMixin = {
       itemObj.text = item.effect_entries[0].short_effect;
       itemObj.quantity = 1;
       itemObj.type = type;
+      this.awardItems({ list: [itemObj]});
       if (isExtra) {
         this.hasExtra = true;
         this.extraItem = itemObj;
+        return;
       }
-      this.awardItems({ list: [itemObj]});
       this.setCurrentReward({ type: this.gameRewards[0].type, value:  [itemObj]});
     },
     walkAway() {

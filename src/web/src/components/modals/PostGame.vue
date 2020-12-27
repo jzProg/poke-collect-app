@@ -40,7 +40,7 @@ import PokemonDetails from '@/components/modals/PokemonDetails';
 
   export default {
       name: 'PostGame',
-      props: ['hasWinner'],
+      props: ['hasWinner', 'statUpdate'],
       mixins: [pokemonMixin],
       components: { Modal, Pokemon, PokemonDetails },
       data() {
@@ -51,6 +51,9 @@ import PokemonDetails from '@/components/modals/PokemonDetails';
       created(){
         this.type = this.getCurrentReward.rewardType;
         this.list = this.getCurrentReward.rewardId;
+      },
+      mounted() {
+        this.statUpdate();
       },
       methods: {
         onPokemonChoice() {
