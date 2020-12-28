@@ -19,7 +19,7 @@
        <h4>Buy candies to level up your pokemon!</h4>
      </div>
    </div>
-   <BuyModal v-if="showBuyModal" :items="availableItems" :buyAction="onBuyAction" @close="showBuyModal = false"></BuyModal>
+   <BuyModal v-if="showBuyModal" :items="availableItems" :buyAction="onBuyAction" :error="error" @close="showBuyModal = false"></BuyModal>
   </div>
 </template>
 
@@ -40,6 +40,7 @@
         stoneInfo: [],
         candyInfo: {},
         showBuyModal: false,
+        error: '',
       }
     },
     created() {
@@ -84,9 +85,14 @@
         if (rewardType === this.prizes.PACK.type) {
           var newItems = [];
           var quantity = itemBudle[0].quantity;
-          for(var i = 0; i < quantity*this.packInfo.NUM_OF_CARDS; i++) {
-            newItems.push(this.chooseRandomPokemon(1, this.totalPokemon));
-          };
+          try {
+            for(var i = 0; i < quantity*this.packInfo.NUM_OF_CARDS; i++) {
+              newItems.push(this.chooseRandomPokemon(1, this.totalPokemon));
+            };
+          } catch(error) {
+            this.error = error;
+            return;
+          }
           this.getPokemonInfoFromList(newItems, itemList).then(() => {
               itemBudle[0].items = itemList;
               this.purchase({ items: itemBudle, type: rewardType, cost: coins }).then(() => {

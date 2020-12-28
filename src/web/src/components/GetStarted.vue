@@ -30,7 +30,7 @@
           else next();
       });
     },
-    created(){
+    created() {
       this.getPokemonInfoFromList(this.startersInfo.STANDARD_STARTERS, this.list);
     },
     methods: {
@@ -45,9 +45,14 @@
         this.setLoad({ value: true });
         console.log('about to be awarded...You chose: ' + pokeName);
         var listOfStarters = [pokeName];
-        for(var i=1; i < this.startersInfo.NUM_OF_STARTERS; i++) {
-          listOfStarters.push(this.chooseRandomPokemon(1, this.totalPokemon));
-        };
+        try {
+          for(var i = 1; i < this.startersInfo.NUM_OF_STARTERS; i++) {
+            listOfStarters.push(this.chooseRandomPokemon(1, this.totalPokemon));
+          };
+        } catch(error) {
+          console.log(error);
+          return;
+        }
         var randomPokeList = [];
         this.getPokemonInfoFromList(listOfStarters, randomPokeList).then(() => {
           this.setCurrentReward({ type: this.prizes.PACK.type, value:  randomPokeList});

@@ -45,7 +45,7 @@
                   </span>
                 </div>
               </div>
-              <div class="col-md-6 col-xs-6" style="">
+              <div class="col-md-6 col-xs-6" v-show="enemybattlePokemon">
                 <img class="pokemonEnemy" :src="gameState.enemyFaint ? require('../assets/faint.png') : enemybattlePokemon && enemybattlePokemon.sprites.front_default" />
               </div>
             </div>

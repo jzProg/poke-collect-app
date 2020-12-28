@@ -15,6 +15,7 @@
     </div>
     <div slot = "footer" class="text-center">
       <span v-if="cashError" class="text-center" style="color:red">Not enough coins</span><br>
+      <span v-if="error" class="text-center" style="color:red">{{ error }}</span><br>
       <button :disabled="!itemsToBuy.length" type = "button" class="btn btn-primary" @click.prevent = "buy">Buy</button>
       <button type = "button" class="btn btn-danger" @click.prevent = "cancel">Cancel</button>
     </div>
@@ -27,7 +28,7 @@
 
   export default {
       name: 'BuyModal',
-      props: ['items', 'buyAction'],
+      props: ['items', 'buyAction', 'error'],
       components: { Modal },
       data() {
         return {

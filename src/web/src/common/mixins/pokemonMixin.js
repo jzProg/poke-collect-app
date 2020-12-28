@@ -14,6 +14,7 @@ const pokemonMixin = {
         NUM_OF_STARTERS: 3,
         STANDARD_STARTERS: ['bulbasaur', 'squirtle', 'charmander'],
       },
+      REACHED_LIMIT: 'You reached pokemon limit',
       coinsInfo: {
         START_COINS: 100,
         REWARD_COINS: 200,
@@ -263,8 +264,12 @@ const pokemonMixin = {
       return resultLevel;
     },
     chooseRandomPokemon(min, max) {
+      const userPokemon = this.getUserPokemon || [];
+      if (userPokemon.length ===  this.totalPokemon) {
+        throw this.REACHED_LIMIT;
+      }
       let randomId = this.getRandomInt(min, max);
-      while((this.getUserPokemon || []).filter(pokemon => pokemon.id === randomId).length) {
+      while(userPokemon.filter(pokemon => pokemon.id === randomId).length) {
         randomId = this.getRandomInt(min, max);
       }
       return randomId;

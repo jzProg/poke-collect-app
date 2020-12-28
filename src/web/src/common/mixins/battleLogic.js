@@ -190,7 +190,7 @@ const battleMixin = {
       this.updateStats({ value: { result: 'wins' }});
       const existingCoins = this.getUserCoins;
       this.setUserCoins({ value: existingCoins + this.coinsInfo.REWARD_COINS }); // assign reward coins to user
-      const rewardTypeIndex = this.getRandomInt(0, 1); // choose extra reward category (item or pokemon)
+      const rewardTypeIndex = this.getUserPokemon.length ===  this.totalPokemon ? 0 : this.getRandomInt(0, 1); // choose extra reward category (item or pokemon)
       const rewardType = this.gameRewards[rewardTypeIndex].type;
       if (rewardType === this.gameRewards[0].type) {
         console.log('type ITEM reward');
@@ -202,7 +202,13 @@ const battleMixin = {
       } else {
         console.log('type POKEMON reward');
         let pokeObj= [];
-        const pokeId = this.chooseRandomPokemon(1, this.totalPokemon);
+        try {
+          const pokeId = this.chooseRandomPokemon(1, this.totalPokemon);
+        } catch(error) {
+          console.log(error);
+          this.gameState.currentState = this.getNextState(); // game finished -> end
+          return;
+        }
         this.getPokemonInfoFromList([ pokeId ], pokeObj).then(() => {
           this.awardPokemon({ list: pokeObj });
           this.setCurrentReward({ type: this.gameRewards[1].type, value: pokeObj });
