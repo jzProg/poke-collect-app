@@ -6,7 +6,7 @@
       <div v-for="(item, index) in items.items"
            :key="index"
            style="cursor:pointer">
-        <input type="number" min="1" v-model="item.quantity" size="1" style="margin-bottom:2%"> x
+        <input type="number" min="1" v-model="item.quantity" size="1" id="quantityDiv"> x
         <img v-if="items.type !== 'pack'" :src="item.image">
         <span v-else>{{ item.title }}</span>
         for <b>{{ item.price }}</b> coins
@@ -68,3 +68,10 @@
       }
   }
 </script>
+
+<style scoped>
+ #quantityDiv {
+  margin-bottom:2%;
+  width:20%;
+ }
+</style>
