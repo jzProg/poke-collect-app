@@ -258,7 +258,7 @@ const pokemonMixin = {
         xp = this.getExperienceBasedlevel(type, level);
         if (xp >= baseXP) {
           resultLevel = level;
-          break
+          break;
         }
       }
       return resultLevel;

@@ -220,9 +220,25 @@
          });
        },
        animateDamage(isHome) {
-         const targetElement = isHome? $('.pokemonHome') : $('.pokemonEnemy');
+         const targetElement = isHome ? $('.pokemonHome') : $('.pokemonEnemy');
          targetElement.fadeOut();
          targetElement.fadeIn(1000);
+       },
+       animateAttack(isHome) {
+         let targetElement;
+         if(isHome) {
+           targetElement = $('.pokemonHome');
+           targetElement.css('margin-left', '10%');
+           setTimeout(() => {
+             targetElement.css('margin-left', '7%');
+           }, 1000);
+         } else {
+           targetElement = $('.pokemonEnemy');
+           targetElement.css('margin-right', '4%');
+           setTimeout(() => {
+             targetElement.css('margin-right', '0%');
+           }, 1000);
+         }
        },
        onPokemonChoosed(poke) {
          if (this.gameState.currentState === 'HOME_OPTION') {
@@ -279,10 +295,10 @@
 }
 
 .pokemonEnemy {
-  height:150px;
-  width:150px;
-  float:right;
-  margin-top:20%;
+  height: 150px;
+  width: 150px;
+  float: right;
+  margin-top: 20%;
 }
 
 .statContainer {
@@ -290,10 +306,10 @@
 }
 
 .pokemonHome {
-  height:180px;
-  width:180px;
-  float:left;
-  margin-left:7%;
+  height: 180px;
+  width: 180px;
+  float: left;
+  margin-left: 7%;
 }
 
 .messageDiv {

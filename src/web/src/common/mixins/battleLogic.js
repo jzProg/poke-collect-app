@@ -87,6 +87,7 @@ const battleMixin = {
       if (this.gameState.currentState === 'HOME_BATTLE') {
         this.gameState.currentAttack = ability.name;
         this.keepTrackOfMoveUsage(ability);
+        this.animateAttack(true);
         this.gameState.currentState = this.getNextState(); // attacks with ability -> HOME_DAMAGE_DONE
         const attackerObj = this.prepareBattleObject(this.homebattlePokemon);
         const defenderObj = this.prepareBattleObject(this.enemybattlePokemon);
@@ -114,6 +115,7 @@ const battleMixin = {
     },
     opponentMoves() {
        this.gameState.currentAttack = this.choosePCAttack();
+       this.animateAttack(false);
        this.gameState.currentState = this.getNextState(); // attacks with ability -> ENEMY_DAMAGE_DONE
        const defenderObj = this.prepareBattleObject(this.homebattlePokemon);
        const attackerObj = this.prepareBattleObject(this.enemybattlePokemon);
