@@ -34,15 +34,20 @@
     mounted() {
       this.removeErrorMessage();
       const video = document.querySelector('video');
-      video.muted = true;
-      video.play();
-      video.addEventListener('ended', () => {
+      video.muted = false;
+      video.play()
+           .catch(error => {
+        console.log(`video error: ${error}. Showing logo instead...`);
+        this.onAnimationEnd();
+      });
+      video.addEventListener('ended', this.onAnimationEnd);
+    },
+    methods: {
+      onAnimationEnd() {
         const elementVideo = document.getElementById('video');
         const Logo = document.getElementById('Logo');
         this.fadeOutInEffect(elementVideo, Logo);
-      });
-    },
-    methods: {
+      },
       fadeOutInEffect(element,Logo) {
         element.classList.add('hideP');
         element.classList.remove('showP');
