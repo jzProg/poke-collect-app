@@ -1,7 +1,7 @@
 <template>
   <div>
    <b-sidebar id="sidebar-variant"
-              bg-variant="dark"
+              bg-variant="info"
               width="170px"
               noHeader
               text-variant="light"
@@ -73,7 +73,6 @@
 
 <style scoped>
   .optionsDiv {
-    background-color:#4a3f35 !important;
     color:#ff4301;
     padding: 2%;
     height: 100%;

@@ -427,7 +427,6 @@
 }
 
 @media only screen and (max-width: 1200px) {
-
   .statContainer {
     width: 40% !important;
   }
@@ -459,6 +458,16 @@
 
  .messageDiv {
    width: 100%;
+ }
+
+ .gameDiv.fullscreen {
+   height: 300px !important;
+   width: 100% !important;
+ }
+
+ .messageDiv.fullscreen {
+   height: 120px !important;
+   width: 100% !important;
  }
 
  .opponent .statBox {
