@@ -2,7 +2,7 @@
   <Modal :width="'400px'">
     <span slot="close" id='closeSymbol' @click.prevent="close">x</span><br>
     <h3 slot="header">Pokemon Details</h3>
-    <div slot="body">
+    <div slot="body" class="scrollable">
       <b>{{info.name.charAt(0).toUpperCase() + info.name.slice(1)}}</b>
       <div :style="getTypeStyle()">
        {{ info.types[0].type.name }}
@@ -156,5 +156,16 @@
 .pokeImg {
   width: 200px;
   height: 200px;
+}
+
+@media only screen and (max-width: 980px) {
+
+.scrollable {
+  height: 300px;
+  overflow-y: auto;
+  max-width: 100%;
+  overflow-x: hidden;
+  word-wrap: break-word;
+}
 }
 </style>

@@ -2,7 +2,7 @@
   <transition name = "modal">
     <div class = "modal-mask">
       <div class = "modal-wrapper">
-        <div class = "modal-container" :style="{ width: width ? width: '300px'}">
+        <div class = "modal-container" :style="{ width: (width && !isMobile() ? width: '300px')}">
          <slot name = "close"></slot>
           <div class = "modal-header">
             <slot name = "header"></slot>
@@ -22,7 +22,12 @@
 <script>
   export default {
     name: 'GenericModal',
-    props: ['width']
+    props: ['width'],
+    methods: {
+      isMobile() {
+        return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+      }
+    }
   }
 </script>
 
