@@ -65,7 +65,7 @@
 <script>
   import { mapGetters, mapMutations, mapActions } from 'vuex';
   import Modal from './GenericModalStructure.vue';
-  import PokemonCard from '@/components/PokemonCard.vue';
+  import PokemonCard from '@/components/pokemon/PokemonCard.vue';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
   import LevelUp from '@/components/modals/LevelUp';
 

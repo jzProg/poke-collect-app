@@ -10,7 +10,7 @@
   import { mapMutations, mapActions, mapGetters } from 'vuex';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
-  import PokeList from './PokemonList.vue';
+  import PokeList from '@/components/pokemon/PokemonList.vue';
 
   export default {
     name: 'GetStarted',

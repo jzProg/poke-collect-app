@@ -37,7 +37,7 @@
   import pokemonMixin from '@/common/mixins/pokemonMixin';
   import bus from "@/common/eventBus";
   import { mapActions, mapGetters, mapMutations } from 'vuex';
-  import PokeList from '@/components/PokemonList';
+  import PokeList from '@/components/pokemon/PokemonList';
   import Options from '@/components/modals/Options';
   import imagesLoaded from 'vue-images-loaded';
   import PokemonDetails from '@/components/modals/PokemonDetails';

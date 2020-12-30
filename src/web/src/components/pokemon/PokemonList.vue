@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import Pokemon from '@/components/Pokemon';
-import PokemonCard from '@/components/PokemonCard';
+import Pokemon from '@/components/pokemon/Pokemon';
+import PokemonCard from '@/components/pokemon/PokemonCard';
 
 export default {
   name: 'PokemonList',

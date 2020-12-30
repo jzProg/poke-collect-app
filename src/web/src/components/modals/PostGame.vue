@@ -35,7 +35,7 @@
 import Modal from './GenericModalStructure.vue';
 import { mapGetters } from 'vuex';
 import pokemonMixin from '@/common/mixins/pokemonMixin';
-import Pokemon from '@/components/Pokemon';
+import Pokemon from '@/components/pokemon/Pokemon';
 import PokemonDetails from '@/components/modals/PokemonDetails';
 
   export default {
