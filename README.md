@@ -26,6 +26,12 @@ A simple Pokemon web app game written in Vue.js. Users can create account, chat,
   - Battle avatar trainers and gain game coins, Pokemon and items.
   - Chat with other users.
   - Use game coins to buy Pokemon and items.
+  
+- **Version 2**
+  - Evolve Pokemon using evolution stones or by leveling up.
+  - Purchase rare candies to level up your Pokemon.
+  - Pokemon XP + level increase after battle.
+  - New card design. Support for legendary and mythical cards.
 
 ## Setup Instructions
 
