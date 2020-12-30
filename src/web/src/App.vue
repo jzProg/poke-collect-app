@@ -36,7 +36,7 @@
     <div class="fragment">
       <router-view/>
     </div>
-    <Congrats v-if="showCongrats && !getUserInfo.seenCongrats && getUserInfo.pokemon.length === totalPokemon"
+    <Congrats v-if="showCongrats && !getUserInfo.seenCongrats && getUserInfo.pokemon && getUserInfo.pokemon.length === totalPokemon"
               :total="totalPokemon"
               @close="onCongrats()"/>
     <Loading v-if="getLoad"/>

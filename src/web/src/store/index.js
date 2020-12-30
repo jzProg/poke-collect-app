@@ -380,6 +380,7 @@ export default new Vuex.Store({
         starters: [],
         coins: 0,
         level: 1,
+        stats: { wins: 0, loses: 0 },
         initialized: false,
       });
     },
