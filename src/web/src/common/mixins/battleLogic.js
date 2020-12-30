@@ -204,8 +204,9 @@ const battleMixin = {
       } else {
         console.log('type POKEMON reward');
         let pokeObj= [];
+        let pokeId;
         try {
-          const pokeId = this.chooseRandomPokemon(1, this.totalPokemon);
+          pokeId = this.chooseRandomPokemon(1, this.totalPokemon);
         } catch(error) {
           console.log(error);
           this.gameState.currentState = this.getNextState(); // game finished -> end

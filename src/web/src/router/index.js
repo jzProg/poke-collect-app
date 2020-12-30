@@ -5,7 +5,7 @@ import Register from '@/components/Register';
 import Home from '@/components/Home';
 import GetStarted from '@/components/GetStarted';
 import Reward from '@/components/Reward';
-import Battle from '@/components/Battle';
+import Battle from '@/components/battle/Battle';
 import Game from '@/components/Game';
 import Store from '@/components/Store';
 import Inventory from '@/components/Inventory';

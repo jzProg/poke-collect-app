@@ -1,21 +1,6 @@
 <template>
-  <div id="containerDiv" class="container" style="width:100%">
-    <div class="scoreDiv row" style="background-color:darkgray">
-
-      <div class="profileDiv col-md-6 col-xs-6" style="padding:1%">
-        <h4><b>Your Score: {{ parseInt(gameState.homeScore) }}</b></h4>
-        <img :src = "getImage()"
-             alt = "profile image"
-             style = "width:50px; height:50px; border-radius:50px;"/>
-      </div>
-      <div class="enemyDiv col-md-6 col-xs-6" style="padding:1%">
-        <h4><b>{{ enemyName }} Score: {{ parseInt(gameState.enemyScore) }}</b></h4>
-        <img :src = "image"
-             v-if="image"
-             alt = "profile image"
-             style = "width:50px; height:50px; border-radius:50px"/>
-      </div>
-    </div>
+  <div id="containerDiv" class="container" style="width: 100%">
+    <Score :game-state="getState()"/>
     <fullscreen class="row" ref="fullscreen" @change="fullscreenChange">
       <div class="battleDiv col-md-12">
         <div class="row" style="padding: 1%">
@@ -28,48 +13,17 @@
         </div>
         <div class="row" style="background-color:black; height: 100%">
           <div :class="['gameDiv', 'row', (fullscreen) ? 'fullscreen': '']" id="game">
-            <div class="opponent col-md-12">
-              <div class="statContainer col-md-6 col-xs-6" style="float:left">
-                <div class="statBox" v-if="enemybattlePokemon && Object.keys(enemybattlePokemon).length">
-                  <div class="progress">
-                    <span class="hpSpan"><b>HP</b></span>
-                    <div class="hpDiv">
-                      <div class="progDiv":style="getScoreStyle(this.gameState.enemyPokemonHP)"></div>
-                    </div>
-                  </div>
-                  <span class="name">
-                    <b>{{ enemybattlePokemon && enemybattlePokemon.name }}</b>
-                  </span>
-                  <span class="level">
-                     Lv{{ enemybattlePokemon && enemybattlePokemon.level }}
-                  </span>
-                </div>
-              </div>
-              <div class="col-md-6 col-xs-6" v-show="enemybattlePokemon">
-                <img class="pokemonEnemy" :src="gameState.enemyFaint ? require('../assets/faint.png') : enemybattlePokemon && enemybattlePokemon.sprites.front_default" />
-              </div>
-            </div>
-            <div class="player col-md-12" v-if="homebattlePokemon && Object.keys(homebattlePokemon).length">
-              <div class="statContainer col-md-6 col-xs-6" style="float:right">
-                <div class="statBox">
-                  <div class="progress">
-                    <span class="hpSpan"><b>HP</b></span>
-                    <div class="hpDiv">
-                      <div class="progDiv" :style="getScoreStyle(this.gameState.homePokemonHP)"></div>
-                    </div>
-                  </div>
-                  <span class="name">
-                    <b>{{ homebattlePokemon.name }} </b>
-                  </span>
-                  <span class="level">
-                    Lv{{ homebattlePokemon.level }}
-                  </span>
-                </div>
-              </div>
-              <div class="col-md-6 col-xs-6">
-              <img class="pokemonHome" :src="homebattlePokemon.sprites.back_default" />
-              </div>
-            </div>
+            <BattlePokemon :battlePokemon="enemybattlePokemon"
+                           :styleClass="'opponent'"
+                           :defaultHP="defaultHP"
+                           :hp="gameState.enemyPokemonHP"
+                           :faint="gameState.enemyFaint"
+                           :isHome="false" />
+            <BattlePokemon :battlePokemon="homebattlePokemon"
+                           :styleClass="'player'"
+                           :hp="gameState.homePokemonHP"
+                           :defaultHP="defaultHP"
+                           :isHome="true" />
           </div>
           <div :class="['messageDiv', 'row', (fullscreen)? 'fullscreen': '']">
               <div id="battleMessage" class="col-md-6 col-xs-6">
@@ -141,6 +95,8 @@
   import Stats from '@/components/modals/Stats';
   import Confirm from '@/components/modals/Confirm';
   import Pokemon from '@/components/Pokemon';
+  import BattlePokemon from '@/components/battle/BattlePokemon';
+  import Score from '@/components/battle/Score';
   import fullscreen from 'vue-fullscreen';
   import Vue from 'vue';
 
@@ -151,7 +107,7 @@
   export default {
      name: 'Battle',
      mixins: [pokemonMixin, battleMixin, uniqueIdGeneratorMixin],
-     components: { Pokemon, PostGame, ExtraAward, Stats, Confirm },
+     components: { Pokemon, PostGame, ExtraAward, Stats, Confirm, Score, BattlePokemon },
      data() {
        return {
           fullscreen: false,
@@ -189,11 +145,20 @@
        this.getEnemyPokemon();
      },
      methods: {
-       toggle () {
+       getBattlePokemon(isHome) {
+         if (isHome) {
+           return { ...this.homebattlePokemon, HP: this.gameState.homePokemonHP };
+         }
+         return { ...this.enemybattlePokemon, HP: this.gameState.enemyPokemonHP };
+       },
+       getState() {
+         return { ...this.gameState, homeImage: this.getImage(), enemyImage: this.image };
+       },
+       toggle() {
         this.fullscreen = !this.fullscreen;
         this.$refs['fullscreen'].toggle();
       },
-      fullscreenChange (fullscreen) {
+      fullscreenChange(fullscreen) {
         this.fullscreen = fullscreen
       },
        ...mapMutations([
@@ -201,12 +166,6 @@
        ]),
        onWalkAway() {
          this.showConfirm = true;
-       },
-       getScoreStyle(hp) {
-         const score = hp;
-         const full = this.defaultHP;
-         const half = full/2;
-         return { 'width': (score*100)/full + '%', 'height': '100%', 'background-color': score < half ?  'orange' : 'green' };
        },
        getImage() {
          return require(`@/assets/profileAvatar/${this.getUserImage}`);
@@ -266,9 +225,9 @@
    }
 </script>
 
-<style scoped>
+<style>
 .gameDiv {
-  background-image: url('../../src/assets/battle_field.png');
+  background-image: url('../../../src/assets/battle_field.png');
   background-size: 100% 100%;
   background-repeat: no-repeat;
   border: 3px solid black;
