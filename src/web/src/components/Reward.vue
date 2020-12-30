@@ -1,7 +1,7 @@
 <template>
  <div>
     <h3>You obtained new Reward!</h3>
-    <Poke-list v-if="type === this.prizes.PACK.type" :poke-list="list" :simpleMode="false" :page="page"></Poke-list>
+    <Poke-list v-if="type === this.prizes.PACK.type" :poke-list="list" :simpleMode="false" :page="page"/>
     <img v-else v-for="(item, index) in list" :src="item" :key="index" height="200px" width="200px">
     <br>
     <button @click.prevent="goToHome()" class="btn btn-primary">Continue</button>
@@ -11,15 +11,15 @@
 <script>
   import { mapGetters } from 'vuex';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
-  import PokeList from './PokemonList.vue';
+  import PokeList from '@/components/pokemon/PokemonList.vue';
 
   export default {
     name: 'Reward',
-    mixins: [pokemonMixin],
-    components: {PokeList},
+    mixins: [ pokemonMixin ],
+    components: { PokeList },
     data () {
       return {
-        list:[],
+        list: [],
         type: '',
         page: 0,
       }
@@ -40,6 +40,3 @@
     },
   }
 </script>
-
-<style scoped>
-</style>

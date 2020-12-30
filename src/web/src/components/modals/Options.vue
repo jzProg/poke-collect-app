@@ -15,7 +15,7 @@
     <div slot = "footer" class = "text-center">
       <button type = "button"
               class = "btn btn-primary"
-              :disabled="getUserStarters.indexOf(selectedPokemon.id) != -1 || getUserStarters.indexOf(selectedPokemon.name) != -1"
+              :disabled="!!existsInStarters()"
               @click.prevent = "showAdd">
               Add to Starters
      </button>
@@ -48,6 +48,9 @@
       ...mapMutations([
         'storePokemonToBeSwitched'
       ]),
+      existsInStarters() {
+        return this.getUserStarters.filter(starter => starter.id === this.selectedPokemon.id).length;
+      },
       seeInfo() {
         this.seeInfoModal = true;
       },

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import uniqueIdGenerator from '../common/helpers/uniqueIdsGenerator';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import bus from "@/common/eventBus";
 
 Vue.use(Vuex);
@@ -15,18 +15,30 @@ export default new Vuex.Store({
       pokemon: [],
       starters: [],
       coins: 0,
+      level: 1,
       items: [],
       initialized: false,
       currentOpponentId: 0,
       chat: {},
+      wins: 0,
+      loses: 0,
+      seenCongrats: false,
     },
     enemybattlePokemon: [],
     errorLoginMessage: '',
     errorRegisterMessage: '',
     pokemonToBeSwitched: {},
+    evolutionData: {},
     chats: [],
+    load: false,
   },
   getters: {
+    getLoad(state) {
+      return state.load;
+    },
+    getUserInfo(state) {
+      return state.userInfo;
+    },
     getItems(state) {
       return state.userInfo.items;
     },
@@ -69,8 +81,28 @@ export default new Vuex.Store({
     getAvailableChats(state) {
       return state.chats;
     },
+    getEvolutionData(state) {
+      return state.evolutionData;
+    },
+    getUserLevel(state) {
+      return state.userInfo.level;
+    }
   },
   mutations: {
+    setSeenCongrats(state, payload) {
+      state.userInfo.seenCongrats = payload.value;
+    },
+    setUserStats(state, payload) {
+      const { wins, loses } = payload.value;
+      state.userInfo.wins =  wins;
+      state.userInfo.loses =  loses;
+    },
+    setLoad(state, payload) {
+      state.load = payload.value;
+    },
+    setUserLevel(state, payload) {
+      state.userInfo.level = payload.value;
+    },
     setItems(state, payload) {
       state.userInfo.items = payload.value;
     },
@@ -99,7 +131,6 @@ export default new Vuex.Store({
       state.userInfo.pokemon = payload.value;
     },
     addNewPokemon(state, payload) {
-      console.log(payload.value);
       state.userInfo.pokemon.push(payload.value);
     },
     setCurrentReward(state, payload) {
@@ -120,9 +151,88 @@ export default new Vuex.Store({
     },
     setConversations(state, payload) {
       state.chats = payload.value;
+    },
+    storeEvolutionData(state, { from, to }) {
+      state.evolutionData = { from, to };
+    },
+    replaceStarterPokemon(state, { value }) {
+      const starterToBeRemoved_id = value.pokeId;
+      const starterToBeRemoved_name = value.name;
+      state.userInfo.starters = state.userInfo.starters.filter(starter => starter.id !== starterToBeRemoved_id && starter.name !== starterToBeRemoved_name);
+      const pokemonToBeAddedToStarters = state.pokemonToBeSwitched;
+      state.userInfo.starters.push(pokemonToBeAddedToStarters);
+    },
+    replaceCollectionPokemon(state, { value }) {
+      const { from, to } = value;
+      if (state.userInfo.pokemon.copies && state.userInfo.pokemon.copies > 1) state.userInfo.pokemon.copies--;
+      else state.userInfo.pokemon = state.userInfo.pokemon.filter(poke => poke.id !== from.id);
+      const indexOfDuplicate = state.userInfo.pokemon.findIndex(poke => poke.id === to.id);
+      if (indexOfDuplicate !== -1) state.userInfo.pokemon[indexOfDuplicate].copies = 2;
+      else state.userInfo.pokemon.push(to);
     }
   },
   actions: {
+    updateSeenCongrats({ commit, state }, { value }) {
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('users/' + id).update({
+        seenCongrats: value,
+      });
+    },
+    updateXPs({ commit, state }, { value }) {
+      for (const pokemon of value) {
+        const { name, newXP, hasLevelUp } = pokemon;
+        const newPokemon = state.userInfo.pokemon.filter(poke => poke.name === name)[0];
+        newPokemon.XP = newXP;
+        if (hasLevelUp) newPokemon.level = parseInt(newPokemon.level, 10) + 1;
+        commit({ type: 'replaceCollectionPokemon', value: { from: newPokemon, to: newPokemon }});
+        if (state.userInfo.starters.find(starter => starter.name === name || newPokemon.id === starter.id)) {
+          commit({ type: 'storePokemonToBeSwitched', value: newPokemon });
+          commit({ type: 'replaceStarterPokemon', value: { pokeId: newPokemon.id, name: newPokemon.name }})
+        }
+      }
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('users/' + id).update({
+        pokemon: state.userInfo.pokemon,
+        starters: state.userInfo.starters
+      });
+    },
+    levelUpPokemon({ commit, state }, payload) {
+      const { name, quantity } = payload;
+      const newPokemon = state.userInfo.pokemon.filter(poke => poke.name === name)[0];
+      newPokemon.level = parseInt(newPokemon.level, 10) + parseInt(quantity, 10);
+      commit({ type: 'replaceCollectionPokemon', value: { from: newPokemon, to: newPokemon }});
+      if (state.userInfo.starters.find(starter => starter.name === name || newPokemon.id === starter.id)) {
+        commit({ type: 'storePokemonToBeSwitched', value: newPokemon });
+        commit({ type: 'replaceStarterPokemon', value: { pokeId: newPokemon.id, name: newPokemon.name }})
+      }
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('users/' + id).update({
+        pokemon: state.userInfo.pokemon,
+        starters: state.userInfo.starters
+      });
+    },
+    updateStats({ commit, state }, payload) {
+      const { result } = payload.value;
+      const wins = result === 'wins' ? state.userInfo.wins + 1 : state.userInfo.wins;
+      const loses = result === 'loses' ? state.userInfo.loses + 1: state.userInfo.loses;
+      const stats = { wins, loses };
+      commit({ type: 'setUserStats', value: stats });
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('users/' + id).update({
+        stats: stats,
+      });
+    },
+    removeItem({ commit, state }, payload) {
+      var existingItems = state.userInfo.items || [];
+      const indexOfItem = existingItems.map(e => e.name).indexOf(payload.item);
+      if (existingItems[indexOfItem].quantity > payload.quantity) existingItems[indexOfItem].quantity -= payload.quantity;
+      else delete existingItems[indexOfItem];
+      commit({ type: 'setItems', value: existingItems });
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('users/' + id).update({
+        items: existingItems,
+      });
+    },
     fetchConversations({ commit, state }, payload) {
       firebase.database().ref('chats/').on("value", (chatObject) => {
         if (chatObject.val()) {
@@ -153,6 +263,18 @@ export default new Vuex.Store({
             }
           });
         }});
+    },
+    evolvePokemon({ commit, state }, payload) {
+      commit({ type: 'replaceCollectionPokemon', value: payload });
+      if (state.userInfo.starters.find(starter => starter.id === payload.from.id)) {
+        commit({ type: 'storePokemonToBeSwitched', value: payload.to });
+        commit({ type: 'replaceStarterPokemon', value: { pokeId: payload.from.id, name: payload.from.name }})
+      }
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('users/' + id).update({
+        pokemon: state.userInfo.pokemon,
+        starters: state.userInfo.starters
+      });
     },
     awardPokemon({ commit, state }, payload) {
       var existingPokemon = state.userInfo.pokemon;
@@ -205,13 +327,8 @@ export default new Vuex.Store({
         image: image,
       });
     },
-    replaceStarter({ commit, state}, payload) {
-      const starterToBeRemoved_id = payload.pokeId;
-      const starterToBeRemoved_name = payload.name;
-      var index = state.userInfo.starters.indexOf(starterToBeRemoved_id);
-      if (index === -1) index = state.userInfo.starters.indexOf(starterToBeRemoved_name);
-      const pokemonToBeAddedToStarters = state.pokemonToBeSwitched.id;
-      state.userInfo.starters.splice(index, 1, pokemonToBeAddedToStarters);
+    replaceStarter({ commit, state, dispatch }, payload) {
+      commit({ type: 'replaceStarterPokemon', value: payload });
       var id = localStorage.getItem('userId');
       return firebase.database().ref('users/' + id).update({
         starters: state.userInfo.starters,
@@ -227,13 +344,13 @@ export default new Vuex.Store({
           });
         }});
     },
-    storePokemon({ commit, dispatch, state }, payload) { //initial pokemon + basic info set (TODO refactor naming)
+    storeInitialUserInfo({ commit, dispatch, state }, payload) {
        commit({ type: 'setUserPokemon', value: payload.list });
        commit({ type: 'setUserBasicInfo', value: true });
        var id = localStorage.getItem('userId');
        return firebase.database().ref('users/' + id).update({
-         pokemon: payload.ids,
-         starters: payload.ids,
+         pokemon: payload.list,
+         starters: payload.list,
          coins: payload.coins,
          initialized: state.userInfo.initialized,
        });
@@ -262,6 +379,7 @@ export default new Vuex.Store({
         image: 'profile_default.png',
         starters: [],
         coins: 0,
+        level: 1,
         initialized: false,
       });
     },

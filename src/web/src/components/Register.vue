@@ -1,43 +1,12 @@
 <template>
- <div id = 'container'>
-  <h1 class = 'text-center'>Be A Member!</h1>
-    <form style = "margin-top: 4%">
-        <div class = 'form-group'>
-          <label for = "username">Username: </label>
-          <input id = 'username'
-                 type = 'text'
-                 class = 'form-control'
-                 @focus = 'removeErrorMessage()'
-                 placeholder = 'enter username here'
-                 v-model = "enteredName">
-        </div>
-        <div class = 'form-group'>
-          <label for = "mail">Email: </label>
-          <input id = 'mail'
-                 type = 'email'
-                 class = 'form-control'
-                 @focus = 'removeErrorMessage()'
-                 placeholder = 'enter mail here'
-                 v-model = "enteredMail">
-        </div>
-        <div class = 'form-group'>
-          <label for = "pass">Password: </label>
-          <input id = 'pass'
-                 type = 'password'
-                 class = 'form-control'
-                 @focus = 'removeErrorMessage()'
-                 placeholder = 'enter password here'
-                 v-model = "enteredPass">
-        </div>
-        <span v-if = "getErrorRegisterMessage" id = "errorRegisterSpan"> {{ getErrorRegisterMessage }}</span>
-        <div id = 'buttonDiv'>
-         <button id = 'submitBtn'
-                 type = 'submit'
-                 class = 'btn btn-primary'
-                 @click.prevent = "register">Sign Up</button>
-         <router-link :to = "{ path:'/' }"> Already an account? Sign in here</router-link>
-       </div>
-    </form>
+ <div id='container' class="container">
+   <div class="row">
+    <h1 class='text-center'>Be A Member!</h1>
+    <InputForm :fields="formItems" :error-message="getErrorRegisterMessage" :on-focus="removeErrorMessage" :on-submit="register" />
+    <div class="linkSpan">
+      <router-link :to = "{ path:'/' }"> Already an account? Sign in here</router-link>
+    </div>
+  </div>
  </div>
 </template>
 
@@ -46,15 +15,19 @@
   import urlAuth from '@/common/helpers/urlAuth';
   import bus from "@/common/eventBus";
   import { mapActions, mapGetters, mapMutations } from 'vuex';
+  import InputForm from '@/components/InputForm';
 
   export default {
     name: 'Register',
+    components: { InputForm },
     mixins: [uniqueIdGeneratorMixin, urlAuth],
     data () {
       return {
-        enteredName: '',
-        enteredMail: '',
-        enteredPass: '',
+        formItems: [
+          { type: 'text', id: 'username', text: 'Username', placeholder: 'enter username here' },
+          { type: 'text', id: 'email', text: 'Email', placeholder: 'enter email here' },
+          { type: 'password', id: 'pass', text: 'Password', placeholder: 'enter password here' }
+        ],
         showModal: false,
       }
     },
@@ -81,20 +54,25 @@
         'storeUsername',
         'findUserByUsername',
       ]),
-      register() {
-         this.findUserByUsername({ username: this.enteredName });
+      register(values) {
+        const [username, email, password] = values;
+        if (!username || !email || !password) {
+          this.setRegisterErrorMessage({ value: 'All fields are required...' });
+          return;
+        }
+         this.findUserByUsername({ username });
          var errorInRegister = this.getErrorRegisterMessage;
          if (!errorInRegister) {
            const newUserEntry = {
-             email: this.enteredMail,
-             password: this.enteredPass
+             email,
+             password
            };
            this.userAuth(newUserEntry).then(() => {
              errorInRegister = this.getErrorRegisterMessage;
              if (!errorInRegister) {
-               this.storeUsername(this.enteredName);
+               this.storeUsername(username);
                this.userLogin(newUserEntry).then(() => {
-                 this.createUserProfile({ userId: this.guid(), username: this.enteredName, mail: this.enteredMail });
+                 this.createUserProfile({ userId: this.guid(), username, mail: email });
                });
              }
            });
@@ -113,10 +91,9 @@
 </script>
 
 <style scoped>
-  #container{
-    padding-left:30%;
-    padding-right:30%;
+  #container {
     margin-top:5%;
+    width: 100%;
   }
 
   #submitBtn{
@@ -129,5 +106,9 @@
 
   #errorRegisterSpan {
     color: red;
+  }
+
+  .linkSpan {
+    margin-top: 1%;
   }
 </style>

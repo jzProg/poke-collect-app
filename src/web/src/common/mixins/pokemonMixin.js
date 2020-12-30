@@ -1,9 +1,11 @@
 import { mapGetters } from 'vuex';
+import formulaMixin from '@/common/mixins/formulas';
 
 const Pokedex = require('pokeapi-js-wrapper');
 const P = new Pokedex.Pokedex();
 
 const pokemonMixin = {
+  mixins: [formulaMixin],
   data() {
     return {
       totalPokemon: 300, // TODO map by region (?)
@@ -12,6 +14,7 @@ const pokemonMixin = {
         NUM_OF_STARTERS: 3,
         STANDARD_STARTERS: ['bulbasaur', 'squirtle', 'charmander'],
       },
+      REACHED_LIMIT: 'You reached pokemon limit',
       coinsInfo: {
         START_COINS: 100,
         REWARD_COINS: 200,
@@ -28,15 +31,22 @@ const pokemonMixin = {
         }
       ],
       prizes: {
+        CANDY: {
+          type: 'candy',
+          items: [{ title: 'rare-candy', quantity: 1, price: 100 }],
+        },
         PACK: {
           type: 'pack',
           items: [{ title: 'pokemon pack', quantity: 1, price: 700 }],
         },
         STONE: {
          type: 'stone',
-         items: [{ title: 'fire-stone', quantity: 1, price: 2500 },
-                  { title: 'water-stone', quantity: 1, price: 220 },
-                  { title: 'thunder-stone', quantity: 1, price: 2700 }],
+         text: 'Evolution Stones',
+         items: [{ title: 'fire-stone', evolution: ['eevee', 'growlithe', 'pansear', 'vulpix'], quantity: 1, price: 2500 },
+                  { title: 'water-stone', evolution: ['eevee', 'lombre', 'panpour', 'poliwhirl', 'shellder', 'staryu'], quantity: 1, price: 2200 },
+                  { title: 'moon-stone', evolution: ['clefairy', 'jigglypuff', 'munna', 'nidorina', 'nidorino', 'skitty'], quantity: 1, price: 1800 },
+                  { title: 'leaf-stone', evolution: ['exeggcute', 'gloom', 'nuzleaf', 'pansage', 'weepinbell'], quantity: 1, price: 1500 },
+                  { title: 'thunder-stone', evolution: ['eelektrik', 'pikachu', 'eelektross', 'eevee'], quantity: 1, price: 2700 }],
         }
       },
       avatars: {
@@ -210,24 +220,90 @@ const pokemonMixin = {
       while(listToFill.length > 0) {
         listToFill.pop();
       }
-      listOfPokemon.forEach((item, i) => {
-        this.getPokemon(item).then((response) => {
-          this.getPokemonSpecies(item).then((res) => {
-            const image = this.getPokemonImage(response.id);
-            Object.assign(response, { color: res.color.name, pokeImage: image, description: res.flavor_text_entries[0].flavor_text });
-            if (listToFill.filter(e => e.name === response.name).length <= 0)
-              listToFill.push(response);
-          });
+      return Promise.all(listOfPokemon.map(this.getPokemon)).then(data => {
+        return Promise.all(listOfPokemon.map(this.getPokemonSpecies)).then(data2 => {
+           data2.forEach((res, i) => {
+             const image = this.getPokemonImage(data[i].id);
+             const evolutionChainParts = res.evolution_chain.url.split('/');
+             const evolutionChainId = parseInt(evolutionChainParts[evolutionChainParts.length - 2], 10);
+             Object.assign(data[i], { color: res.color.name,
+                                      pokeImage: image,
+                                      description: res.flavor_text_entries[0].flavor_text,
+                                      level: this.getLevelBasedOnXP(res.growth_rate.name, data[i].base_experience),
+                                      growth_rate: res.growth_rate.name,
+                                      copies: 1,
+                                      is_legendary: res.is_legendary,
+                                      is_mythical: res.is_mythical,
+                                      evolutionChainId });
+             if (listToFill.filter(e => e.name === data[i].name).length <= 0) {
+               const { id, name, stats, height, weight, types, sprites, moves, base_experience, color, pokeImage,
+                       description, level, copies, evolutionChainId, is_legendary, is_mythical, held_items, growth_rate } = data[i];
+               listToFill.push({ id, name, stats, height, weight, types, level, is_legendary,
+                                 evolutionChainId, held_items, is_mythical, copies, growth_rate,
+                                 sprites: { back_default: sprites.back_default, front_default: sprites.front_default },
+                                 moves: { 0: { move: moves[0] ? moves[0].move : ''},
+                                          1: { move: moves[1] ? moves[1].move : ''},
+                                          2: { move: moves[2] ? moves[2].move : ''},
+                                          3: { move: moves[3] ? moves[3].move : ''}},
+                                 base_experience, color, pokeImage, description });
+             }
+           });
         });
       });
     },
+    getLevelBasedOnXP(type, baseXP) {
+      let xp;
+      let resultLevel;
+      for (let level = 1; level <= 100; level++) {
+        xp = this.getExperienceBasedlevel(type, level);
+        if (xp >= baseXP) {
+          resultLevel = level;
+          break;
+        }
+      }
+      return resultLevel;
+    },
     chooseRandomPokemon(min, max) {
+      const userPokemon = this.getUserPokemon || [];
+      if (userPokemon.length ===  this.totalPokemon) {
+        throw this.REACHED_LIMIT;
+      }
       let randomId = this.getRandomInt(min, max);
-      while(this.getUserPokemon.indexOf(randomId) !== -1) {
+      while(userPokemon.filter(pokemon => pokemon.id === randomId).length) {
         randomId = this.getRandomInt(min, max);
       }
       return randomId;
     },
+    getNextEvolution({ evolutionChainId }) {
+      return P.getEvolutionChainById(evolutionChainId);
+    },
+    getNextForm({ species, evolves_to }, name, stoneName) {
+      let evolveToByStone;
+      if (species.name === name) {
+        evolveToByStone = evolves_to.filter(ev => ev.evolution_details[0].item && ev.evolution_details[0].item.name === stoneName)[0];
+        return evolveToByStone.species.name;
+      }
+      evolveToByStone = evolves_to[0];
+      return this.getNextForm(evolveToByStone, name, stoneName);
+    },
+    getNextFormByLevelUp({ species, evolves_to }, name, level) {
+      let evolveToByLevelUp;
+      if (species.name === name) {
+        evolveToByLevelUp = evolves_to.filter(ev => ev.evolution_details[0].trigger && ev.evolution_details[0].trigger.name === 'level-up')[0];
+        if (!evolveToByLevelUp) {
+          this.evolutionErrorMessage = `${name} doesn't have next form...`;
+          return null;
+        }
+        const { min_level } = evolveToByLevelUp.evolution_details[0];
+        if (level < min_level) {
+          this.evolutionErrorMessage = `${name} hasn't reached the minimum level (${min_level}) to evolve...`;
+          return null;
+        }
+        return evolveToByLevelUp.species.name;
+      }
+      evolveToByLevelUp = evolves_to[0];
+      return this.getNextFormByLevelUp(evolveToByLevelUp, name, level);
+    }
   },
   computed: {
     ...mapGetters([

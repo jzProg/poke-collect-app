@@ -1,21 +1,33 @@
 <template>
   <div class="container">
-    <h1 style="margin-bottom:5%"><img src="../assets/bag.png" height="70px" width="70px"><b>Inventory</b></h1>
-   <div class="row" style="width: 100%;margin-top:4%" v-if="stones.length">
-     <h3><b>Evolution Stones</b></h3>
-     <div v-for="(stone, index) in stones" :key="index" :class="['col-md-' + Math.ceil(12/stones.length)]" style="margin-top:4%">
-       <img :src="stone.image" height="70" width="70" @click.prevent="showItem(stone)" style="cursor:pointer">
-       <h4>{{ stone.name }}</h4>
-     </div>
-   </div>
-   <div class="row" style="width: 100%;margin-top:4%" v-if="items.length">
-     <h3><b>Items</b></h3>
-     <div v-for="(item, index) in items" :key="index" :class="['col-md-' + Math.ceil(12/items.length)]" style="margin-top:4%">
-       <img :src="item.image" height="70" width="70" @click.prevent="showItem(item)" style="cursor:pointer">
-       <h4>{{ item.name }}</h4>
-     </div>
-   </div>
-   <ItemDetails v-if = "showInfo" :info="info" @close="showInfo = false;"/>
+    <h1>
+      <img src="../assets/bag.png" height="70px" width="70px">
+      <b>Inventory</b>
+    </h1>
+    <div class="row nav">
+      <div v-for="(category, ind) in categories"
+          :key="ind"
+          :class="['col-md-4', (ind === selected)? 'selected' : '']"
+          @click.prevent="choose(ind)"
+          style="cursor: pointer">
+         <h3><b>{{ category.text }}</b></h3>
+      </div>
+    </div>
+    <div class="row">
+      <div v-for="(it, index) in getItems.filter(item => item && item.type === categories[selected].filter)"
+           class="col-md-3 item">
+        <img :src="it.image"
+             height="70"
+             width="70"
+             @click.prevent="showItem(it)"
+             style="cursor:pointer">
+        <h4>{{ it.name }}</h4>
+      </div>
+    </div>
+    <ItemDetails v-if="showInfo"
+                :info="info"
+                :is-stone="info.type === prizes.STONE.type"
+                @close="showInfo = false"/>
   </div>
 </template>
 
@@ -30,11 +42,18 @@
     components: { ItemDetails },
     data() {
       return {
+        selected: 0,
         showInfo: false,
         info: {},
+        categories: [{ text: 'Evolution Stones', filter: 'stone' },
+                     { text: 'Candies', filter: 'candy' },
+                     { text: 'Items', filter: 'item' }]
       };
     },
     methods: {
+      choose(index) {
+        this.selected = index;
+      },
       showItem(item) {
         this.info = item;
         this.showInfo = true;
@@ -44,14 +63,24 @@
       ...mapGetters([
         'getItems',
       ]),
-      items() {
-        if (!this.getItems) return [];
-        return this.getItems.filter(item => item.type === this.gameRewards[0].type);
-      },
-      stones() {
-        if (!this.getItems) return [];
-        return this.getItems.filter(item => item.type === this.prizes.STONE.type);
-      }
     }
   }
 </script>
+
+<style scoped>
+  .selected {
+    background-color: lightgray;
+    border-radius: 5px;
+  }
+
+  .nav {
+    background-color: #E6E6FA;
+    width: 100%;
+    margin: 0 auto;
+    border-radius: 15px;
+  }
+
+  .item {
+    margin-top: 4%;
+  }
+</style>

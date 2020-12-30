@@ -6,7 +6,7 @@
       <div v-for="(item, index) in items.items"
            :key="index"
            style="cursor:pointer">
-        <input type="number" min="1" v-model="item.quantity" size="1" style="margin-bottom:2%"> x
+        <input type="number" min="1" v-model="item.quantity" size="1" id="quantityDiv"> x
         <img v-if="items.type !== 'pack'" :src="item.image">
         <span v-else>{{ item.title }}</span>
         for <b>{{ item.price }}</b> coins
@@ -15,6 +15,7 @@
     </div>
     <div slot = "footer" class="text-center">
       <span v-if="cashError" class="text-center" style="color:red">Not enough coins</span><br>
+      <span v-if="error" class="text-center" style="color:red">{{ error }}</span><br>
       <button :disabled="!itemsToBuy.length" type = "button" class="btn btn-primary" @click.prevent = "buy">Buy</button>
       <button type = "button" class="btn btn-danger" @click.prevent = "cancel">Cancel</button>
     </div>
@@ -27,7 +28,7 @@
 
   export default {
       name: 'BuyModal',
-      props: ['items', 'buyAction'],
+      props: ['items', 'buyAction', 'error'],
       components: { Modal },
       data() {
         return {
@@ -67,3 +68,10 @@
       }
   }
 </script>
+
+<style scoped>
+ #quantityDiv {
+  margin-bottom:2%;
+  width:20%;
+ }
+</style>

@@ -1,77 +1,58 @@
 <template>
-  <div id = 'container'>
-    <div id="video_container">
-      <video id="video" class="showP">
-      <source src="../../src/assets/loginGif.mp4" type="video/mp4"></video>
-      <img id="Logo" class='hideP' src="../../src/assets/PokeZagg.png"></img>
+  <div id='container' class="container">
+    <div class="row">
+      <div id="video_container">
+        <video id="video" class="showP">
+        <source src="../../src/assets/loginGif.mp4" type="video/mp4"></video>
+        <img id="Logo" class='hideP' src="../../src/assets/PokeZagg.png"></img>
+      </div>
+      <InputForm :fields="formItems" :error-message="getErrorLoginMessage" :on-focus="removeErrorMessage" :on-submit="login" />
+      <div class="linkSpan">
+        <router-link :to = "{ path:'register' }"> Not registered? Sign up here </router-link>
+      </div>
     </div>
-    <form>
-        <div class = 'form-group'>
-          <label for = "email">Email: </label>
-          <input id = 'email'
-                 type = 'text'
-                 class = 'form-control'
-                 placeholder = 'enter email here'
-                 @focus = 'removeErrorMessage()'
-                 v-model = "enteredMail">
-        </div>
-        <div class = 'form-group'>
-          <label for = "pass">Password: </label>
-          <input id = 'pass'
-                 type = 'password'
-                 class = 'form-control'
-                 placeholder = 'enter password here'
-                 @focus = 'removeErrorMessage()'
-                 v-model = "enteredPass">
-        </div>
-        <span id = 'errorMessageSpan' v-if = "getErrorLoginMessage">{{ getErrorLoginMessage }}</span>
-        <div id = 'buttonDiv'>
-         <button id = 'submitBtn'
-                 type = 'submit'
-                 class = 'btn btn-primary'
-                 @click.prevent = "login">
-           Sign In
-         </button>
-         <router-link :to = "{ path:'register' }"> Not registered? Sign up here</router-link>
-       </div>
-    </form>
   </div>
 </template>
 
 <script>
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
   import { mapActions, mapGetters, mapMutations } from 'vuex';
+  import InputForm from '@/components/InputForm';
 
   export default {
     name: 'Login',
+    components: { InputForm },
     mixins: [uniqueIdGeneratorMixin],
     data () {
       return {
-        enteredMail: '',
-        enteredPass: '',
+        formItems: [
+          { type: 'text', id: 'email', text: 'Email', placeholder: 'enter email here' },
+          { type: 'password', id: 'pass', text: 'Password', placeholder: 'enter password here' }
+        ],
       }
     },
     mounted() {
       this.removeErrorMessage();
-      var video = document.querySelector('video');
-      video.muted = true;
-      video.play();
-      video.addEventListener('ended',()=>{
-        var elementVideo=document.getElementById('video')
-        var Logo=document.getElementById('Logo')
-          this.fadeOutInEffect(elementVideo,Logo)
-        });
+      const video = document.querySelector('video');
+      video.muted = false;
+      video.play()
+           .catch(error => {
+        console.log(`video error: ${error}. Showing logo instead...`);
+        this.onAnimationEnd();
+      });
+      video.addEventListener('ended', this.onAnimationEnd);
     },
     methods: {
-      fadeOutInEffect(element,Logo){
-        element.classList.add('hideP')
-        element.classList.remove('showP')
-        Logo.classList.remove('hideP')
-        Logo.classList.add('showP')
-        //var Logo=document.createElement("img")
-      //  Logo.src='../../src/assets/PokeZagg.png'
-        //element.replaceWith(Logo)
-
+      onAnimationEnd() {
+        const elementVideo = document.getElementById('video');
+        const Logo = document.getElementById('Logo');
+        this.fadeOutInEffect(elementVideo, Logo);
+      },
+      fadeOutInEffect(element,Logo) {
+        element.classList.add('hideP');
+        element.classList.remove('showP');
+        Logo.classList.remove('hideP');
+        Logo.classList.add('showP');
       },
       ...mapMutations([
          'setLoginErrorMessage',
@@ -79,8 +60,12 @@
       ...mapActions([
         'userLogin',
       ]),
-      login() {
-       this.userLogin({ email: this.enteredMail, password: this.enteredPass });
+      login(values) {
+        if (!values[0] || !values[1]) {
+          this.setLoginErrorMessage({ value: 'All fields are required...' });
+          return;
+        }
+        this.userLogin({ email: values[0], password: values[1] });
       },
       removeErrorMessage() {
         this.setLoginErrorMessage({ value: '' });
@@ -88,41 +73,39 @@
     },
     computed: {
       ...mapGetters([
-          'getErrorLoginMessage',
+        'getErrorLoginMessage',
       ]),
     },
   }
 </script>
 
 <style scoped>
-#errorMessageSpan {
-  color: red;
-}
+  #container{
+    width: 100%;
+    margin-top: 5%;
+  }
 
-#container{
-  padding-left:30%;
-  padding-right:30%;
-  margin-top:5%;
-}
+  .showP{
+    opacity: 1;
+    transition: opacity 1000ms;
+    width:500px;
+    height:300px;
+  }
 
-#submitBtn{
-  margin-right:2%;
-}
+  .hideP{
+    opacity: 0;
+    transition: opacity 1000ms;
+    width:0px;
+    height:0px;
+  }
 
-#buttonDiv{
-  margin-top:4%;
-}
+  .linkSpan {
+    margin-top: 1%;
+  }
 
-.showP{
-  opacity: 1;
-  transition: opacity 1000ms;
-  width:500px;
-  height:300px;
-}
-.hideP{
-  opacity: 0;
-  transition: opacity 1000ms;
-  width:0px;
-  height:0px;
-}
+  @media only screen and (max-width: 750px) {
+    #Logo {
+      width: 90%;
+    }
+  }
 </style>
