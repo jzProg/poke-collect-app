@@ -19,7 +19,7 @@
     "lodash": "^4.17.20",
     "mem": "^4.0.0",
     "pokeapi-js-wrapper": "^1.1.2",
-    "set-value": "^2.0.1",
+    "set-value": "^4.0.1",
     "uglifyjs-webpack-plugin": "^1.0.1",
     "vue": "^2.5.2",
     "vue-axios": "^2.0.2",
