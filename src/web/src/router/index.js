@@ -11,6 +11,7 @@ import Store from '@/components/Store';
 import Inventory from '@/components/Inventory';
 import Evolution from '@/components/Evolution';
 import Lobby from '@/components/pvp/Lobby';
+import PvpGame from '@/components/pvp/PvpGame';
 
 Vue.use(Router);
 
@@ -119,6 +120,15 @@ const router =  new Router({
         else next('/');
       }
     },
+    {
+      path: '/pvpGame/:gameId',
+      name: 'PvpGame',
+      component: PvpGame,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem('token')) next();
+        else next('/');
+      }
+    }
   ]
 });
 

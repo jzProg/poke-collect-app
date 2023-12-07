@@ -39,6 +39,7 @@
     <Congrats v-if="showCongrats && !getUserInfo.seenCongrats && getUserInfo.pokemon && getUserInfo.pokemon.length === totalPokemon"
               :total="totalPokemon"
               @close="onCongrats()"/>
+    <game-invitation v-if="getSeeInvitation"></game-invitation>          
     <Loading v-if="getLoad"/>
   </div>
 </template>
@@ -58,6 +59,7 @@
   import Chat from '@/components/modals/Chat';
   import Loading from '@/components/modals/Loading';
   import Congrats from '@/components/modals/Congrats';
+  import GameInvitation from '@/components/modals/GameInvitation';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
 
   export default {
@@ -66,7 +68,7 @@
       'b-toggle': VBToggle
     },
     mixins: [firebaseConfigProperties, urlAuthMixin, pokemonMixin],
-    components: { ProfileModal, Chat, Loading, Congrats },
+    components: { ProfileModal, Chat, Loading, Congrats, GameInvitation },
     data() {
       return {
         username: '',
@@ -110,7 +112,7 @@
         return require(`./assets/profileAvatar/${this.getUserImage}`);
       },
       goToHome(){
-        this.$router.push('getStarted');
+        this.$router.push('/getStarted');
       },
       ...mapMutations([
           'setLoginUsername',
@@ -171,7 +173,8 @@
       ...mapGetters([
         'getUserImage',
         'getLoad',
-        'getUserInfo'
+        'getUserInfo',
+        'getSeeInvitation'
       ]),
     }
 }

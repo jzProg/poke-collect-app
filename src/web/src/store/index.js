@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import uniqueIdGenerator from '../common/helpers/uniqueIdsGenerator';
 import firebase from 'firebase/app';
 import bus from "@/common/eventBus";
+import router from '../router';
 
 Vue.use(Vuex);
 
@@ -23,6 +24,9 @@ export default new Vuex.Store({
       wins: 0,
       loses: 0,
       seenCongrats: false,
+      seeInvitation: false,
+      invitationGameId: null,
+      invitationSender: null
     },
     enemybattlePokemon: [],
     errorLoginMessage: '',
@@ -93,6 +97,15 @@ export default new Vuex.Store({
     },
     getUserLevel(state) {
       return state.userInfo.level;
+    },
+    getSeeInvitation(state) {
+      return state.userInfo.seeInvitation;
+    },
+    getGameInvitationId(state) {
+      return state.userInfo.invitationGameId;
+    },
+    getGameInvitationSender(state) {
+      return state.userInfo.invitationSender;
     }
   },
   mutations: {
@@ -182,6 +195,54 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    acceptGameInvitation({ commit, state }) {
+      var id = localStorage.getItem('userId');
+
+      state.userInfo.seeInvitation = false; // close modal
+
+      const gameId = state.userInfo.invitationGameId;
+      state.userInfo.invitationGameId = null;
+      state.userInfo.invitationSender = null;
+
+      firebase.database().ref('lobby/invitations/' + id).update({    
+        status: 'ACCEPTED'
+      }).then(() => {
+        router.push({ name: 'PvpGame', params: { gameId }})
+      });
+    },
+    sendGameInvitation({ commit, state }, { userId, gameId }) {
+      state.load = true;
+
+      var senderId = localStorage.getItem('userId');
+
+      firebase.database().ref('lobby/invitations/' + userId).on("value", (invitationObj) => {
+        if (invitationObj.val() && invitationObj.val().sender === senderId && invitationObj.val().status === 'ACCEPTED') {
+          state.load = false;
+
+          firebase.database().ref('games/' + invitationObj.val().gameId).set({
+            winner: null,
+            currentPlayer: senderId,
+            status: 'STARTED',
+            player1: senderId,
+            player2: userId,
+            gameId
+          }).then(() => {
+            router.push({ name: 'PvpGame', params: { gameId: invitationObj.val().gameId }});
+          });
+        }
+      });
+
+      return firebase.database().ref('lobby/invitations/' + userId).set({
+        senderUsername: state.userInfo.loginUsername,
+        sender: senderId,
+        status: 'SENT',
+        gameId
+      });
+    },
+    unregisterFromLobby({ commit, state }) {
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('lobby/users/' + id).remove()
+    },
     registerToLobby({ commit, state }) {
       var id = localStorage.getItem('userId');
       firebase.database().ref('lobby/users').on("value", (lobbyObj) => {
@@ -194,8 +255,18 @@ export default new Vuex.Store({
         }
       });
 
+      firebase.database().ref('lobby/invitations/' + id).on("value", (invitationObj) => {
+        if (invitationObj.val() && invitationObj.val().sender !== id && invitationObj.val().status === 'SENT') {
+          state.userInfo.invitationGameId = invitationObj.val().gameId;
+          state.userInfo.invitationSender = invitationObj.val().senderUsername;
+          state.userInfo.seeInvitation = true; // show invitation modal
+        }
+      });
+
       return firebase.database().ref('lobby/users/' + id).set({
         id,
+        username: state.userInfo.loginUsername,
+        starters: state.userInfo.starters
       });
     },
     updateSeenCongrats({ commit, state }, { value }) {
