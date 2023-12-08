@@ -9,8 +9,13 @@
       <button type = "button"
               class = "btn btn-primary"
               @click.prevent = "acceptInvitation">
-              Accept
+        Accept
      </button>
+     <button type = "button"
+             class="btn btn-danger" 
+             @click.prevent = "close">
+        Reject
+    </button>
     </div>
   </Modal>
 </template>

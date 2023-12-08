@@ -39,7 +39,8 @@
     <Congrats v-if="showCongrats && !getUserInfo.seenCongrats && getUserInfo.pokemon && getUserInfo.pokemon.length === totalPokemon"
               :total="totalPokemon"
               @close="onCongrats()"/>
-    <game-invitation v-if="getSeeInvitation"></game-invitation>          
+    <game-invitation v-if="getSeeInvitation" @close="rejectInvitation()"></game-invitation> 
+    <reject-modal v-if="getShowReject" @close="closeReject()"></reject-modal>         
     <Loading v-if="getLoad"/>
   </div>
 </template>
@@ -60,6 +61,7 @@
   import Loading from '@/components/modals/Loading';
   import Congrats from '@/components/modals/Congrats';
   import GameInvitation from '@/components/modals/GameInvitation';
+  import RejectModal from '@/components/modals/RejectModal';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
 
   export default {
@@ -68,7 +70,7 @@
       'b-toggle': VBToggle
     },
     mixins: [firebaseConfigProperties, urlAuthMixin, pokemonMixin],
-    components: { ProfileModal, Chat, Loading, Congrats, GameInvitation },
+    components: { ProfileModal, Chat, Loading, Congrats, GameInvitation, RejectModal },
     data() {
       return {
         username: '',
@@ -101,6 +103,9 @@
       });
     },
     methods: {
+      rejectInvitation() {
+        this.rejectGameInvitation();
+      },
       onCongrats() {
         this.showCongrats = false;
         this.updateSeenCongrats({ value: true });
@@ -129,7 +134,9 @@
       ...mapActions([
         'userLogout',
         'clearUserData',
-        'updateSeenCongrats'
+        'updateSeenCongrats',
+        'rejectGameInvitation',
+        'closeReject'
       ]),
       showOptions() {
        this.showOptionsModal = true;
@@ -174,7 +181,8 @@
         'getUserImage',
         'getLoad',
         'getUserInfo',
-        'getSeeInvitation'
+        'getSeeInvitation',
+        'getShowReject'
       ]),
     }
 }

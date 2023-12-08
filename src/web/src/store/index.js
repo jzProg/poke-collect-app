@@ -26,7 +26,9 @@ export default new Vuex.Store({
       seenCongrats: false,
       seeInvitation: false,
       invitationGameId: null,
-      invitationSender: null
+      invitationSender: null,
+      showReject: false,
+      rejectInvitationId: null
     },
     enemybattlePokemon: [],
     errorLoginMessage: '',
@@ -106,9 +108,15 @@ export default new Vuex.Store({
     },
     getGameInvitationSender(state) {
       return state.userInfo.invitationSender;
+    },
+    getShowReject(state) {
+      return state.userInfo.showReject;
     }
   },
   mutations: {
+    setShowReject(state, payload) {
+      state.userInfo.showReject = payload.value;
+    },
     setLobbyUsers(state, payload) {
       state.lobby.users = payload.value;
     },
@@ -195,6 +203,20 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    closeReject({ commit, state }) {
+      state.userInfo.showReject = false; // close modal
+
+      firebase.database().ref('lobby/invitations/' + state.userInfo.rejectInvitationId).remove();
+    },
+    rejectGameInvitation({ commit, state }) {
+      var id = localStorage.getItem('userId');
+
+      firebase.database().ref('lobby/invitations/' + id).update({
+        status: 'REJECTED'
+      }).then(() => {
+        state.userInfo.seeInvitation = false; // close modal
+      });
+    },
     acceptGameInvitation({ commit, state }) {
       var id = localStorage.getItem('userId');
 
@@ -229,6 +251,10 @@ export default new Vuex.Store({
           }).then(() => {
             router.push({ name: 'PvpGame', params: { gameId: invitationObj.val().gameId }});
           });
+        } else if (invitationObj.val() && invitationObj.val().sender === senderId && invitationObj.val().status === 'REJECTED') {
+          state.load = false;
+          state.userInfo.showReject = true;
+          state.userInfo.rejectInvitationId = userId;
         }
       });
 
