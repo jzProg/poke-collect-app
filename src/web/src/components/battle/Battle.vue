@@ -59,7 +59,6 @@
 <script>
   import { mapGetters, mapMutations } from 'vuex';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
-  import battleMixin from '@/common/mixins/battleLogic';
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
   import PostGame from '@/components/modals/PostGame';
   import ExtraAward from '@/components/modals/ExtraAward';
@@ -78,7 +77,7 @@
 
   export default {
      name: 'Battle',
-     mixins: [pokemonMixin, battleMixin, uniqueIdGeneratorMixin],
+     mixins: [pokemonMixin, uniqueIdGeneratorMixin],
      components: { Pokemon, PostGame, ExtraAward, Stats, Confirm, Score, BattlePokemon, MessageBox },
      data() {
        return {
@@ -96,9 +95,9 @@
           pokeStats: []
        }
      },
-     beforeRouteEnter(to, from, next) {
+     beforeRouteEnter(to, from, next) { // todo move to battleLogic.js
         next(vm => {
-          if (vm.getCurrentOpponentId) next();
+          if (vm.getCurrentOpponentId) next(); 
           else next('/game');
         });
      },
@@ -110,29 +109,28 @@
      created() {
        this.setLoad({ value: true });
        this.getAvatarImage();
-       this.enemyName = this.avatars[this.getCurrentOpponentId].name;
-       this.gameState.currentState = this.getNextState();
+       this.enemyName = this.determineEnemyName();
      },
      mounted() {
        this.getEnemyPokemon();
      },
      methods: {
-       getBattlePokemon(isHome) {
+       /*getBattlePokemon(isHome) {
          if (isHome) {
            return { ...this.homebattlePokemon, HP: this.gameState.homePokemonHP };
          }
          return { ...this.enemybattlePokemon, HP: this.gameState.enemyPokemonHP };
-       },
+       }, */
        getState() {
          return { ...this.gameState, homeImage: this.getImage(), enemyImage: this.image };
        },
        toggle() {
         this.fullscreen = !this.fullscreen;
         this.$refs['fullscreen'].toggle();
-      },
-      fullscreenChange(fullscreen) {
+       },
+       fullscreenChange(fullscreen) {
         this.fullscreen = fullscreen
-      },
+       },
        ...mapMutations([
          'setLoad'
        ]),
@@ -141,9 +139,6 @@
        },
        getImage() {
          return require(`@/assets/profileAvatar/${this.getUserImage}`);
-       },
-       getAvatarImage() {
-         this.image = require(`@/assets/${this.avatars[this.getCurrentOpponentId].image}`);
        },
        getEnemyPokemon() {
          this.getPokemonInfoFromList(this.getEnemyBattlePokemon, this.enemyPokemon).then(() => {
@@ -171,12 +166,8 @@
            }, 1000);
          }
        },
-       onPokemonChoosed(poke) {
-         if (this.gameState.currentState === 'HOME_OPTION') {
-           this.homebattlePokemon = this.getHomePokemon.filter(starter => starter.name === poke)[0];
-           this.gameState.homePokemonHP = this.getHPFromHistory(poke) || this.defaultHP;
-           this.gameState.currentState = this.getNextState();
-         } else console.log('You cannot choose another pokemon right now!');
+       goToIndex() {
+        this.$router.push('getStarted');
        }
     },
     computed: {

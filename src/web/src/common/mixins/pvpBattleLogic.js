@@ -4,7 +4,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 const battleMixin = {
   data() {
     return {
-      isPvp: false,
+      isPvp: true,
       homebattlePokemon: {},
       defaultHP: 300,
       gameState: {
@@ -37,7 +37,10 @@ const battleMixin = {
     }
   },
   created() {
-    this.gameState.currentState = this.getNextState();
+    // todo subscribe to game + add callbacks on game events
+  },
+  determineEnemyName () {
+    return this.avatars[this.getCurrentOpponentId].name; // todo change
   },
   methods: {
     ...mapMutations([
@@ -50,9 +53,6 @@ const battleMixin = {
       'updateStats',
       'updateXPs'
     ]),
-    determineEnemyName () {
-      return this.avatars[this.getCurrentOpponentId].name;
-    },
     getNextState() {
       const currentState = this.gameState.currentState;
       const stateMessage = this.gameState.statesInfo[currentState].message;
@@ -297,8 +297,10 @@ const battleMixin = {
       this.setCurrentReward({ type: this.gameRewards[0].type, value:  [itemObj]});
     },
     walkAway() {
-      this.updateStats({ value: { result: 'loses' }});
-      this.goToIndex();
+      // this.updateStats({ value: { result: 'loses' }});
+      // this.goToIndex();
+
+      // todo -> send event for walkAway
     },
     calcDamage(attacker, defender, move) {
       const gen = Generations.get(5);
@@ -338,7 +340,7 @@ const battleMixin = {
     getHPFromHistory(poke) {
       return this.gameState.homeHPHistory[poke];
     },
-    onPokemonChoosed(poke) {
+    onPokemonChoosed(poke) { 
       if (this.gameState.currentState === 'HOME_OPTION') {
         this.homebattlePokemon = this.getHomePokemon.filter(starter => starter.name === poke)[0];
         this.gameState.homePokemonHP = this.getHPFromHistory(poke) || this.defaultHP;
@@ -346,8 +348,8 @@ const battleMixin = {
       } else console.log('You cannot choose another pokemon right now!');
     },
     getAvatarImage() {
-      this.image = require(`@/assets/${this.avatars[this.getCurrentOpponentId].image}`);
-    },
+      this.image = require(`@/assets/${this.avatars[this.getCurrentOpponentId].image}`); // todo change
+    }
   },
   computed: {
     ...mapGetters([
