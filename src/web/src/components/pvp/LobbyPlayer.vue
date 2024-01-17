@@ -1,6 +1,6 @@
 <template>
-    <div class="player" @click.prevent="$emit('select', id)">
-        <img src="../../assets/profileAvatar/profile_default.png" width="40" height="40" class="profileImg"><br>
+    <div class="player" @click.prevent="$emit('select', { id, img, name: username, pokemon: starters })">
+        <img :src="getImage()" width="40" height="40" class="profileImg"><br>
         <b>ID </b> {{ id }}<br>
         <b>username </b> {{ username}}<br>
         <b>starters </b> <img src="../../assets/collectionpokeballs.png" width="20" height="20"> {{ starters }}
@@ -18,10 +18,18 @@ export default {
         username: {
             type: String
         },
+        img: {
+            type: String
+        },
         starters: {
             type: Array,
             default: () => []
         }
+    },
+    methods: {
+      getImage() {
+        return require(`@/assets/profileAvatar/${this.img}`);
+      }
     }
 }
 </script>

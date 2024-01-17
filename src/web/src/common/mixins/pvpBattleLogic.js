@@ -7,6 +7,10 @@ const battleMixin = {
       isPvp: true,
       homebattlePokemon: {},
       defaultHP: 300,
+      enemy: {
+        name: '',
+        avatarImg: ''
+      },
       gameState: {
         faintedInfo: { totalPokemonFainted: 0, xp: 0, level: 0  },
         homeScore: 0,
@@ -14,45 +18,80 @@ const battleMixin = {
         homePokemonHP: 300,
         enemyPokemonHP: 300,
         homeHPHistory: {},
-        enemyPokemonIndex: 0,
+        enemyPokemonIndex: -1,
         enemyFaint: false,
-        availableEnemyPokemon: [1, 2],
+        // availableEnemyPokemon: [1, 2],
         homeUsedAbilitiesCount: {},
-        currentState: 'HOME_CHOOSE',
+        currentState: 'STARTED',
         currentDamage: 0,
         currentAttack: '',
         statesInfo: {
-          'HOME_CHOOSE': { message: 'Choose your battle pokemon!' },
-          'HOME_OPTION': { message: 'What should * do?' },
-          'HOME_BATTLE': { message: ' used ' },
-          'ENEMY_CHOOSE': { message: ' Chosed ' },
-          'ENEMY_BATTLE': { message: ' used ' },
-          'HOME_DAMAGE_DONE': { message: ['It did nothing...', 'Not very effective...', 'It is super effective!'] },
-          'ENEMY_DAMAGE_DONE': { message: ['It did nothing...', 'Not very effective...', 'It is super effective!'] },
-          'HOME_WINNER': { message: ' fainted!' },
-          'ENEMY_WINNER': { message: ' fainted!' },
+          'HOME_STARTED': { message: 'Choose your battle pokemon!' },
+          'ENEMY_STARTED': { message: '* choosing battle pokemon...' },
+          'HOME_POKEMON_CHOSED': { message: 'What should * do?' },
+          'ATTACK': { message: ' used ' },
+          'ENEMY_POKEMON_CHOSED': { message: ' Chosed ' },
+          'DAMAGE_DONE': { message: ['It did nothing...', 'Not very effective...', 'It is super effective!'] },
+          'POKEMON_FAINT': { message: ' fainted!' },
           'FINISH': { message: 'Game Finished!'}
         }
       },
     }
   },
   created() {
-    // todo subscribe to game + add callbacks on game events
-  },
-  determineEnemyName () {
-    return this.avatars[this.getCurrentOpponentId].name; // todo change
+    this.setLoad({ value: true });
+    this.registerToGame({ gameId: this.$route.params.gameId, eventHandler: (gameObj) => {
+      const gameState = gameObj.val();
+      if (gameState) {
+        console.log(gameState)
+        const myId = localStorage.getItem('userId');
+        const currentState = gameState.status;
+        const currentPlayer = gameState.currentPlayer;
+        const isHome = currentPlayer === myId;
+
+        switch(currentState) {
+         case 'STARTED': {
+          this.message = this.gameState.statesInfo[`${isHome?'HOME':'ENEMY'}_STARTED`].message.replace('*', this.enemyName);
+          const awayPlayer = myId === gameState.player1.id ? gameState.player2 : gameState.player1;
+          this.enemy = {
+            name: awayPlayer.name,
+            avatarImg: awayPlayer.img
+          }
+          this.enemyPokemon = awayPlayer.pokemon;
+          this.setLoad({ value: false });
+          break;
+         }
+         case 'POKEMON_CHOSED': {
+          this.message = this.gameState.statesInfo[`${isHome?'HOME':'ENEMY'}_POKEMON_CHOSED`].message;
+          break;
+         }
+         // todo other events
+         default: {
+          this.message = this.gameState.statesInfo[currentState].message;
+         }
+        }
+
+        this.getAvatarImage();
+        this.enemyName = this.determineEnemyName();
+      }
+    }});
   },
   methods: {
     ...mapMutations([
       'setUserCoins',
       'setCurrentReward',
+      'setLoad'
     ]),
     ...mapActions([
       'awardPokemon',
       'awardItems',
       'updateStats',
-      'updateXPs'
+      'updateXPs',
+      'registerToGame'
     ]),
+    determineEnemyName () {
+      return this.enemy.name;
+    },
     getNextState() {
       const currentState = this.gameState.currentState;
       const stateMessage = this.gameState.statesInfo[currentState].message;
@@ -107,7 +146,7 @@ const battleMixin = {
         });
       }
     },
-    enemyChoose() {
+   /* enemyChoose() {
       const randomIndex = this.getRandomInt(0, this.gameState.availableEnemyPokemon.length - 1);
       this.gameState.enemyPokemonIndex = this.gameState.availableEnemyPokemon[randomIndex]; // choose next pokemon
       this.gameState.availableEnemyPokemon.splice(randomIndex, 1); // remove from available pokemon
@@ -119,8 +158,8 @@ const battleMixin = {
           this.gameState.currentState = this.getNextState(); // HOME_OPTION -> HOME_BATTLE
         });
       }
-    },
-    opponentMoves() {
+    },*/
+   /* opponentMoves() {
        this.gameState.currentAttack = this.choosePCAttack();
        this.animateAttack(false);
        this.gameState.currentState = this.getNextState(); // attacks with ability -> ENEMY_DAMAGE_DONE
@@ -138,11 +177,11 @@ const battleMixin = {
            });
          }
        });
-    },
-    choosePCAttack() {
+    },*/
+   /* choosePCAttack() {
       const randomMoveIndex = this.getRandomInt(0, 3);
       return this.enemybattlePokemon.moves[randomMoveIndex].move.name;
-    },
+    },*/
     updateScore() {
       console.log('updating round score...');
       if (this.gameState.currentState === 'ENEMY_DAMAGE_DONE') {
@@ -340,15 +379,17 @@ const battleMixin = {
     getHPFromHistory(poke) {
       return this.gameState.homeHPHistory[poke];
     },
-    onPokemonChoosed(poke) { 
-      if (this.gameState.currentState === 'HOME_OPTION') {
+    onPokemonChoosed(poke) {
+     /* if (this.gameState.currentState === 'HOME_OPTION') {
         this.homebattlePokemon = this.getHomePokemon.filter(starter => starter.name === poke)[0];
         this.gameState.homePokemonHP = this.getHPFromHistory(poke) || this.defaultHP;
         this.gameState.currentState = this.getNextState();
-      } else console.log('You cannot choose another pokemon right now!');
+      } else console.log('You cannot choose another pokemon right now!'); */
+
+      // todo -> send event for choose
     },
     getAvatarImage() {
-      this.image = require(`@/assets/${this.avatars[this.getCurrentOpponentId].image}`); // todo change
+      this.image = require(`@/assets/profileAvatar/${this.enemy.avatarImg}`);
     }
   },
   computed: {

@@ -6,6 +6,7 @@
                       :id="user.id"
                       :username="user.username"
                       :starters="user.starters.map(s => s.name)"
+                      :img="user.img"
                       @select="sendInvitation"
                       v-if="!isCurrentUser(user.id)">
         </lobby-player>
@@ -38,8 +39,8 @@ export default {
       isCurrentUser(id) {
         return localStorage.getItem('userId') === id
       },
-      sendInvitation (userId) {
-        this.sendGameInvitation({ userId, gameId: this.guid() })
+      sendInvitation ({ id, name, img, pokemon }) {
+        this.sendGameInvitation({ awayUser: { id, name, img, pokemon }, gameId: this.guid() })
       }
   },
   computed: {

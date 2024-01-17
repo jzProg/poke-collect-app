@@ -36,7 +36,24 @@ const battleMixin = {
       },
     }
   },
+  watch: {
+    getUserStarters(newValue, oldValue) {
+      this.getEnemyPokemon();
+    }
+ },
+  mounted() {
+    this.getEnemyPokemon();
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (vm.getCurrentOpponentId) next(); 
+      else next('/game');
+    });
+ },
   created() {
+    this.setLoad({ value: true });
+    this.getAvatarImage();
+    this.enemyName = this.determineEnemyName();
     this.gameState.currentState = this.getNextState();
   },
   methods: {

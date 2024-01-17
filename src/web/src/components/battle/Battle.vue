@@ -95,25 +95,6 @@
           pokeStats: []
        }
      },
-     beforeRouteEnter(to, from, next) { // todo move to battleLogic.js
-        next(vm => {
-          if (vm.getCurrentOpponentId) next(); 
-          else next('/game');
-        });
-     },
-     watch: {
-        getUserStarters(newValue, oldValue) {
-          this.getEnemyPokemon();
-        }
-     },
-     created() {
-       this.setLoad({ value: true });
-       this.getAvatarImage();
-       this.enemyName = this.determineEnemyName();
-     },
-     mounted() {
-       this.getEnemyPokemon();
-     },
      methods: {
        /*getBattlePokemon(isHome) {
          if (isHome) {

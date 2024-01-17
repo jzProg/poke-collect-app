@@ -203,6 +203,9 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    registerToGame({ commit, state }, { gameId , eventHandler }) {
+      return firebase.database().ref('games/' + gameId).on('value', eventHandler);
+    },
     closeReject({ commit, state }) {
       state.userInfo.showReject = false; // close modal
 
@@ -227,17 +230,18 @@ export default new Vuex.Store({
       state.userInfo.invitationSender = null;
 
       firebase.database().ref('lobby/invitations/' + id).update({    
-        status: 'ACCEPTED'
+        status: 'ACCEPTED',
+        awayPokemon: state.userInfo.starters
       }).then(() => {
         router.push({ name: 'PvpGame', params: { gameId }})
       });
     },
-    sendGameInvitation({ commit, state }, { userId, gameId }) {
+    sendGameInvitation({ commit, state }, { awayUser, gameId }) {
       state.load = true;
 
       var senderId = localStorage.getItem('userId');
 
-      firebase.database().ref('lobby/invitations/' + userId).on("value", (invitationObj) => {
+      firebase.database().ref('lobby/invitations/' + awayUser.id).on("value", (invitationObj) => {
         if (invitationObj.val() && invitationObj.val().sender === senderId && invitationObj.val().status === 'ACCEPTED') {
           state.load = false;
 
@@ -245,8 +249,8 @@ export default new Vuex.Store({
             winner: null,
             currentPlayer: senderId,
             status: 'STARTED',
-            player1: senderId,
-            player2: userId,
+            player1: { id: senderId, name: state.userInfo.loginUsername, img: state.userInfo.image, pokemon: state.userInfo.starters },
+            player2: { id: awayUser.id,  name: awayUser.name, img: awayUser.img, pokemon: invitationObj.val().awayPokemon },
             gameId
           }).then(() => {
             router.push({ name: 'PvpGame', params: { gameId: invitationObj.val().gameId }});
@@ -258,7 +262,7 @@ export default new Vuex.Store({
         }
       });
 
-      return firebase.database().ref('lobby/invitations/' + userId).set({
+      return firebase.database().ref('lobby/invitations/' + awayUser.id).set({
         senderUsername: state.userInfo.loginUsername,
         sender: senderId,
         status: 'SENT',
@@ -292,7 +296,8 @@ export default new Vuex.Store({
       return firebase.database().ref('lobby/users/' + id).set({
         id,
         username: state.userInfo.loginUsername,
-        starters: state.userInfo.starters
+        starters: state.userInfo.starters,
+        img: state.userInfo.image
       });
     },
     updateSeenCongrats({ commit, state }, { value }) {
