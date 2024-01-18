@@ -18,9 +18,9 @@ const battleMixin = {
         homePokemonHP: 300,
         enemyPokemonHP: 300,
         homeHPHistory: {},
+        enemyHPHistory: {},
         enemyPokemonIndex: -1,
         enemyFaint: false,
-        // availableEnemyPokemon: [1, 2],
         homeUsedAbilitiesCount: {},
         currentState: 'STARTED',
         currentDamage: 0,
@@ -47,22 +47,66 @@ const battleMixin = {
         const myId = localStorage.getItem('userId');
         const currentState = gameState.status;
         const currentPlayer = gameState.currentPlayer;
-        const isHome = currentPlayer === myId;
+        const previousPlayer = gameState.previousPlayer;
+        const isHome = previousPlayer === myId;
+        const awayPlayer = myId === gameState.player1.id ? gameState.player2 : gameState.player1;
+
+        this.gameState.currentState = currentState;
+        this.gameState.currentPlayer = currentPlayer;
+        this.gameState.awayPlayer = awayPlayer.id;
+        this.gameState.previousPlayer = previousPlayer;
 
         switch(currentState) {
          case 'STARTED': {
-          this.message = this.gameState.statesInfo[`${isHome?'HOME':'ENEMY'}_STARTED`].message.replace('*', this.enemyName);
-          const awayPlayer = myId === gameState.player1.id ? gameState.player2 : gameState.player1;
           this.enemy = {
             name: awayPlayer.name,
             avatarImg: awayPlayer.img
           }
+          this.getAvatarImage();
+          this.enemyName = this.determineEnemyName();
+          this.message = this.message = this.gameState.statesInfo[`${isHome?'HOME':'ENEMY'}_STARTED`].message.replace('*', this.enemyName);
           this.enemyPokemon = awayPlayer.pokemon;
           this.setLoad({ value: false });
           break;
          }
          case 'POKEMON_CHOSED': {
-          this.message = this.gameState.statesInfo[`${isHome?'HOME':'ENEMY'}_POKEMON_CHOSED`].message;
+          if (isHome) {
+            this.homebattlePokemon = this.getHomePokemon.find(starter => starter.name === gameState.targetPokemon);
+            this.gameState.homePokemonHP = this.getHPFromHistory(gameState.targetPokemon, true) || this.defaultHP;
+          } else {
+            this.gameState.enemyPokemonIndex = this.enemyPokemon.findIndex(poke => poke.name === gameState.targetPokemon);
+            this.gameState.enemyPokemonHP = this.getHPFromHistory(gameState.targetPokemon, false) || this.defaultHP;
+            this.gameState.enemyFaint = false;
+          }
+
+          if ((isHome && this.gameState.enemyPokemonIndex === -1) || (!isHome && !Object.keys(this.homebattlePokemon).length)) { // if only 1 player has battle pokemon
+            this.message = this.message = this.gameState.statesInfo[`${!isHome?'HOME':'ENEMY'}_STARTED`].message.replace('*', this.enemyName);
+          } else {
+            if (isHome) {
+              this.message = this.gameState.statesInfo[`HOME_POKEMON_CHOSED`].message.replace('*', this.enemyName);
+            } else {
+              this.message = this.enemyName + this.gameState.statesInfo[`ENEMY_POKEMON_CHOSED`].message + gameState.targetPokemon;
+            }
+          }
+          
+          break;
+         }
+         case 'ATTACK': {
+          this.gameState.currentAttack = gameState.ability;
+          let attacker;
+          if (isHome) {
+            attacker = this.homebattlePokemon.name;
+            this.keepTrackOfMoveUsage(gameState.ability);
+            this.animateAttack(true);
+            if (gameState.damage) this.animateDamage(false);
+          } else {
+            attacker = this.enemybattlePokemon.name;
+            this.animateAttack(false);
+            if (gameState.damage) this.animateDamage(true);
+          }
+
+          this.message = attacker + this.gameState.statesInfo[currentState].message + gameState.ability;
+          // todo pre choose if faint
           break;
          }
          // todo other events
@@ -70,9 +114,6 @@ const battleMixin = {
           this.message = this.gameState.statesInfo[currentState].message;
          }
         }
-
-        this.getAvatarImage();
-        this.enemyName = this.determineEnemyName();
       }
     }});
   },
@@ -87,7 +128,9 @@ const battleMixin = {
       'awardItems',
       'updateStats',
       'updateXPs',
-      'registerToGame'
+      'registerToGame',
+      'updateGameState',
+      'playGameMove'
     ]),
     determineEnemyName () {
       return this.enemy.name;
@@ -96,19 +139,9 @@ const battleMixin = {
       const currentState = this.gameState.currentState;
       const stateMessage = this.gameState.statesInfo[currentState].message;
       switch(currentState) {
-      case 'HOME_CHOOSE': this.message = stateMessage;
-                          return 'HOME_OPTION';
-      case 'HOME_OPTION': this.message = stateMessage.replace('*', this.homebattlePokemon.name);
-                          return 'HOME_BATTLE';
-      case 'HOME_BATTLE': this.message = this.homebattlePokemon.name + stateMessage + this.gameState.currentAttack;
-                          return 'HOME_DAMAGE_DONE';
       case 'HOME_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.defaultHP/10 ? stateMessage[2] : stateMessage[1];
                           if (this.gameState.enemyPokemonHP <= 0) this.gameState.homeScore++;
                           return  this.gameState.enemyPokemonHP > 0 ? 'ENEMY_BATTLE' : 'HOME_WINNER';
-      case 'ENEMY_CHOOSE': this.message = this.enemyName + stateMessage + this.enemybattlePokemon.name;
-                          return 'HOME_OPTION';
-      case 'ENEMY_BATTLE': this.message = this.enemybattlePokemon.name + stateMessage + this.gameState.currentAttack;
-                          return 'ENEMY_DAMAGE_DONE';
       case 'ENEMY_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.defaultHP/10 ? stateMessage[2] : stateMessage[1];
                                 if (this.gameState.homePokemonHP <= 0) this.gameState.enemyScore++;
                                 return  this.gameState.homePokemonHP > 0 ? 'HOME_OPTION' : 'ENEMY_WINNER';
@@ -130,8 +163,19 @@ const battleMixin = {
       }
     },
     attack(ability) {
-      if (this.gameState.currentState === 'HOME_BATTLE') {
-        this.gameState.currentAttack = ability.name;
+      if (this.isHomePlayerBattlePhase()) {
+        const attackerObj = this.prepareBattleObject(this.homebattlePokemon);
+        const defenderObj = this.prepareBattleObject(this.enemybattlePokemon);
+        const currentDamage = this.calcDamage(attackerObj, defenderObj, ability.name).damage[0] || 0;
+
+        this.playGameMove({ gameId: this.$route.params.gameId, gameObject: {
+          status: 'ATTACK',
+          previousPlayer: localStorage.getItem('userId'),
+          currentPlayer: this.gameState.awayPlayer,
+          ability: ability.name,
+          damage: currentDamage        
+       }});
+      /*  this.gameState.currentAttack = ability.name;
         this.keepTrackOfMoveUsage(ability);
         this.animateAttack(true);
         this.gameState.currentState = this.getNextState(); // attacks with ability -> HOME_DAMAGE_DONE
@@ -143,22 +187,9 @@ const battleMixin = {
           this.updateScore();
           if (this.gameState.currentState === 'ENEMY_BATTLE') this.delayCall(this.opponentMoves, 2000);
           else this.announceRoundWinner();
-        });
+        }); */
       }
     },
-   /* enemyChoose() {
-      const randomIndex = this.getRandomInt(0, this.gameState.availableEnemyPokemon.length - 1);
-      this.gameState.enemyPokemonIndex = this.gameState.availableEnemyPokemon[randomIndex]; // choose next pokemon
-      this.gameState.availableEnemyPokemon.splice(randomIndex, 1); // remove from available pokemon
-      this.gameState.enemyPokemonHP = this.defaultHP;
-      this.gameState.enemyFaint = false;
-      this.gameState.currentState = this.getNextState(); // chooses next pokemon -> HOME_OPTION
-      if (this.gameState.currentState === 'HOME_OPTION') {
-        this.delayCall(() => {
-          this.gameState.currentState = this.getNextState(); // HOME_OPTION -> HOME_BATTLE
-        });
-      }
-    },*/
    /* opponentMoves() {
        this.gameState.currentAttack = this.choosePCAttack();
        this.animateAttack(false);
@@ -214,7 +245,9 @@ const battleMixin = {
       return this.gameState.currentState === 'END';
     },
     isHomePlayerBattlePhase() {
-      return this.gameState.currentState === 'HOME_BATTLE';
+      return (this.gameState.currentState === 'POKEMON_CHOSED' || this.gameState.currentState === 'ATTACK')
+       && Object.keys(this.homebattlePokemon).length
+       && this.gameState.currentPlayer === localStorage.getItem('userId');
     },
     isAbilityUsedTooMuch(ability) {
       const pokemonAbilitiesEntries = this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name];
@@ -222,11 +255,12 @@ const battleMixin = {
       const abilityUsageCount = pokemonAbilitiesEntries[ability.move.name];
       return abilityUsageCount && abilityUsageCount >= 4;
     },
-    changePokemon() {
-      this.storeHPState();
-      this.homebattlePokemon = {};
-      this.gameState.currentState = 'HOME_CHOOSE';
-      this.gameState.currentState = this.getNextState();
+    changePokemon() { // todo FIX
+      if (this.gameState.currentState === 'PRE_BATTLE' && this.gameState.currentPlayer === localStorage.getItem('userId')) {
+        this.storeHPState();
+        this.homebattlePokemon = {};
+        //this.setNextState('PRE_CHOOSE', localStorage.getItem('userId')); // 'choose pokemon' state for same player
+      }
     },
     delayCall(callback, duration) {
       setTimeout(() => {
@@ -366,27 +400,28 @@ const battleMixin = {
     },
     keepTrackOfMoveUsage(ability) {
       let abilityEntry = this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name];
-      if (abilityEntry && abilityEntry[ability.name])
-        this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name][ability.name]++;
+      if (abilityEntry && abilityEntry[ability])
+        this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name][ability]++;
       else {
-        const abilityName = ability.name;
-        this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name] = Object.assign(this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name] || {}, { [abilityName]: 1 });
+        this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name] = Object.assign(this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name] || {}, { [ability]: 1 });
       }
     },
-    storeHPState() {
-      this.gameState.homeHPHistory[this.homebattlePokemon.name] = this.gameState.homePokemonHP;
+    storeHPState(isHome) {
+      if (isHome) this.gameState.homeHPHistory[this.homebattlePokemon.name] = this.gameState.homePokemonHP;
+      else this.gameState.enemyHPHistory[this.enemybattlePokemon.name] = this.gameState.enemyPokemonHP;
     },
-    getHPFromHistory(poke) {
-      return this.gameState.homeHPHistory[poke];
+    getHPFromHistory(poke, isHome) {
+      return isHome? this.gameState.homeHPHistory[poke] : this.gameState.enemyHPHistory[poke];
     },
     onPokemonChoosed(poke) {
-     /* if (this.gameState.currentState === 'HOME_OPTION') {
-        this.homebattlePokemon = this.getHomePokemon.filter(starter => starter.name === poke)[0];
-        this.gameState.homePokemonHP = this.getHPFromHistory(poke) || this.defaultHP;
-        this.gameState.currentState = this.getNextState();
-      } else console.log('You cannot choose another pokemon right now!'); */
-
-      // todo -> send event for choose
+      if ((this.gameState.currentState === 'STARTED' || this.gameState.currentState === 'POKEMON_CHOSED') && this.gameState.currentPlayer === localStorage.getItem('userId')) {
+        this.playGameMove({ gameId: this.$route.params.gameId, gameObject: {
+           status: 'POKEMON_CHOSED',
+           currentPlayer:  this.gameState.enemyPokemonIndex !== -1 ? localStorage.getItem('userId') : this.gameState.awayPlayer,
+           previousPlayer: localStorage.getItem('userId'),
+           targetPokemon: poke
+        }});
+      } else console.log('You cannot choose another pokemon right now!');
     },
     getAvatarImage() {
       this.image = require(`@/assets/profileAvatar/${this.enemy.avatarImg}`);

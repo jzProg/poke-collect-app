@@ -96,14 +96,8 @@
        }
      },
      methods: {
-       /*getBattlePokemon(isHome) {
-         if (isHome) {
-           return { ...this.homebattlePokemon, HP: this.gameState.homePokemonHP };
-         }
-         return { ...this.enemybattlePokemon, HP: this.gameState.enemyPokemonHP };
-       }, */
        getState() {
-         return { ...this.gameState, homeImage: this.getImage(), enemyImage: this.image };
+         return { ...this.gameState, homeImage: this.getImage(), enemyImage: this.image, enemyName: this.enemyName };
        },
        toggle() {
         this.fullscreen = !this.fullscreen;

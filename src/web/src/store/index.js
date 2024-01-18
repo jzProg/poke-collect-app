@@ -203,6 +203,15 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    playGameMove({ commit, state }, { gameId , gameObject }) {
+      return firebase.database().ref('games/' + gameId).update(gameObject);
+    },
+    updateGameState({ commit, state }, { gameId , nextState, nextPlayer }) {
+      return firebase.database().ref('games/' + gameId).update({
+        status: nextState,
+        currentPlayer: nextPlayer
+      });
+    },
     registerToGame({ commit, state }, { gameId , eventHandler }) {
       return firebase.database().ref('games/' + gameId).on('value', eventHandler);
     },
@@ -247,6 +256,7 @@ export default new Vuex.Store({
 
           firebase.database().ref('games/' + invitationObj.val().gameId).set({
             winner: null,
+            previousPlayer: senderId,
             currentPlayer: senderId,
             status: 'STARTED',
             player1: { id: senderId, name: state.userInfo.loginUsername, img: state.userInfo.image, pokemon: state.userInfo.starters },

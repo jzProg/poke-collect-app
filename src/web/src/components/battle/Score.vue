@@ -2,7 +2,7 @@
   <div class="scoreDiv row">
     <div class="profileDiv col-md-6 col-xs-6" v-if="gameState">
       <h4>
-        <b>Your Score: {{ parseInt(gameState.homeScore) }}</b>
+        <b>You</b>: {{ parseInt(gameState.homeScore) }}
       </h4>
       <img :src="gameState.homeImage"
            alt="profile image"
@@ -10,7 +10,7 @@
     </div>
     <div class="enemyDiv col-md-6 col-xs-6">
       <h4>
-        <b>{{ gameState.enemyName }} Score: {{ parseInt(gameState.enemyScore) }}</b>
+        <b>{{ gameState.enemyName }}: {{ parseInt(gameState.enemyScore) }}</b>
       </h4>
       <img :src="gameState.enemyImage"
            v-if="gameState.enemyImage"
