@@ -254,6 +254,8 @@ export default new Vuex.Store({
         if (invitationObj.val() && invitationObj.val().sender === senderId && invitationObj.val().status === 'ACCEPTED') {
           state.load = false;
 
+          firebase.database().ref('lobby/invitations/' + awayUser.id).remove(); // delete invitation
+
           firebase.database().ref('games/' + invitationObj.val().gameId).set({
             winner: null,
             previousPlayer: senderId,
@@ -261,7 +263,7 @@ export default new Vuex.Store({
             status: 'STARTED',
             player1: { id: senderId, name: state.userInfo.loginUsername, img: state.userInfo.image, pokemon: state.userInfo.starters },
             player2: { id: awayUser.id,  name: awayUser.name, img: awayUser.img, pokemon: invitationObj.val().awayPokemon },
-            gameId
+            gameId: invitationObj.val().gameId
           }).then(() => {
             router.push({ name: 'PvpGame', params: { gameId: invitationObj.val().gameId }});
           });

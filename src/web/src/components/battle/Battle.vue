@@ -45,13 +45,16 @@
             @close="showStats = true"/>
     <Stats v-if="showStats"
            :battle-pokemon="pokeStats"
-           @close="hasExtra ? showExtra = true : goToIndex()"/>
+           @close="hasExtra ? showExtra = true : showStats = false; goToIndex()"/>
     <ExtraAward v-if="showExtra"
              :poke="getCurrentReward.rewardId[0].name"
              :item="extraItem"
-             @close="goToIndex()"/>
+             @close="showExtra = false; goToIndex()"/>
+    <WalkAway v-if="showWalkAway"
+             :message="message"
+             @close="showWalkAway = false; goToIndex()"/>
     <Confirm v-if="showConfirm"
-           @confirm="walkAway()"
+           @confirm="showConfirm = false; walkAway()"
            @close="showConfirm = false"/>
   </div>
 </template>
@@ -62,6 +65,7 @@
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
   import PostGame from '@/components/modals/PostGame';
   import ExtraAward from '@/components/modals/ExtraAward';
+  import WalkAway from '@/components/modals/WalkAway'
   import Stats from '@/components/modals/Stats';
   import Confirm from '@/components/modals/Confirm';
   import Pokemon from '@/components/pokemon/Pokemon';
@@ -78,7 +82,7 @@
   export default {
      name: 'Battle',
      mixins: [pokemonMixin, uniqueIdGeneratorMixin],
-     components: { Pokemon, PostGame, ExtraAward, Stats, Confirm, Score, BattlePokemon, MessageBox },
+     components: { Pokemon, PostGame, ExtraAward, Stats, Confirm, Score, BattlePokemon, MessageBox, WalkAway },
      data() {
        return {
           fullscreen: false,
@@ -87,6 +91,7 @@
           showExtra: false,
           showStats: false,
           showConfirm: false,
+          showWalkAway: false,
           extraItem: {},
           enemyName: '',
           message: '',
@@ -142,7 +147,7 @@
          }
        },
        goToIndex() {
-        this.$router.push('getStarted');
+        this.$router.push('/getStarted');
        }
     },
     computed: {

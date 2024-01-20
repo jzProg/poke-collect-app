@@ -30,10 +30,13 @@ const battleMixin = {
           'ENEMY_STARTED': { message: '* choosing battle pokemon...' },
           'HOME_POKEMON_CHOSED': { message: 'What should * do?' },
           'ATTACK': { message: ' used ' },
+          'WALK_AWAY': { message: '* walked away!' },
+          'HOME_POKEMON_CHANGE': { message: 'Choose your battle pokemon!' },
+          'ENEMY_POKEMON_CHANGE': { message: '* choosing battle pokemon...' },
           'ENEMY_POKEMON_CHOSED': { message: ' Chosed ' },
           'DAMAGE_DONE': { message: ['It did nothing...', 'Not very effective...', 'It is super effective!'] },
           'POKEMON_FAINT': { message: ' fainted!' },
-          'FINISH': { message: 'Game Finished!'}
+          'ENDED': { message: 'Game Finished!'}
         }
       },
     }
@@ -83,12 +86,24 @@ const battleMixin = {
             this.message = this.message = this.gameState.statesInfo[`${!isHome?'HOME':'ENEMY'}_STARTED`].message.replace('*', this.enemyName);
           } else {
             if (isHome) {
-              this.message = this.gameState.statesInfo[`HOME_POKEMON_CHOSED`].message.replace('*', this.enemyName);
+              this.message = this.gameState.statesInfo[`HOME_POKEMON_CHOSED`].message.replace('*', gameState.targetPokemon);
             } else {
               this.message = this.enemyName + this.gameState.statesInfo[`ENEMY_POKEMON_CHOSED`].message + gameState.targetPokemon;
             }
           }
           
+          break;
+         }
+         case 'POKEMON_CHANGE': {
+          this.message = this.gameState.statesInfo[`${isHome?'HOME':'ENEMY'}_POKEMON_CHANGE`].message.replace('*', this.enemyName);
+          break;
+         }
+         case 'WALK_AWAY': {
+          if (!isHome) this.message = this.gameState.statesInfo[currentState].message.replace('*', this.enemyName);
+          this.updateStats({ value: { result: isHome ? 'loses' : 'wins' }}).then(() => {
+            if (!isHome) this.showWalkAway = true
+            else this.goToIndex();
+          });
           break;
          }
          case 'ATTACK': {
@@ -242,7 +257,7 @@ const battleMixin = {
       }
     },
     isGameFinished() {
-      return this.gameState.currentState === 'END';
+      return this.gameState.currentState === 'ENDED';
     },
     isHomePlayerBattlePhase() {
       return (this.gameState.currentState === 'POKEMON_CHOSED' || this.gameState.currentState === 'ATTACK')
@@ -255,11 +270,15 @@ const battleMixin = {
       const abilityUsageCount = pokemonAbilitiesEntries[ability.move.name];
       return abilityUsageCount && abilityUsageCount >= 4;
     },
-    changePokemon() { // todo FIX
-      if (this.gameState.currentState === 'PRE_BATTLE' && this.gameState.currentPlayer === localStorage.getItem('userId')) {
+    changePokemon() {
+      if (this.isHomePlayerBattlePhase()) {
         this.storeHPState();
         this.homebattlePokemon = {};
-        //this.setNextState('PRE_CHOOSE', localStorage.getItem('userId')); // 'choose pokemon' state for same player
+        this.playGameMove({ gameId: this.$route.params.gameId, gameObject: {
+          status: 'POKEMON_CHANGE',
+          currentPlayer:  localStorage.getItem('userId'),
+          previousPlayer: localStorage.getItem('userId')
+       }});
       }
     },
     delayCall(callback, duration) {
@@ -370,10 +389,13 @@ const battleMixin = {
       this.setCurrentReward({ type: this.gameRewards[0].type, value:  [itemObj]});
     },
     walkAway() {
-      // this.updateStats({ value: { result: 'loses' }});
-      // this.goToIndex();
-
-      // todo -> send event for walkAway
+      if (this.gameState.currentPlayer === localStorage.getItem('userId')) {
+            this.playGameMove({ gameId: this.$route.params.gameId, gameObject: {
+              status: 'WALK_AWAY',
+              currentPlayer:  null,
+              previousPlayer: localStorage.getItem('userId')
+           }});
+      }
     },
     calcDamage(attacker, defender, move) {
       const gen = Generations.get(5);
@@ -414,7 +436,8 @@ const battleMixin = {
       return isHome? this.gameState.homeHPHistory[poke] : this.gameState.enemyHPHistory[poke];
     },
     onPokemonChoosed(poke) {
-      if ((this.gameState.currentState === 'STARTED' || this.gameState.currentState === 'POKEMON_CHOSED') && this.gameState.currentPlayer === localStorage.getItem('userId')) {
+      if ((this.gameState.currentState === 'STARTED' || this.gameState.currentState === 'POKEMON_CHOSED' || this.gameState.currentState === 'POKEMON_CHANGE') 
+           && this.gameState.currentPlayer === localStorage.getItem('userId')) {
         this.playGameMove({ gameId: this.$route.params.gameId, gameObject: {
            status: 'POKEMON_CHOSED',
            currentPlayer:  this.gameState.enemyPokemonIndex !== -1 ? localStorage.getItem('userId') : this.gameState.awayPlayer,
