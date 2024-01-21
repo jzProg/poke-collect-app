@@ -11,7 +11,7 @@ import Store from '@/components/Store';
 import Inventory from '@/components/Inventory';
 import Evolution from '@/components/Evolution';
 import Lobby from '@/components/pvp/Lobby';
-import battleMixin from '@/common/mixins/battleLogic';
+import botBattleMixin from '@/common/mixins/botBattleLogic';
 import pvpBattleMixin from '@/common/mixins/pvpBattleLogic';
 
 Vue.use(Router);
@@ -20,7 +20,7 @@ const pvpBattle = { ...Battle, };
 pvpBattle.mixins = [...Battle.mixins, pvpBattleMixin];
 
 const pcBattle = { ...Battle, };
-pcBattle.mixins = [...Battle.mixins, battleMixin];
+pcBattle.mixins = [...Battle.mixins, botBattleMixin];
 
 const router =  new Router({
   mode: 'history',
