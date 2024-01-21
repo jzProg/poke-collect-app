@@ -108,6 +108,7 @@ const battleMixin = {
          }
          case 'ATTACK': {
           this.gameState.currentAttack = gameState.ability;
+          this.gameState.currentDamage = gameState.damage;
           let attacker;
           if (isHome) {
             attacker = this.homebattlePokemon.name;
@@ -119,12 +120,53 @@ const battleMixin = {
             this.animateAttack(false);
             if (gameState.damage) this.animateDamage(true);
           }
-
           this.message = attacker + this.gameState.statesInfo[currentState].message + gameState.ability;
-          // todo pre choose if faint
+
+          this.delayCall(() => {
+            this.updateScore(isHome);
+          });
+          
           break;
          }
-         // todo other events
+         case 'DAMAGE_DONE': {
+          const stateMessage = this.gameState.statesInfo[currentState].message;
+          this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.defaultHP/10 ? stateMessage[2] : stateMessage[1];
+
+          if (!isHome) {
+            this.delayCall(() => {
+              this.message = this.gameState.statesInfo[`HOME_POKEMON_CHOSED`].message.replace('*', this.homebattlePokemon.name);
+            });
+          }
+
+          break;
+         }
+         case 'POKEMON_FAINT': {
+          this.message = gameState.targetPokemon + this.gameState.statesInfo[currentState].message;
+          this.gameState.faintedInfo.totalPokemonFainted++;
+          this.gameState.faintedInfo.xp += isHome ? this.enemybattlePokemon.base_experience : this.homebattlePokemon.base_experience;
+          this.gameState.faintedInfo.level += isHome ? this.enemybattlePokemon.level : this.homebattlePokemon.level;
+
+          if (isHome) { 
+            this.gameState.homeScore++;
+            this.gameState.enemyFaint = true;
+            this.checkForFinish();
+           }
+          else {
+            this.gameState.enemyScore++;
+            this.disabled[this.homebattlePokemon.name] = true;
+            this.homebattlePokemon = {}; //faint
+
+            this.delayCall(() => {
+              this.message = this.gameState.statesInfo[`HOME_STARTED`].message;
+            });
+          }
+          
+          break;
+         }
+         case 'ENDED': {
+          this.message = this.gameState.statesInfo[currentState].message;
+          this.endGame();
+         }
          default: {
           this.message = this.gameState.statesInfo[currentState].message;
          }
@@ -147,35 +189,17 @@ const battleMixin = {
       'updateGameState',
       'playGameMove'
     ]),
+    checkForFinish() {
+      if (this.gameState.homeScore === 3) {
+        this.playGameMove({ gameId: this.$route.params.gameId, gameObject: {
+          status: 'ENDED',
+          currentPlayer:  null,
+          previousPlayer: localStorage.getItem('userId')
+       }});
+      }
+    },
     determineEnemyName () {
       return this.enemy.name;
-    },
-    getNextState() {
-      const currentState = this.gameState.currentState;
-      const stateMessage = this.gameState.statesInfo[currentState].message;
-      switch(currentState) {
-      case 'HOME_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.defaultHP/10 ? stateMessage[2] : stateMessage[1];
-                          if (this.gameState.enemyPokemonHP <= 0) this.gameState.homeScore++;
-                          return  this.gameState.enemyPokemonHP > 0 ? 'ENEMY_BATTLE' : 'HOME_WINNER';
-      case 'ENEMY_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.defaultHP/10 ? stateMessage[2] : stateMessage[1];
-                                if (this.gameState.homePokemonHP <= 0) this.gameState.enemyScore++;
-                                return  this.gameState.homePokemonHP > 0 ? 'HOME_OPTION' : 'ENEMY_WINNER';
-      case 'HOME_WINNER': this.message = this.enemybattlePokemon.name + stateMessage;
-                          this.gameState.enemyFaint = true;
-                          this.gameState.faintedInfo.totalPokemonFainted++;
-                          this.gameState.faintedInfo.xp += this.enemybattlePokemon.base_experience;
-                          this.gameState.faintedInfo.level += this.enemybattlePokemon.level;
-                          return this.gameState.homeScore === 3 ? 'FINISH' : 'ENEMY_CHOOSE';
-      case 'ENEMY_WINNER': this.message = this.homebattlePokemon.name + stateMessage;
-                           this.gameState.faintedInfo.totalPokemonFainted++;
-                           this.gameState.faintedInfo.xp += this.homebattlePokemon.base_experience;
-                           this.gameState.faintedInfo.level += this.homebattlePokemon.level;
-                           this.disabled[this.homebattlePokemon.name] = true;
-                           this.homebattlePokemon = {}; //faint
-                           return this.gameState.enemyScore === 3 ? 'FINISH' : 'HOME_CHOOSE';
-      default: this.message = stateMessage;
-               return 'END'; //end state
-      }
     },
     attack(ability) {
       if (this.isHomePlayerBattlePhase()) {
@@ -190,77 +214,48 @@ const battleMixin = {
           ability: ability.name,
           damage: currentDamage        
        }});
-      /*  this.gameState.currentAttack = ability.name;
-        this.keepTrackOfMoveUsage(ability);
-        this.animateAttack(true);
-        this.gameState.currentState = this.getNextState(); // attacks with ability -> HOME_DAMAGE_DONE
-        const attackerObj = this.prepareBattleObject(this.homebattlePokemon);
-        const defenderObj = this.prepareBattleObject(this.enemybattlePokemon);
-        this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
-        if (this.gameState.currentDamage) this.animateDamage(false);
-        this.delayCall(() => {
-          this.updateScore();
-          if (this.gameState.currentState === 'ENEMY_BATTLE') this.delayCall(this.opponentMoves, 2000);
-          else this.announceRoundWinner();
-        }); */
       }
     },
-   /* opponentMoves() {
-       this.gameState.currentAttack = this.choosePCAttack();
-       this.animateAttack(false);
-       this.gameState.currentState = this.getNextState(); // attacks with ability -> ENEMY_DAMAGE_DONE
-       const defenderObj = this.prepareBattleObject(this.homebattlePokemon);
-       const attackerObj = this.prepareBattleObject(this.enemybattlePokemon);
-       this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
-       if (this.gameState.currentDamage) this.animateDamage(true);
-       this.delayCall(() => {
-         this.updateScore();
-         if (this.gameState.currentState === 'ENEMY_WINNER')
-               this.announceRoundWinner();
-         else {
-           this.delayCall(() => {
-              this.gameState.currentState = this.getNextState(); // HOME_OPTION -> HOME_BATTLE
-           });
-         }
-       });
-    },*/
-   /* choosePCAttack() {
-      const randomMoveIndex = this.getRandomInt(0, 3);
-      return this.enemybattlePokemon.moves[randomMoveIndex].move.name;
-    },*/
-    updateScore() {
+    updateScore(isHomeAttack) {
       console.log('updating round score...');
-      if (this.gameState.currentState === 'ENEMY_DAMAGE_DONE') {
+      if (!isHomeAttack) {
         if (this.gameState.currentDamage > this.gameState.homePokemonHP) this.gameState.homePokemonHP = 0;
         else this.gameState.homePokemonHP -= this.gameState.currentDamage;
       } else {
         if (this.gameState.currentDamage > this.gameState.enemyPokemonHP) this.gameState.enemyPokemonHP = 0;
         else this.gameState.enemyPokemonHP -= this.gameState.currentDamage;
       }
-      this.gameState.currentState = this.getNextState(); // effective -> ENEMY_BATTLE or HOME_WINNER
-    },
-    announceRoundWinner() {
-       this.gameState.currentState = this.getNextState(); // fainted -> FINISH or ENEMY_CHOOSE
-       if (this.gameState.currentState === 'FINISH') this.endGame();
-       else if (this.gameState.currentState === 'ENEMY_CHOOSE') this.delayCall(this.enemyChoose, 2000);
-       else this.delayCall(() => { this.gameState.currentState = this.getNextState(); }); // HOME_CHOOSE -> HOME_BATTLE
+      if (isHomeAttack) {
+        if (this.gameState.enemyPokemonHP <= 0) { // faint
+          this.playGameMove({ gameId: this.$route.params.gameId, gameObject: {
+            status: 'POKEMON_FAINT',
+            currentPlayer:  this.gameState.awayPlayer,
+            previousPlayer: localStorage.getItem('userId'),
+            targetPokemon: this.enemybattlePokemon.name
+         }});
+        } else {
+          this.playGameMove({ gameId: this.$route.params.gameId, gameObject: {
+            status: 'DAMAGE_DONE',
+            currentPlayer:  this.gameState.awayPlayer,
+            previousPlayer: localStorage.getItem('userId'),
+            targetPokemon: this.enemybattlePokemon.name
+         }});
+        }
+      }
     },
     endGame() {
       console.log('game ended...');
       if (this.gameState.homeScore > this.gameState.enemyScore) {
         this.awarding();
       } else {
-        this.delayCall(() => {
-          this.updateStats({ value: { result: 'loses' }});
-          this.gameState.currentState = this.getNextState();
-        }); // game finished -> end
+        this.updateStats({ value: { result: 'loses' }});
       }
     },
     isGameFinished() {
       return this.gameState.currentState === 'ENDED';
     },
     isHomePlayerBattlePhase() {
-      return (this.gameState.currentState === 'POKEMON_CHOSED' || this.gameState.currentState === 'ATTACK')
+      return (this.gameState.currentState === 'POKEMON_CHOSED' || this.gameState.currentState === 'DAMAGE_DONE')
        && Object.keys(this.homebattlePokemon).length
        && this.gameState.currentPlayer === localStorage.getItem('userId');
     },
@@ -298,7 +293,6 @@ const battleMixin = {
         const itemId = this.getRandomInt(1, 100);
         this.getItem(itemId).then(res => {
           this.awardItem(res, res.name.includes('stone') ? this.prizes.STONE.type : res.name.includes('candy') ? this.prizes.CANDY.type : rewardType, false);
-          this.gameState.currentState = this.getNextState(); // game finished -> end
         });
       } else {
         console.log('type POKEMON reward');
@@ -308,7 +302,6 @@ const battleMixin = {
           pokeId = this.chooseRandomPokemon(1, this.totalPokemon);
         } catch(error) {
           console.log(error);
-          this.gameState.currentState = this.getNextState(); // game finished -> end
           return;
         }
         this.getPokemonInfoFromList([ pokeId ], pokeObj).then(() => {
@@ -318,9 +311,8 @@ const battleMixin = {
              console.log(`has extra item: ${pokeObj[0].held_items[0].item.name}`);
              this.getItem(pokeObj[0].held_items[0].item.name).then(res => {
                this.awardItem(res, res.name.includes('stone') ? this.prizes.STONE.type : res.name.includes('candy') ? this.prizes.CANDY.type : this.gameRewards[0].type, true);
-               this.gameState.currentState = this.getNextState(); // game finished -> end
              });
-          } else this.gameState.currentState = this.getNextState(); // game finished -> end
+          }
         });
       }
     },
@@ -436,7 +428,7 @@ const battleMixin = {
       return isHome? this.gameState.homeHPHistory[poke] : this.gameState.enemyHPHistory[poke];
     },
     onPokemonChoosed(poke) {
-      if ((this.gameState.currentState === 'STARTED' || this.gameState.currentState === 'POKEMON_CHOSED' || this.gameState.currentState === 'POKEMON_CHANGE') 
+      if ((this.gameState.currentState === 'STARTED' || this.gameState.currentState === 'POKEMON_CHOSED' || this.gameState.currentState === 'POKEMON_CHANGE' || this.gameState.currentState === 'POKEMON_FAINT') 
            && this.gameState.currentPlayer === localStorage.getItem('userId')) {
         this.playGameMove({ gameId: this.$route.params.gameId, gameObject: {
            status: 'POKEMON_CHOSED',
