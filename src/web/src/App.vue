@@ -46,7 +46,6 @@
 </template>
 
 <script>
-  import Vue from 'vue';
   import { mapActions, mapGetters, mapMutations } from 'vuex';
   import firebase from "firebase/app";
   import 'firebase/database';
@@ -158,7 +157,7 @@
                 this.setUserLevel({ value: user.level });
                 this.setUserCoins({ value: user.coins });
                 this.setUserImage({ value: user.image });
-                this.setUserStats({ value: user.stats });
+                this.setUserStats({ value: user.stats || { wins: 0, loses: 0 } });
                 this.setItems({ value: user.items });
                 this.setSeenCongrats({ value: user.seenCongrats });
                 this.username = user.username;

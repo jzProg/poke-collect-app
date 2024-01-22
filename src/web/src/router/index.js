@@ -11,6 +11,7 @@ import Store from '@/components/Store';
 import Inventory from '@/components/Inventory';
 import Evolution from '@/components/Evolution';
 import Lobby from '@/components/pvp/Lobby';
+import ForgotPassword from '@/components/ForgotPassword';
 import botBattleMixin from '@/common/mixins/botBattleLogic';
 import pvpBattleMixin from '@/common/mixins/pvpBattleLogic';
 
@@ -136,7 +137,12 @@ const router =  new Router({
         if (localStorage.getItem('token')) next();
         else next('/');
       }
-    }
+    },
+    {
+      path: '/forgot',
+      name: 'Forgot',
+      component: ForgotPassword
+    },
   ]
 });
 

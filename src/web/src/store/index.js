@@ -1,8 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import uniqueIdGenerator from '../common/helpers/uniqueIdsGenerator';
 import firebase from 'firebase/app';
-import bus from "@/common/eventBus";
 import router from '../router';
 
 Vue.use(Vuex);
@@ -33,6 +31,8 @@ export default new Vuex.Store({
     enemybattlePokemon: [],
     errorLoginMessage: '',
     errorRegisterMessage: '',
+    errorResetMessage: '',
+    resetSent: false,
     pokemonToBeSwitched: {},
     evolutionData: {},
     chats: [],
@@ -43,6 +43,9 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    getResetSent(state) {
+      return state.resetSent;
+    },
     getLobby(state) {
       return state.lobby;
     },
@@ -111,9 +114,15 @@ export default new Vuex.Store({
     },
     getShowReject(state) {
       return state.userInfo.showReject;
+    },
+    getErrorResetMessage(state) {
+      return state.errorResetMessage;
     }
   },
   mutations: {
+    setErrorResetMessage(state, payload) {
+      state.errorResetMessage = payload.value;
+    },
     setShowReject(state, payload) {
       state.userInfo.showReject = payload.value;
     },
@@ -203,6 +212,15 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    sendResetPasswordEmail({ commit, state }, { email }) {
+      firebase.auth().sendPasswordResetEmail(email)
+        .then(() => {
+          state.resetSent = true;
+        })
+        .catch((error) => {
+          state.errorResetMessage = error.message;
+        });
+    },
     playGameMove({ commit, state }, { gameId , gameObject }) {
       return firebase.database().ref('games/' + gameId).update(gameObject);
     },
@@ -242,7 +260,7 @@ export default new Vuex.Store({
         status: 'ACCEPTED',
         awayPokemon: state.userInfo.starters
       }).then(() => {
-        router.push({ name: 'PvpGame', params: { gameId }})
+        router.push({ name: 'PvpGame', params: { gameId }});
       });
     },
     sendGameInvitation({ commit, state }, { awayUser, gameId }) {
