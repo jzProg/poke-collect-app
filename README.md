@@ -18,7 +18,7 @@ A simple Pokemon web app game written in Vue.js. Users can create account, chat,
 
 - **pokeapi-js-wrapper** (https://github.com/PokeAPI/pokeapi-js-wrapper) for utilizing the [PokeAPI](https://pokeapi.co/), in order to retrieve the Pokemon data. 
 - **damage-calc** (https://github.com/smogon/damage-calc), for damage calculation during Pokemon battles.
-- All non action Pokemon images are retrieved from https://pokeres.bastionbot.org.
+- All non action Pokemon images are retrieved from https://raw.githubusercontent.com.
 
 ## Game Features
 - **Version 1**
@@ -32,6 +32,10 @@ A simple Pokemon web app game written in Vue.js. Users can create account, chat,
   - Purchase rare candies to level up your Pokemon.
   - Pokemon XP + level increase after battle.
   - New card design. Support for legendary and mythical cards.
+ 
+- **Version 3**
+  - Support for PvP gameplay.
+  - Reset/Forgot password functionality (via Firebase).
 
 ## Setup Instructions
 
