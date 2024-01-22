@@ -12,7 +12,7 @@
            :src="battlePokemon.sprites.back_default" />
     </div>
     <div class="col-md-6 col-xs-6"
-         v-if="!isHome"
+         v-if="!isHome && battlePokemon && Object.keys(battlePokemon).length"
          v-show="battlePokemon && Object.keys(battlePokemon).length">
        <img class="pokemonEnemy"
             :src="faint ? require('../../assets/faint.png') : battlePokemon && battlePokemon.sprites.front_default" />

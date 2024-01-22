@@ -4,6 +4,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 const battleMixin = {
   data() {
     return {
+      isPvp: false,
       homebattlePokemon: {},
       defaultHP: 300,
       gameState: {
@@ -35,6 +36,26 @@ const battleMixin = {
       },
     }
   },
+  watch: {
+    getUserStarters(newValue, oldValue) {
+      this.getEnemyPokemon();
+    }
+ },
+  mounted() {
+    this.getEnemyPokemon();
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (vm.getCurrentOpponentId) next(); 
+      else next('/game');
+    });
+ },
+  created() {
+    this.setLoad({ value: true });
+    this.getAvatarImage();
+    this.enemyName = this.determineEnemyName();
+    this.gameState.currentState = this.getNextState();
+  },
   methods: {
     ...mapMutations([
       'setUserCoins',
@@ -46,6 +67,9 @@ const battleMixin = {
       'updateStats',
       'updateXPs'
     ]),
+    determineEnemyName () {
+      return this.avatars[this.getCurrentOpponentId].name;
+    },
     getNextState() {
       const currentState = this.gameState.currentState;
       const stateMessage = this.gameState.statesInfo[currentState].message;
@@ -293,9 +317,6 @@ const battleMixin = {
       this.updateStats({ value: { result: 'loses' }});
       this.goToIndex();
     },
-    goToIndex() {
-      this.$router.push('getStarted');
-    },
     calcDamage(attacker, defender, move) {
       const gen = Generations.get(5);
       return calculate(
@@ -333,6 +354,16 @@ const battleMixin = {
     },
     getHPFromHistory(poke) {
       return this.gameState.homeHPHistory[poke];
+    },
+    onPokemonChoosed(poke) {
+      if (this.gameState.currentState === 'HOME_OPTION') {
+        this.homebattlePokemon = this.getHomePokemon.filter(starter => starter.name === poke)[0];
+        this.gameState.homePokemonHP = this.getHPFromHistory(poke) || this.defaultHP;
+        this.gameState.currentState = this.getNextState();
+      } else console.log('You cannot choose another pokemon right now!');
+    },
+    getAvatarImage() {
+      this.image = require(`@/assets/${this.avatars[this.getCurrentOpponentId].image}`);
     },
   },
   computed: {

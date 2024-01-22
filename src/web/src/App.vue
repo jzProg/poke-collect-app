@@ -39,12 +39,13 @@
     <Congrats v-if="showCongrats && !getUserInfo.seenCongrats && getUserInfo.pokemon && getUserInfo.pokemon.length === totalPokemon"
               :total="totalPokemon"
               @close="onCongrats()"/>
+    <game-invitation v-if="getSeeInvitation" @close="rejectInvitation()"></game-invitation> 
+    <reject-modal v-if="getShowReject" @close="closeReject()"></reject-modal>         
     <Loading v-if="getLoad"/>
   </div>
 </template>
 
 <script>
-  import Vue from 'vue';
   import { mapActions, mapGetters, mapMutations } from 'vuex';
   import firebase from "firebase/app";
   import 'firebase/database';
@@ -58,6 +59,8 @@
   import Chat from '@/components/modals/Chat';
   import Loading from '@/components/modals/Loading';
   import Congrats from '@/components/modals/Congrats';
+  import GameInvitation from '@/components/modals/GameInvitation';
+  import RejectModal from '@/components/modals/RejectModal';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
 
   export default {
@@ -66,7 +69,7 @@
       'b-toggle': VBToggle
     },
     mixins: [firebaseConfigProperties, urlAuthMixin, pokemonMixin],
-    components: { ProfileModal, Chat, Loading, Congrats },
+    components: { ProfileModal, Chat, Loading, Congrats, GameInvitation, RejectModal },
     data() {
       return {
         username: '',
@@ -99,6 +102,9 @@
       });
     },
     methods: {
+      rejectInvitation() {
+        this.rejectGameInvitation();
+      },
       onCongrats() {
         this.showCongrats = false;
         this.updateSeenCongrats({ value: true });
@@ -110,7 +116,7 @@
         return require(`./assets/profileAvatar/${this.getUserImage}`);
       },
       goToHome(){
-        this.$router.push('getStarted');
+        this.$router.push('/getStarted');
       },
       ...mapMutations([
           'setLoginUsername',
@@ -127,7 +133,9 @@
       ...mapActions([
         'userLogout',
         'clearUserData',
-        'updateSeenCongrats'
+        'updateSeenCongrats',
+        'rejectGameInvitation',
+        'closeReject'
       ]),
       showOptions() {
        this.showOptionsModal = true;
@@ -149,7 +157,7 @@
                 this.setUserLevel({ value: user.level });
                 this.setUserCoins({ value: user.coins });
                 this.setUserImage({ value: user.image });
-                this.setUserStats({ value: user.stats });
+                this.setUserStats({ value: user.stats || { wins: 0, loses: 0 } });
                 this.setItems({ value: user.items });
                 this.setSeenCongrats({ value: user.seenCongrats });
                 this.username = user.username;
@@ -171,7 +179,9 @@
       ...mapGetters([
         'getUserImage',
         'getLoad',
-        'getUserInfo'
+        'getUserInfo',
+        'getSeeInvitation',
+        'getShowReject'
       ]),
     }
 }

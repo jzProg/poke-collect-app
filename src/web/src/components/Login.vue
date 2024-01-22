@@ -4,11 +4,14 @@
       <div id="video_container">
         <video id="video" class="showP">
         <source src="../../src/assets/loginGif.mp4" type="video/mp4"></video>
-        <img id="Logo" class='hideP' src="../../src/assets/PokeZagg.png"></img>
+        <img id="Logo" class='hideP' src="../../src/assets/PokeZagg.png">
       </div>
       <InputForm :fields="formItems" :error-message="getErrorLoginMessage" :on-focus="removeErrorMessage" :on-submit="login" />
       <div class="linkSpan">
-        <router-link :to = "{ path:'register' }"> Not registered? Sign up here </router-link>
+        Not registered? Sign up <router-link :to = "{ path:'register' }"> here </router-link>
+      </div>
+      <div class="linkSpan">
+        Forgot Password? Click <router-link :to = "{ path:'forgot' }"> here </router-link>
       </div>
     </div>
   </div>

@@ -287,6 +287,7 @@ const pokemonMixin = {
       return this.getNextForm(evolveToByStone, name, stoneName);
     },
     getNextFormByLevelUp({ species, evolves_to }, name, level) {
+      console.log({ species, evolves_to });
       let evolveToByLevelUp;
       if (species.name === name) {
         evolveToByLevelUp = evolves_to.filter(ev => ev.evolution_details[0].trigger && ev.evolution_details[0].trigger.name === 'level-up')[0];
@@ -301,6 +302,12 @@ const pokemonMixin = {
         }
         return evolveToByLevelUp.species.name;
       }
+
+      if (evolves_to.length === 0) {
+        this.evolutionErrorMessage = `${name} doesn't have next form...`;
+          return null;
+      }
+
       evolveToByLevelUp = evolves_to[0];
       return this.getNextFormByLevelUp(evolveToByLevelUp, name, level);
     }

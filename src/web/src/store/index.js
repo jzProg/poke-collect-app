@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import uniqueIdGenerator from '../common/helpers/uniqueIdsGenerator';
 import firebase from 'firebase/app';
-import bus from "@/common/eventBus";
+import router from '../router';
 
 Vue.use(Vuex);
 
@@ -23,16 +22,33 @@ export default new Vuex.Store({
       wins: 0,
       loses: 0,
       seenCongrats: false,
+      seeInvitation: false,
+      invitationGameId: null,
+      invitationSender: null,
+      showReject: false,
+      rejectInvitationId: null
     },
     enemybattlePokemon: [],
     errorLoginMessage: '',
     errorRegisterMessage: '',
+    errorResetMessage: '',
+    resetSent: false,
     pokemonToBeSwitched: {},
     evolutionData: {},
     chats: [],
     load: false,
+    lobby: {
+      users: [],
+      invitations: []
+    }
   },
   getters: {
+    getResetSent(state) {
+      return state.resetSent;
+    },
+    getLobby(state) {
+      return state.lobby;
+    },
     getLoad(state) {
       return state.load;
     },
@@ -86,9 +102,33 @@ export default new Vuex.Store({
     },
     getUserLevel(state) {
       return state.userInfo.level;
+    },
+    getSeeInvitation(state) {
+      return state.userInfo.seeInvitation;
+    },
+    getGameInvitationId(state) {
+      return state.userInfo.invitationGameId;
+    },
+    getGameInvitationSender(state) {
+      return state.userInfo.invitationSender;
+    },
+    getShowReject(state) {
+      return state.userInfo.showReject;
+    },
+    getErrorResetMessage(state) {
+      return state.errorResetMessage;
     }
   },
   mutations: {
+    setErrorResetMessage(state, payload) {
+      state.errorResetMessage = payload.value;
+    },
+    setShowReject(state, payload) {
+      state.userInfo.showReject = payload.value;
+    },
+    setLobbyUsers(state, payload) {
+      state.lobby.users = payload.value;
+    },
     setSeenCongrats(state, payload) {
       state.userInfo.seenCongrats = payload.value;
     },
@@ -172,6 +212,124 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    sendResetPasswordEmail({ commit, state }, { email }) {
+      firebase.auth().sendPasswordResetEmail(email)
+        .then(() => {
+          state.resetSent = true;
+        })
+        .catch((error) => {
+          state.errorResetMessage = error.message;
+        });
+    },
+    playGameMove({ commit, state }, { gameId , gameObject }) {
+      return firebase.database().ref('games/' + gameId).update(gameObject);
+    },
+    updateGameState({ commit, state }, { gameId , nextState, nextPlayer }) {
+      return firebase.database().ref('games/' + gameId).update({
+        status: nextState,
+        currentPlayer: nextPlayer
+      });
+    },
+    registerToGame({ commit, state }, { gameId , eventHandler }) {
+      return firebase.database().ref('games/' + gameId).on('value', eventHandler);
+    },
+    closeReject({ commit, state }) {
+      state.userInfo.showReject = false; // close modal
+
+      firebase.database().ref('lobby/invitations/' + state.userInfo.rejectInvitationId).remove();
+    },
+    rejectGameInvitation({ commit, state }) {
+      var id = localStorage.getItem('userId');
+
+      firebase.database().ref('lobby/invitations/' + id).update({
+        status: 'REJECTED'
+      }).then(() => {
+        state.userInfo.seeInvitation = false; // close modal
+      });
+    },
+    acceptGameInvitation({ commit, state }) {
+      var id = localStorage.getItem('userId');
+
+      state.userInfo.seeInvitation = false; // close modal
+
+      const gameId = state.userInfo.invitationGameId;
+      state.userInfo.invitationGameId = null;
+      state.userInfo.invitationSender = null;
+
+      firebase.database().ref('lobby/invitations/' + id).update({    
+        status: 'ACCEPTED',
+        awayPokemon: state.userInfo.starters
+      }).then(() => {
+        router.push({ name: 'PvpGame', params: { gameId }});
+      });
+    },
+    sendGameInvitation({ commit, state }, { awayUser, gameId }) {
+      state.load = true;
+
+      var senderId = localStorage.getItem('userId');
+
+      firebase.database().ref('lobby/invitations/' + awayUser.id).on("value", (invitationObj) => {
+        if (invitationObj.val() && invitationObj.val().sender === senderId && invitationObj.val().status === 'ACCEPTED') {
+          state.load = false;
+
+          firebase.database().ref('lobby/invitations/' + awayUser.id).remove(); // delete invitation
+
+          firebase.database().ref('games/' + invitationObj.val().gameId).set({
+            winner: null,
+            previousPlayer: senderId,
+            currentPlayer: senderId,
+            status: 'STARTED',
+            player1: { id: senderId, name: state.userInfo.loginUsername, img: state.userInfo.image, pokemon: state.userInfo.starters },
+            player2: { id: awayUser.id,  name: awayUser.name, img: awayUser.img, pokemon: invitationObj.val().awayPokemon },
+            gameId: invitationObj.val().gameId
+          }).then(() => {
+            router.push({ name: 'PvpGame', params: { gameId: invitationObj.val().gameId }});
+          });
+        } else if (invitationObj.val() && invitationObj.val().sender === senderId && invitationObj.val().status === 'REJECTED') {
+          state.load = false;
+          state.userInfo.showReject = true;
+          state.userInfo.rejectInvitationId = userId;
+        }
+      });
+
+      return firebase.database().ref('lobby/invitations/' + awayUser.id).set({
+        senderUsername: state.userInfo.loginUsername,
+        sender: senderId,
+        status: 'SENT',
+        gameId
+      });
+    },
+    unregisterFromLobby({ commit, state }) {
+      var id = localStorage.getItem('userId');
+      return firebase.database().ref('lobby/users/' + id).remove()
+    },
+    registerToLobby({ commit, state }) {
+      var id = localStorage.getItem('userId');
+      firebase.database().ref('lobby/users').on("value", (lobbyObj) => {
+        if (lobbyObj.val()) {
+          const users = [];
+          Object.values(lobbyObj.val()).forEach((user) => {
+            users.push(user);
+          });
+          commit({ type: 'setLobbyUsers', value: users });
+        }
+      });
+
+      firebase.database().ref('lobby/invitations/' + id).on("value", (invitationObj) => {
+        if (invitationObj.val() && invitationObj.val().sender !== id && invitationObj.val().status === 'SENT') {
+          state.userInfo.invitationGameId = invitationObj.val().gameId;
+          state.userInfo.invitationSender = invitationObj.val().senderUsername;
+          state.userInfo.seeInvitation = true; // show invitation modal
+        }
+      });
+
+      return firebase.database().ref('lobby/users/' + id).set({
+        id,
+        username: state.userInfo.loginUsername,
+        starters: state.userInfo.starters,
+        img: state.userInfo.image
+      });
+    },
     updateSeenCongrats({ commit, state }, { value }) {
       var id = localStorage.getItem('userId');
       return firebase.database().ref('users/' + id).update({

@@ -104,10 +104,10 @@
           });
         },
         hasCandies() {
-          return this.getItems.filter(item => item.type === this.prizes.CANDY.type).length;
+          return (this.getItems || []).filter(item => item.type === this.prizes.CANDY.type).length;
         },
         levelUp() {
-          this.candy = this.getItems.filter(item => item.type === this.prizes.CANDY.type).slice();
+          this.candy = (this.getItems || []).filter(item => item.type === this.prizes.CANDY.type).slice();
           this.showLevelUp = true;
         },
         evolve() {

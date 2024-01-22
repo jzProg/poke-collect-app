@@ -13,9 +13,9 @@
       <img src="../assets/pokemon-avatar.png" @click.prevent="goToBattle()" height="200px" width="200px">
       <h4>Battle popular Pokemon trainers</h4>
     </div>
-    <div id="online" class="col-md-4" style="opacity:0.5">
+    <div id="online" class="col-md-4" style="cursor:pointer">
       <h3><b>Online Battle</b></h3><br>
-      <img src="../assets/battle-online.png" height="200px" width="200px">
+      <img src="../assets/battle-online.png" @click.prevent="goToPvp()" height="200px" width="200px">
       <h4>Battle other users</h4>
     </div>
    </div>
@@ -60,6 +60,9 @@ export default {
       },
       goToStore() {
         this.$router.push('store');
+      },
+      goToPvp () {
+        this.$router.push('lobby');
       }
     }
 }

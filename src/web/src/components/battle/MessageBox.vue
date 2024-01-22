@@ -25,7 +25,7 @@
           </span>
           <div class="row">
             <div v-if="getHomePokemon && !Object.keys(homebattlePokemon).length"
-                v-for="(poke, index) in getHomePokemon":key="index">
+                v-for="(poke, index) in getHomePokemon" :key="index">
               <div class="startersDiv">
                 <Pokemon :info="poke"
                          class="col-md-4 col-xs-4"

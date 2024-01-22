@@ -45,13 +45,16 @@
             @close="showStats = true"/>
     <Stats v-if="showStats"
            :battle-pokemon="pokeStats"
-           @close="hasExtra ? showExtra = true : goToIndex()"/>
+           @close="hasExtra ? showExtra = true : showStats = false; goToIndex()"/>
     <ExtraAward v-if="showExtra"
              :poke="getCurrentReward.rewardId[0].name"
              :item="extraItem"
-             @close="goToIndex()"/>
+             @close="showExtra = false; goToIndex()"/>
+    <WalkAway v-if="showWalkAway"
+             :message="message"
+             @close="showWalkAway = false; goToIndex()"/>
     <Confirm v-if="showConfirm"
-           @confirm="walkAway()"
+           @confirm="showConfirm = false; walkAway()"
            @close="showConfirm = false"/>
   </div>
 </template>
@@ -59,10 +62,10 @@
 <script>
   import { mapGetters, mapMutations } from 'vuex';
   import pokemonMixin from '@/common/mixins/pokemonMixin';
-  import battleMixin from '@/common/mixins/battleLogic';
   import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
   import PostGame from '@/components/modals/PostGame';
   import ExtraAward from '@/components/modals/ExtraAward';
+  import WalkAway from '@/components/modals/WalkAway'
   import Stats from '@/components/modals/Stats';
   import Confirm from '@/components/modals/Confirm';
   import Pokemon from '@/components/pokemon/Pokemon';
@@ -78,8 +81,8 @@
 
   export default {
      name: 'Battle',
-     mixins: [pokemonMixin, battleMixin, uniqueIdGeneratorMixin],
-     components: { Pokemon, PostGame, ExtraAward, Stats, Confirm, Score, BattlePokemon, MessageBox },
+     mixins: [pokemonMixin, uniqueIdGeneratorMixin],
+     components: { Pokemon, PostGame, ExtraAward, Stats, Confirm, Score, BattlePokemon, MessageBox, WalkAway },
      data() {
        return {
           fullscreen: false,
@@ -88,6 +91,7 @@
           showExtra: false,
           showStats: false,
           showConfirm: false,
+          showWalkAway: false,
           extraItem: {},
           enemyName: '',
           message: '',
@@ -96,43 +100,17 @@
           pokeStats: []
        }
      },
-     beforeRouteEnter(to, from, next) {
-        next(vm => {
-          if (vm.getCurrentOpponentId) next();
-          else next('/game');
-        });
-     },
-     watch: {
-        getUserStarters(newValue, oldValue) {
-          this.getEnemyPokemon();
-        }
-     },
-     created() {
-       this.setLoad({ value: true });
-       this.getAvatarImage();
-       this.enemyName = this.avatars[this.getCurrentOpponentId].name;
-       this.gameState.currentState = this.getNextState();
-     },
-     mounted() {
-       this.getEnemyPokemon();
-     },
      methods: {
-       getBattlePokemon(isHome) {
-         if (isHome) {
-           return { ...this.homebattlePokemon, HP: this.gameState.homePokemonHP };
-         }
-         return { ...this.enemybattlePokemon, HP: this.gameState.enemyPokemonHP };
-       },
        getState() {
-         return { ...this.gameState, homeImage: this.getImage(), enemyImage: this.image };
+         return { ...this.gameState, homeImage: this.getImage(), enemyImage: this.image, enemyName: this.enemyName };
        },
        toggle() {
         this.fullscreen = !this.fullscreen;
         this.$refs['fullscreen'].toggle();
-      },
-      fullscreenChange(fullscreen) {
+       },
+       fullscreenChange(fullscreen) {
         this.fullscreen = fullscreen
-      },
+       },
        ...mapMutations([
          'setLoad'
        ]),
@@ -141,9 +119,6 @@
        },
        getImage() {
          return require(`@/assets/profileAvatar/${this.getUserImage}`);
-       },
-       getAvatarImage() {
-         this.image = require(`@/assets/${this.avatars[this.getCurrentOpponentId].image}`);
        },
        getEnemyPokemon() {
          this.getPokemonInfoFromList(this.getEnemyBattlePokemon, this.enemyPokemon).then(() => {
@@ -171,12 +146,8 @@
            }, 1000);
          }
        },
-       onPokemonChoosed(poke) {
-         if (this.gameState.currentState === 'HOME_OPTION') {
-           this.homebattlePokemon = this.getHomePokemon.filter(starter => starter.name === poke)[0];
-           this.gameState.homePokemonHP = this.getHPFromHistory(poke) || this.defaultHP;
-           this.gameState.currentState = this.getNextState();
-         } else console.log('You cannot choose another pokemon right now!');
+       goToIndex() {
+        this.$router.push('/getStarted');
        }
     },
     computed: {
