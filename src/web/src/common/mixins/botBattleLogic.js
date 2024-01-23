@@ -288,6 +288,7 @@ const battleMixin = {
       this.updateXPs({ value: this.pokeStats });
     },
     prepareBattleObject(statObj) {
+      console.log(statObj)
       return  {
           name: statObj.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
           hp: statObj.stats[0].base_stat,
@@ -296,6 +297,7 @@ const battleMixin = {
           spa: statObj.stats[3].base_stat,
           spd: statObj.stats[4].base_stat,
           spe: statObj.stats[5].base_stat,
+          level: statObj.level
       };
     },
     awardItem(item, type, isExtra) {
@@ -328,7 +330,8 @@ const battleMixin = {
           spa: attacker.spa,
           spd: attacker.spd,
           spe: attacker.spe,
-        }}),
+        }, level: attacker.level
+        }),
         new Pokemon(gen, defender.name, { evs: {
           hp: defender.hp,
           atk: defender.atk,
@@ -336,7 +339,8 @@ const battleMixin = {
           spa: defender.spa,
           spd: defender.spd,
           spe: defender.spe,
-        }}),
+        }, level: defender.level
+        }),
         new Move(gen, move)
       );
     },
