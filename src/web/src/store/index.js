@@ -439,6 +439,7 @@ export default new Vuex.Store({
       var mergedPokemon = existingPokemon.concat(payload.list);
       var coins = state.userInfo.coins;
       if (payload.coins) coins -= payload.coins;
+      if (payload.coinsToBeAdded) coins += payload.coinsToBeAdded;
       commit({ type: 'setUserPokemon', value: mergedPokemon });
       var id = localStorage.getItem('userId');
       return firebase.database().ref('users/' + id).update({
@@ -458,6 +459,7 @@ export default new Vuex.Store({
       commit({ type: 'setItems', value: existingItems });
       var coins = state.userInfo.coins;
       if (payload.coins) coins -= payload.coins;
+      if (payload.coinsToBeAdded) coins += payload.coinsToBeAdded;
       var id = localStorage.getItem('userId');
       return firebase.database().ref('users/' + id).update({
         coins: coins,
