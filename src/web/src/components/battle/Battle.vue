@@ -60,112 +60,113 @@
 </template>
 
 <script>
-  import { mapGetters, mapMutations } from 'vuex';
-  import pokemonMixin from '@/common/mixins/pokemonMixin';
-  import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
-  import PostGame from '@/components/modals/PostGame';
-  import ExtraAward from '@/components/modals/ExtraAward';
-  import WalkAway from '@/components/modals/WalkAway'
-  import Stats from '@/components/modals/Stats';
-  import Confirm from '@/components/modals/Confirm';
-  import Pokemon from '@/components/pokemon/Pokemon';
-  import BattlePokemon from '@/components/battle/BattlePokemon';
-  import MessageBox from '@/components/battle/MessageBox';
-  import Score from '@/components/battle/Score';
-  import fullscreen from 'vue-fullscreen';
-  import Vue from 'vue';
+import { mapGetters, mapMutations } from 'vuex';
+import pokemonMixin from '@/common/mixins/pokemonMixin';
+import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
+import PostGame from '@/components/modals/PostGame';
+import ExtraAward from '@/components/modals/ExtraAward';
+import WalkAway from '@/components/modals/WalkAway'
+import Stats from '@/components/modals/Stats';
+import Confirm from '@/components/modals/Confirm';
+import Pokemon from '@/components/pokemon/Pokemon';
+import BattlePokemon from '@/components/battle/BattlePokemon';
+import MessageBox from '@/components/battle/MessageBox';
+import Score from '@/components/battle/Score';
+import fullscreen from 'vue-fullscreen';
+import Vue from 'vue';
+import battleHelper from '../../common/mixins/battleHelper';
 
-  Vue.use(fullscreen);
+Vue.use(fullscreen);
 
-  window.$ = window.jQuery = require('jquery');
+window.$ = window.jQuery = require('jquery');
 
-  export default {
-     name: 'Battle',
-     mixins: [pokemonMixin, uniqueIdGeneratorMixin],
-     components: { Pokemon, PostGame, ExtraAward, Stats, Confirm, Score, BattlePokemon, MessageBox, WalkAway },
-     data() {
-       return {
-          fullscreen: false,
-          image: '',
-          hasExtra: false,
-          showExtra: false,
-          showStats: false,
-          showConfirm: false,
-          showWalkAway: false,
-          extraItem: {},
-          enemyName: '',
-          message: '',
-          enemyPokemon: [],
-          disabled: [],
-          pokeStats: []
-       }
-     },
-     methods: {
-       getState() {
-         return { ...this.gameState, homeImage: this.getImage(), enemyImage: this.image, enemyName: this.enemyName };
-       },
-       toggle() {
-        this.fullscreen = !this.fullscreen;
-        this.$refs['fullscreen'].toggle();
-       },
-       fullscreenChange(fullscreen) {
-        this.fullscreen = fullscreen
-       },
-       ...mapMutations([
-         'setLoad'
-       ]),
-       onWalkAway() {
-         this.showConfirm = true;
-       },
-       getImage() {
-         return require(`@/assets/profileAvatar/${this.getUserImage}`);
-       },
-       getEnemyPokemon() {
-         this.getPokemonInfoFromList(this.getEnemyBattlePokemon, this.enemyPokemon).then(() => {
-           this.setLoad({ value: false });
-         });
-       },
-       animateDamage(isHome) {
-         const targetElement = isHome ? $('.pokemonHome') : $('.pokemonEnemy');
-         targetElement.fadeOut();
-         targetElement.fadeIn(1000);
-       },
-       animateAttack(isHome) {
-         let targetElement;
-         if(isHome) {
-           targetElement = $('.pokemonHome');
-           targetElement.css('margin-left', '10%');
-           setTimeout(() => {
-             targetElement.css('margin-left', '7%');
-           }, 1000);
-         } else {
-           targetElement = $('.pokemonEnemy');
-           targetElement.css('margin-right', '4%');
-           setTimeout(() => {
-             targetElement.css('margin-right', '0%');
-           }, 1000);
-         }
-       },
-       goToIndex() {
-        this.$router.push('/getStarted');
-       }
-    },
-    computed: {
-      ...mapGetters([
-        'getUserStarters',
-        'getCurrentOpponentId',
-        'getEnemyBattlePokemon',
-        'getUserImage',
-      ]),
-      getHomePokemon()  {
-        return this.getUserStarters;
-      },
-      enemybattlePokemon() {
-        if (this.gameState.enemyPokemonIndex === -1) return {};
-        return this.enemyPokemon[this.gameState.enemyPokemonIndex];
+export default {
+    name: 'Battle',
+    mixins: [pokemonMixin, uniqueIdGeneratorMixin, battleHelper],
+    components: { Pokemon, PostGame, ExtraAward, Stats, Confirm, Score, BattlePokemon, MessageBox, WalkAway },
+    data() {
+      return {
+        fullscreen: false,
+        image: '',
+        hasExtra: false,
+        showExtra: false,
+        showStats: false,
+        showConfirm: false,
+        showWalkAway: false,
+        extraItem: {},
+        enemyName: '',
+        message: '',
+        enemyPokemon: [],
+        disabled: [],
+        pokeStats: []
       }
     },
-   }
+    methods: {
+      getState() {
+        return { ...this.gameState, homeImage: this.getImage(), enemyImage: this.image, enemyName: this.enemyName };
+      },
+      toggle() {
+      this.fullscreen = !this.fullscreen;
+      this.$refs['fullscreen'].toggle();
+      },
+      fullscreenChange(fullscreen) {
+      this.fullscreen = fullscreen
+      },
+      ...mapMutations([
+        'setLoad'
+      ]),
+      onWalkAway() {
+        this.showConfirm = true;
+      },
+      getImage() {
+        return require(`@/assets/profileAvatar/${this.getUserImage}`);
+      },
+      getEnemyPokemon() {
+        this.getPokemonInfoFromList(this.getEnemyBattlePokemon, this.enemyPokemon).then(() => {
+          this.setLoad({ value: false });
+        });
+      },
+      animateDamage(isHome) {
+        const targetElement = isHome ? $('.pokemonHome') : $('.pokemonEnemy');
+        targetElement.fadeOut();
+        targetElement.fadeIn(1000);
+      },
+      animateAttack(isHome) {
+        let targetElement;
+        if(isHome) {
+          targetElement = $('.pokemonHome');
+          targetElement.css('margin-left', '10%');
+          setTimeout(() => {
+            targetElement.css('margin-left', '7%');
+          }, 1000);
+        } else {
+          targetElement = $('.pokemonEnemy');
+          targetElement.css('margin-right', '4%');
+          setTimeout(() => {
+            targetElement.css('margin-right', '0%');
+          }, 1000);
+        }
+      },
+      goToIndex() {
+      this.$router.push('/getStarted');
+      }
+  },
+  computed: {
+    ...mapGetters([
+      'getUserStarters',
+      'getCurrentOpponentId',
+      'getEnemyBattlePokemon',
+      'getUserImage',
+    ]),
+    getHomePokemon()  {
+      return this.getUserStarters;
+    },
+    enemybattlePokemon() {
+      if (this.gameState.enemyPokemonIndex === -1) return {};
+      return this.enemyPokemon[this.gameState.enemyPokemonIndex];
+    }
+  },
+  }
 </script>
 
 <style>
