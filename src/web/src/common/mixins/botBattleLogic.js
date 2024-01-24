@@ -214,15 +214,14 @@ const battleMixin = {
     awarding() {
       console.log('about to award...');
       this.updateStats({ value: { result: 'wins' }});
-      const existingCoins = this.getUserCoins;
-      this.setUserCoins({ value: existingCoins + this.coinsInfo.REWARD_COINS }); // assign reward coins to user
+      const coinsToBeAdded = this.coinsInfo.REWARD_COINS;
       const rewardTypeIndex = this.getUserPokemon.length ===  this.totalPokemon ? 0 : this.getRandomInt(0, 1); // choose extra reward category (item or pokemon)
       const rewardType = this.gameRewards[rewardTypeIndex].type;
       if (rewardType === this.gameRewards[0].type) {
         console.log('type ITEM reward');
         const itemId = this.getRandomInt(1, 100);
         this.getItem(itemId).then(res => {
-          this.awardItem(res, res.name.includes('stone') ? this.prizes.STONE.type : res.name.includes('candy') ? this.prizes.CANDY.type : rewardType, false);
+          this.awardItem(res, res.name.includes('stone') ? this.prizes.STONE.type : res.name.includes('candy') ? this.prizes.CANDY.type : rewardType, false, coinsToBeAdded);
           this.gameState.currentState = this.getNextState(); // game finished -> end
         });
       } else {
@@ -237,7 +236,7 @@ const battleMixin = {
           return;
         }
         this.getPokemonInfoFromList([ pokeId ], pokeObj).then(() => {
-          this.awardPokemon({ list: pokeObj });
+          this.awardPokemon({ list: pokeObj, coinsToBeAdded });
           this.setCurrentReward({ type: this.gameRewards[1].type, value: pokeObj });
           if (pokeObj[0].held_items.length) {
              console.log(`has extra item: ${pokeObj[0].held_items[0].item.name}`);
@@ -288,7 +287,6 @@ const battleMixin = {
       this.updateXPs({ value: this.pokeStats });
     },
     prepareBattleObject(statObj) {
-      console.log(statObj)
       return  {
           name: statObj.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
           hp: statObj.stats[0].base_stat,
@@ -300,14 +298,14 @@ const battleMixin = {
           level: statObj.level
       };
     },
-    awardItem(item, type, isExtra) {
+    awardItem(item, type, isExtra, coinsToBeAdded = null) {
       const itemObj = {};
       itemObj.name = item.name;
       itemObj.image = item.sprites.default;
       itemObj.text = item.effect_entries[0].short_effect;
       itemObj.quantity = 1;
       itemObj.type = type;
-      this.awardItems({ list: [itemObj]});
+      this.awardItems({ list: [itemObj], coinsToBeAdded });
       if (isExtra) {
         this.hasExtra = true;
         this.extraItem = itemObj;
