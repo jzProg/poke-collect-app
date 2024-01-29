@@ -42,7 +42,9 @@ const battleMixin = {
     }
   },
   created() {
+    this.registerRefreshCallback();
     this.setLoad({ value: true });
+    this.loadGameState();
     this.registerToGame({ gameId: this.$route.params.gameId, eventHandler: (gameObj) => {
       const gameState = gameObj.val();
       if (gameState) {
@@ -59,6 +61,8 @@ const battleMixin = {
         this.gameState.awayPlayer = awayPlayer.id;
         this.gameState.previousPlayer = previousPlayer;
 
+        if (this.checkPauseStatus(gameState)) return;
+
         switch(currentState) {
          case 'STARTED': {
           this.enemy = {
@@ -67,7 +71,7 @@ const battleMixin = {
           }
           this.getAvatarImage();
           this.enemyName = this.determineEnemyName();
-          this.message = this.message = this.gameState.statesInfo[`${isHome?'HOME':'ENEMY'}_STARTED`].message.replace('*', this.enemyName);
+          this.message = this.gameState.statesInfo[`${isHome?'HOME':'ENEMY'}_STARTED`].message.replace('*', this.enemyName);
           this.enemyPokemon = awayPlayer.pokemon;
           this.setLoad({ value: false });
           break;
@@ -189,6 +193,12 @@ const battleMixin = {
       'updateGameState',
       'playGameMove'
     ]),
+    registerRefreshCallback() {
+      self = this;
+      window.onbeforeunload = e => {
+        self.storeGameState();
+      };
+    },
     checkForFinish() {
       if (this.gameState.homeScore === 3) {
         this.playGameMove({ gameId: this.$route.params.gameId, gameObject: {
@@ -202,6 +212,8 @@ const battleMixin = {
       return this.enemy.name;
     },
     attack(ability) {
+      if (this.checkPauseStatus(this.gameState)) return;
+
       if (this.isHomePlayerBattlePhase()) {
         const attackerObj = this.prepareBattleObject(this.homebattlePokemon);
         const defenderObj = this.prepareBattleObject(this.enemybattlePokemon);
@@ -260,6 +272,8 @@ const battleMixin = {
        && this.gameState.currentPlayer === localStorage.getItem('userId');
     },
     changePokemon() {
+      if (this.checkPauseStatus(this.gameState)) return;
+
       if (this.isHomePlayerBattlePhase()) {
         this.storeHPState(true);
         const pokemonToBeReplaced = this.homebattlePokemon.name;
@@ -273,6 +287,8 @@ const battleMixin = {
       }
     },
     walkAway() {
+      if (this.checkPauseStatus(this.gameState)) return;
+
       if (this.gameState.currentPlayer === localStorage.getItem('userId')) {
             this.playGameMove({ gameId: this.$route.params.gameId, gameObject: {
               status: 'WALK_AWAY',
@@ -282,6 +298,8 @@ const battleMixin = {
       }
     },
     onPokemonChoosed(poke) {
+      if (this.checkPauseStatus(this.gameState)) return;
+
       if ((this.gameState.currentState === 'STARTED' || this.gameState.currentState === 'POKEMON_CHOSED' || this.gameState.currentState === 'POKEMON_CHANGE' || this.gameState.currentState === 'POKEMON_FAINT') 
            && this.gameState.currentPlayer === localStorage.getItem('userId')) {
         this.playGameMove({ gameId: this.$route.params.gameId, gameObject: {

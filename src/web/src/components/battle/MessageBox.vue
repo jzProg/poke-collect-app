@@ -4,7 +4,7 @@
           {{ message }}
       </div>
       <div id="options" class="col-md-6 col-xs-6" style="width: 50%;float:right">
-          <div v-for="(move,index) in homebattlePokemon.moves"
+          <div v-for="(move,index) in getMoves"
                 class="move"
                 :key="index"
                 :class="[isAbilityUsedTooMuch(move) ? 'disabledbutton' : '']"
@@ -46,6 +46,12 @@
 
   export default {
     props: ['message', 'fullscreen', 'homebattlePokemon', 'getHomePokemon', 'disabled', 'onPokemonChoosed', 'changePokemon', 'isHomePlayerBattlePhase', 'onWalkAway', 'isAbilityUsedTooMuch', 'attack'],
-    components: { Pokemon }
+    components: { Pokemon },
+    computed: {
+      getMoves() {
+        if (!this.homebattlePokemon) return []
+        return this.homebattlePokemon.moves || []
+      }
+    }
   }
 </script>

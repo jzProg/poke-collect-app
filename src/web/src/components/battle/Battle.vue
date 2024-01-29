@@ -53,6 +53,9 @@
     <WalkAway v-if="showWalkAway"
              :message="message"
              @close="showWalkAway = false; goToIndex()"/>
+    <PauseGame v-if="showPause"
+             @confirm="showPause = false"
+             @close="showPause = false"/>
     <Confirm v-if="showConfirm"
            @confirm="showConfirm = false; walkAway()"
            @close="showConfirm = false"/>
@@ -65,7 +68,8 @@ import pokemonMixin from '@/common/mixins/pokemonMixin';
 import uniqueIdGeneratorMixin from '@/common/helpers/uniqueIdsGenerator';
 import PostGame from '@/components/modals/PostGame';
 import ExtraAward from '@/components/modals/ExtraAward';
-import WalkAway from '@/components/modals/WalkAway'
+import WalkAway from '@/components/modals/WalkAway';
+import PauseGame from '@/components/modals/PauseGame';
 import Stats from '@/components/modals/Stats';
 import Confirm from '@/components/modals/Confirm';
 import Pokemon from '@/components/pokemon/Pokemon';
@@ -83,10 +87,11 @@ window.$ = window.jQuery = require('jquery');
 export default {
     name: 'Battle',
     mixins: [pokemonMixin, uniqueIdGeneratorMixin, battleHelper],
-    components: { Pokemon, PostGame, ExtraAward, Stats, Confirm, Score, BattlePokemon, MessageBox, WalkAway },
+    components: { Pokemon, PostGame, ExtraAward, Stats, Confirm, Score, BattlePokemon, MessageBox, WalkAway, PauseGame },
     data() {
       return {
         fullscreen: false,
+        showPause: false,
         image: '',
         hasExtra: false,
         showExtra: false,
@@ -106,11 +111,11 @@ export default {
         return { ...this.gameState, homeImage: this.getImage(), enemyImage: this.image, enemyName: this.enemyName };
       },
       toggle() {
-      this.fullscreen = !this.fullscreen;
-      this.$refs['fullscreen'].toggle();
+        this.fullscreen = !this.fullscreen;
+        this.$refs['fullscreen'].toggle();
       },
       fullscreenChange(fullscreen) {
-      this.fullscreen = fullscreen
+        this.fullscreen = fullscreen
       },
       ...mapMutations([
         'setLoad'
@@ -148,7 +153,7 @@ export default {
         }
       },
       goToIndex() {
-      this.$router.push('/getStarted');
+        this.$router.push('/getStarted');
       }
   },
   computed: {
