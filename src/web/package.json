@@ -21,7 +21,7 @@
     "pokeapi-js-wrapper": "^1.1.2",
     "set-value": "^2.0.1",
     "uglifyjs-webpack-plugin": "^1.0.1",
-    "vue": "^2.5.2",
+    "vue": "^3.0.0",
     "vue-axios": "^2.0.2",
     "vue-fullscreen": "^2.1.6",
     "vue-images-loaded": "^1.1.2",
