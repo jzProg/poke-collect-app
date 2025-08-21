@@ -75,14 +75,14 @@ const battleMixin = {
                           return 'HOME_BATTLE';
       case 'HOME_BATTLE': this.message = this.homebattlePokemon.name + stateMessage + this.gameState.currentAttack;
                           return 'HOME_DAMAGE_DONE';
-      case 'HOME_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.enemybattlePokemon.hp/10 ? stateMessage[2] : stateMessage[1];
+      case 'HOME_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= 10 ? stateMessage[2] : stateMessage[1];
                           if (this.gameState.enemyPokemonHP <= 0) this.gameState.homeScore++;
                           return  this.gameState.enemyPokemonHP > 0 ? 'ENEMY_BATTLE' : 'HOME_WINNER';
       case 'ENEMY_CHOOSE': this.message = this.enemyName + stateMessage + this.enemybattlePokemon.name;
                           return 'HOME_OPTION';
       case 'ENEMY_BATTLE': this.message = this.enemybattlePokemon.name + stateMessage + this.gameState.currentAttack;
                           return 'ENEMY_DAMAGE_DONE';
-      case 'ENEMY_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.homebattlePokemon.hp/10 ? stateMessage[2] : stateMessage[1];
+      case 'ENEMY_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= 10 ? stateMessage[2] : stateMessage[1];
                                 if (this.gameState.homePokemonHP <= 0) this.gameState.enemyScore++;
                                 return  this.gameState.homePokemonHP > 0 ? 'HOME_OPTION' : 'ENEMY_WINNER';
       case 'HOME_WINNER': this.message = this.enemybattlePokemon.name + stateMessage;
