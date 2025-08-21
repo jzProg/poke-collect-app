@@ -32,6 +32,7 @@
                       :changePokemon="changePokemon"
                       :isHomePlayerBattlePhase="isHomePlayerBattlePhase"
                       :onWalkAway="onWalkAway"
+                      :haveAllMovesUsed="haveAllMovesUsed"
                       :isAbilityUsedTooMuch="isAbilityUsedTooMuch"
                       :attack="attack" />
         </div>
