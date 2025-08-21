@@ -50,7 +50,7 @@
   import Pokemon from '@/components/pokemon/Pokemon';
 
   export default {
-    props: ['message', 'fullscreen', 'homebattlePokemon', 'getHomePokemon', 'disabled', 'onPokemonChoosed', 'changePokemon', 'isHomePlayerBattlePhase', 'onWalkAway', 'isAbilityUsedTooMuch', 'attack'],
+    props: ['message', 'fullscreen', 'homebattlePokemon', 'getHomePokemon', 'disabled', 'onPokemonChoosed', 'changePokemon', 'isHomePlayerBattlePhase', 'onWalkAway', 'isAbilityUsedTooMuch', 'attack', 'haveAllMovesUsed'],
     components: { Pokemon }
   }
 </script>
