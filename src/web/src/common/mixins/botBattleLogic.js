@@ -72,14 +72,14 @@ const battleMixin = {
                           return 'HOME_BATTLE';
       case 'HOME_BATTLE': this.message = this.homebattlePokemon.name + stateMessage + this.gameState.currentAttack;
                           return 'HOME_DAMAGE_DONE';
-      case 'HOME_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.defaultHP/10 ? stateMessage[2] : stateMessage[1];
+      case 'HOME_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.enemybattlePokemon.hp/10 ? stateMessage[2] : stateMessage[1];
                           if (this.gameState.enemyPokemonHP <= 0) this.gameState.homeScore++;
                           return  this.gameState.enemyPokemonHP > 0 ? 'ENEMY_BATTLE' : 'HOME_WINNER';
       case 'ENEMY_CHOOSE': this.message = this.enemyName + stateMessage + this.enemybattlePokemon.name;
                           return 'HOME_OPTION';
       case 'ENEMY_BATTLE': this.message = this.enemybattlePokemon.name + stateMessage + this.gameState.currentAttack;
                           return 'ENEMY_DAMAGE_DONE';
-      case 'ENEMY_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.defaultHP/10 ? stateMessage[2] : stateMessage[1];
+      case 'ENEMY_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.homebattlePokemon.hp/10 ? stateMessage[2] : stateMessage[1];
                                 if (this.gameState.homePokemonHP <= 0) this.gameState.enemyScore++;
                                 return  this.gameState.homePokemonHP > 0 ? 'HOME_OPTION' : 'ENEMY_WINNER';
       case 'HOME_WINNER': this.message = this.enemybattlePokemon.name + stateMessage;
@@ -120,7 +120,7 @@ const battleMixin = {
       const randomIndex = this.getRandomInt(0, this.gameState.availableEnemyPokemon.length - 1);
       this.gameState.enemyPokemonIndex = this.gameState.availableEnemyPokemon[randomIndex]; // choose next pokemon
       this.gameState.availableEnemyPokemon.splice(randomIndex, 1); // remove from available pokemon
-      this.gameState.enemyPokemonHP = this.defaultHP;
+      this.gameState.enemyPokemonHP = this.enemybattlePokemon.hp;
       this.gameState.enemyFaint = false;
       this.gameState.currentState = this.getNextState(); // chooses next pokemon -> HOME_OPTION
       if (this.gameState.currentState === 'HOME_OPTION') {
@@ -201,7 +201,7 @@ const battleMixin = {
     onPokemonChoosed(poke) {
       if (this.gameState.currentState === 'HOME_OPTION') {
         this.homebattlePokemon = this.getHomePokemon.filter(starter => starter.name === poke)[0];
-        this.gameState.homePokemonHP = this.getHPFromHistory(poke) || this.defaultHP;
+        this.gameState.homePokemonHP = this.getHPFromHistory(poke) || this.homebattlePokemon.hp;
         this.gameState.currentState = this.getNextState();
       } else console.log('You cannot choose another pokemon right now!');
     },
