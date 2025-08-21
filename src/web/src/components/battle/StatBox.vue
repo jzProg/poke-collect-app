@@ -19,7 +19,7 @@
 
 <script>
   export default {
-    props: ['battlePokemon', 'hp', 'defaultHP'],
+    props: ['battlePokemon', 'hp'],
     methods: {
       getScoreStyle(hp) {
         const score = hp;
