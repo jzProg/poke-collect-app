@@ -106,6 +106,7 @@ const battleMixin = {
         this.gameState.currentState = this.getNextState(); // attacks with ability -> HOME_DAMAGE_DONE
         const attackerObj = this.prepareBattleObject(this.homebattlePokemon);
         const defenderObj = this.prepareBattleObject(this.enemybattlePokemon);
+        console.log(defenderObj);
         this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
         console.log('current damage:');
         console.log(this.gameState.currentDamage);
@@ -121,6 +122,7 @@ const battleMixin = {
       const randomIndex = this.getRandomInt(0, this.gameState.availableEnemyPokemon.length - 1);
       this.gameState.enemyPokemonIndex = this.gameState.availableEnemyPokemon[randomIndex]; // choose next pokemon
       this.gameState.availableEnemyPokemon.splice(randomIndex, 1); // remove from available pokemon
+       console.log(this.enemybattlePokemon);
       this.gameState.enemyPokemonHP = this.enemybattlePokemon.stats[0].base_stat;
       console.log('enemy pokemon initial hp');
       console.log(this.gameState.enemyPokemonHP);
@@ -138,6 +140,7 @@ const battleMixin = {
        this.gameState.currentState = this.getNextState(); // attacks with ability -> ENEMY_DAMAGE_DONE
        const defenderObj = this.prepareBattleObject(this.homebattlePokemon);
        const attackerObj = this.prepareBattleObject(this.enemybattlePokemon);
+       console.log(attackerObj);
        this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
         console.log('current damage:');
         console.log(this.gameState.currentDamage);
