@@ -15,14 +15,12 @@
           <div :class="['gameDiv', 'row', (fullscreen) ? 'fullscreen': '']" id="game">
             <BattlePokemon :battlePokemon="enemybattlePokemon"
                            :styleClass="'opponent'"
-                           :defaultHP="defaultHP"
                            :hp="gameState.enemyPokemonHP"
                            :faint="gameState.enemyFaint"
                            :isHome="false" />
             <BattlePokemon :battlePokemon="homebattlePokemon"
                            :styleClass="'player'"
                            :hp="gameState.homePokemonHP"
-                           :defaultHP="defaultHP"
                            :isHome="true" />
           </div>
           <MessageBox :message="message"
