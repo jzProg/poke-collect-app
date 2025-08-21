@@ -23,7 +23,7 @@
     methods: {
       getScoreStyle(hp) {
         const score = hp;
-        const full = this.defaultHP;
+        const full = this.battlePokemon.hp;
         const half = full/2;
         return { 'width': (score*100)/full + '%', 'height': '100%', 'background-color': score < half ?  'orange' : 'green' };
       },
