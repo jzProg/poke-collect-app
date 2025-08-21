@@ -54,7 +54,7 @@ const battleHelper = {
         }
         stats.hasLevelUp = hasLevelUp;
         stats.oldHp = poke.hp;
-        stats.newHp = this.calcNewHp(poke.hp, stats.newLvl);
+        stats.newHp = this.calcNewHp(poke.stats[0].base_stat, stats.newLvl);
         this.pokeStats.push(stats);
       }
       this.updateXPs({ value: this.pokeStats });
