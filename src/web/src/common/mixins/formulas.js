@@ -27,7 +27,7 @@ const formulaMixin = {
       };
     },
     calcNewHp(baseHp, level) {
-       return ((2 × baseHp × level) / 100) + level + 10;
+       return ((2 * baseHp * level) / 100) + level + 10;
     },
     calcErratic(level) {
       if (level <= 1) return 0;
