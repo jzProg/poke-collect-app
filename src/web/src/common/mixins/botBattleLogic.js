@@ -119,6 +119,7 @@ const battleMixin = {
       }
     },
     enemyChoose() {
+      console.log('enemyChoose');
       const randomIndex = this.getRandomInt(0, this.gameState.availableEnemyPokemon.length - 1);
       this.gameState.enemyPokemonIndex = this.gameState.availableEnemyPokemon[randomIndex]; // choose next pokemon
       this.gameState.availableEnemyPokemon.splice(randomIndex, 1); // remove from available pokemon
@@ -169,6 +170,8 @@ const battleMixin = {
         if (this.gameState.currentDamage > this.gameState.enemyPokemonHP) this.gameState.enemyPokemonHP = 0;
         else this.gameState.enemyPokemonHP -= this.gameState.currentDamage;
       }
+      console.log(this.gameState.homePokemonHP);
+      console.log(this.gameState.enemyPokemonHP);
       this.gameState.currentState = this.getNextState(); // effective -> ENEMY_BATTLE or HOME_WINNER
     },
     announceRoundWinner() {
