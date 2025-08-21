@@ -17,7 +17,7 @@
           </template>
           <div class="move" @click.prevent="attack('struggle')"  v-show="isHomePlayerBattlePhase()" v-else>
             {{ 'struggle' }}
-          <div>  
+          </div>  
           <span style="cursor: pointer; margin: 2%"
                 @click.prevent="onWalkAway()"
                 v-show="isHomePlayerBattlePhase()">
