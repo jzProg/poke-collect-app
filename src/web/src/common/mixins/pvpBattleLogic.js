@@ -75,10 +75,10 @@ const battleMixin = {
          case 'POKEMON_CHOSED': {
           if (isHome) {
             this.homebattlePokemon = this.getHomePokemon.find(starter => starter.name === gameState.targetPokemon);
-            this.gameState.homePokemonHP = this.getHPFromHistory(gameState.targetPokemon, true) || this.defaultHP;
+            this.gameState.homePokemonHP = this.getHPFromHistory(gameState.targetPokemon, true) || this.homebattlePokemon.hp;
           } else {
             this.gameState.enemyPokemonIndex = this.enemyPokemon.findIndex(poke => poke.name === gameState.targetPokemon);
-            this.gameState.enemyPokemonHP = this.getHPFromHistory(gameState.targetPokemon, false) || this.defaultHP;
+            this.gameState.enemyPokemonHP = this.getHPFromHistory(gameState.targetPokemon, false) || this.enemybattlePokemon.hp;
             this.gameState.enemyFaint = false;
           }
 
