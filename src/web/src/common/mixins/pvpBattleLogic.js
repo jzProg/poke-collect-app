@@ -5,7 +5,6 @@ const battleMixin = {
   data() {
     return {
       homebattlePokemon: {},
-      defaultHP: 300,
       enemy: {
         name: '',
         avatarImg: ''
