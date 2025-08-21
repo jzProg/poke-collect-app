@@ -52,6 +52,7 @@ const battleMixin = {
     this.setLoad({ value: true });
     this.getAvatarImage();
     this.enemyName = this.determineEnemyName();
+    this.gameState.enemyPokemonHP = this.enemybattlePokemon.stats[0].base_stat;
     this.gameState.currentState = this.getNextState();
   },
   methods: {
