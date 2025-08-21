@@ -26,6 +26,9 @@ const formulaMixin = {
         case this.growthRate.FAST_THEN_SLOW: return this.calcFluctuate(level);
       };
     },
+    calcNewHp(baseHp, level) {
+       return ((2 × baseHp × level) / 100) + level + 10;
+    },
     calcErratic(level) {
       if (level <= 1) return 0;
       else if (level <= 50) return Math.floor((Math.pow(level, 3)*(100 - level))/50);
