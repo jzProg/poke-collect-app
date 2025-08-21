@@ -338,9 +338,10 @@ export default new Vuex.Store({
     },
     updateXPs({ commit, state }, { value }) {
       for (const pokemon of value) {
-        const { name, newXP, hasLevelUp } = pokemon;
+        const { name, newXP, hasLevelUp, newHp } = pokemon;
         const newPokemon = state.userInfo.pokemon.filter(poke => poke.name === name)[0];
         newPokemon.XP = newXP;
+        newPokemon.hp = newHp;
         if (hasLevelUp) newPokemon.level = parseInt(newPokemon.level, 10) + 1;
         commit({ type: 'replaceCollectionPokemon', value: { from: newPokemon, to: newPokemon }});
         if (state.userInfo.starters.find(starter => starter.name === name || newPokemon.id === starter.id)) {
