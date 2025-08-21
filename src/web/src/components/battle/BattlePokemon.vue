@@ -3,8 +3,7 @@
     <div class="statContainer col-md-6 col-xs-6"
          :style="isHome ? 'float: right' : 'float: left'">
       <StatBox :battlePokemon="battlePokemon"
-               :hp="hp"
-               :defaultHP="defaultHP" />
+               :hp="hp" />
     </div>
     <div class="col-md-6 col-xs-6"
          v-if="isHome && battlePokemon && Object.keys(battlePokemon).length">
@@ -24,7 +23,7 @@
   import StatBox from '@/components/battle/StatBox';
 
   export default {
-    props: ['battlePokemon', 'styleClass', 'isHome', 'defaultHP', 'faint', 'hp'],
+    props: ['battlePokemon', 'styleClass', 'isHome', 'faint', 'hp'],
     components: { StatBox }
   }
 </script>
