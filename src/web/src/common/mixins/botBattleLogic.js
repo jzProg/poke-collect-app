@@ -5,7 +5,6 @@ const battleMixin = {
   data() {
     return {
       homebattlePokemon: {},
-      defaultHP: 300,
       gameState: {
         faintedInfo: { totalPokemonFainted: 0, xp: 0, level: 0  },
         homeScore: 0,
