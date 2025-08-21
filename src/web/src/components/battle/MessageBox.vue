@@ -4,15 +4,20 @@
           {{ message }}
       </div>
       <div id="options" class="col-md-6 col-xs-6" style="width: 50%;float:right">
-          <div v-for="(move,index) in homebattlePokemon.moves"
-                class="move"
-                :key="index"
-                :class="[isAbilityUsedTooMuch(move) ? 'disabledbutton' : '']"
-                @click.prevent="attack(move.move)"
-                v-show="isHomePlayerBattlePhase()"
-                v-if="Object.keys(homebattlePokemon).length && index < 4">
-                 {{ move.move.name }}
-          </div>
+          <template v-if="!haveAllMovesUsed()">
+            <div v-for="(move,index) in homebattlePokemon.moves"
+                  class="move"
+                  :key="index"
+                  :class="[isAbilityUsedTooMuch(move) ? 'disabledbutton' : '']"
+                  @click.prevent="attack(move.move)"
+                  v-show="isHomePlayerBattlePhase()"
+                  v-if="Object.keys(homebattlePokemon).length && index < 4">
+                   {{ move.move.name }}
+            </div>
+          </template>
+          <div class="move" @click.prevent="attack('struggle')"  v-show="isHomePlayerBattlePhase()" v-else>
+            {{ 'struggle' }}
+          <div>  
           <span style="cursor: pointer; margin: 2%"
                 @click.prevent="onWalkAway()"
                 v-show="isHomePlayerBattlePhase()">
