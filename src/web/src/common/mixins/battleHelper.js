@@ -13,6 +13,12 @@ const battleHelper = {
        'updateXPs',
        'awardPokemon'
     ]),
+    haveAllMovesUsed() {
+      const pokemonAbilitiesEntries = this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name];
+      if (!pokemonAbilitiesEntries) return false;
+      const notUsed = Object.keys(pokemonAbilitiesEntries).filter(k => pokemonAbilitiesEntries[k] !== 4)
+      return !notUsed.length;
+    },
     isAbilityUsedTooMuch(ability) {
       const pokemonAbilitiesEntries = this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name];
       if (!pokemonAbilitiesEntries) return false;
