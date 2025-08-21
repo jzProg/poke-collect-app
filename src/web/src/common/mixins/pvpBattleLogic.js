@@ -135,7 +135,8 @@ const battleMixin = {
          }
          case 'DAMAGE_DONE': {
           const stateMessage = this.gameState.statesInfo[currentState].message;
-          this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.defaultHP/10 ? stateMessage[2] : stateMessage[1];
+          const defHp = isHome ? this.enemybattlePokemon.hp : this.homebattlePokemon.hp; 
+          this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= defHp/10 ? stateMessage[2] : stateMessage[1];
 
           if (!isHome) {
             delayCall(() => {
