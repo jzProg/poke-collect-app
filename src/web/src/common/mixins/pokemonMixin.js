@@ -241,7 +241,7 @@ const pokemonMixin = {
                listToFill.push({ id, name, stats, height, weight, types, level, is_legendary,
                                  evolutionChainId, held_items, is_mythical, copies, growth_rate,
                                  sprites: { back_default: sprites.back_default, front_default: sprites.front_default },
-                                 hp: data[i].stats[0].base_stat,
+                                 hp: this.calcNewHp(data[i].stats[0].base_stat, level),
                                  moves: { 0: { move: moves[0] ? moves[0].move : ''},
                                           1: { move: moves[1] ? moves[1].move : ''},
                                           2: { move: moves[2] ? moves[2].move : ''},
