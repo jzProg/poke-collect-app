@@ -120,7 +120,7 @@ export default {
         return require(`@/assets/profileAvatar/${this.getUserImage}`);
       },
       getEnemyPokemon() {
-        this.getPokemonInfoFromList(this.getEnemyBattlePokemon, this.enemyPokemon).then(() => {
+        return this.getPokemonInfoFromList(this.getEnemyBattlePokemon, this.enemyPokemon).then(() => {
           this.setLoad({ value: false });
         });
       },
