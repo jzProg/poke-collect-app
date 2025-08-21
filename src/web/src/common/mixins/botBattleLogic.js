@@ -36,13 +36,15 @@ const battleMixin = {
   },
   watch: {
     getUserStarters(newValue, oldValue) {
-      this.getEnemyPokemon();
-      this.gameState.enemyPokemonHP = this.enemybattlePokemon.stats[0].base_stat;
+      this.getEnemyPokemon().then(() => {
+        this.gameState.enemyPokemonHP = this.enemybattlePokemon.stats[0].base_stat;
+      });
     }
  },
   mounted() {
-    this.getEnemyPokemon();
-    this.gameState.enemyPokemonHP = this.enemybattlePokemon.stats[0].base_stat;
+    this.getEnemyPokemon().then(() => {
+        this.gameState.enemyPokemonHP = this.enemybattlePokemon.stats[0].base_stat;
+    });
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
