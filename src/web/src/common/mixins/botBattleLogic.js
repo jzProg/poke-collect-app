@@ -107,6 +107,8 @@ const battleMixin = {
         const attackerObj = this.prepareBattleObject(this.homebattlePokemon);
         const defenderObj = this.prepareBattleObject(this.enemybattlePokemon);
         this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
+        console.log('current damage:');
+        console.log(this.gameState.currentDamage);
         if (this.gameState.currentDamage) this.animateDamage(false);
         delayCall(() => {
           this.updateScore();
@@ -120,6 +122,8 @@ const battleMixin = {
       this.gameState.enemyPokemonIndex = this.gameState.availableEnemyPokemon[randomIndex]; // choose next pokemon
       this.gameState.availableEnemyPokemon.splice(randomIndex, 1); // remove from available pokemon
       this.gameState.enemyPokemonHP = this.enemybattlePokemon.stats[0].base_stat;
+      console.log('enemy pokemon initial hp');
+      console.log(this.gameState.enemyPokemonHP);
       this.gameState.enemyFaint = false;
       this.gameState.currentState = this.getNextState(); // chooses next pokemon -> HOME_OPTION
       if (this.gameState.currentState === 'HOME_OPTION') {
@@ -135,6 +139,8 @@ const battleMixin = {
        const defenderObj = this.prepareBattleObject(this.homebattlePokemon);
        const attackerObj = this.prepareBattleObject(this.enemybattlePokemon);
        this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
+        console.log('current damage:');
+        console.log(this.gameState.currentDamage);
        if (this.gameState.currentDamage) this.animateDamage(true);
        delayCall(() => {
          this.updateScore();
@@ -201,6 +207,8 @@ const battleMixin = {
       if (this.gameState.currentState === 'HOME_OPTION') {
         this.homebattlePokemon = this.getHomePokemon.filter(starter => starter.name === poke)[0];
         this.gameState.homePokemonHP = this.getHPFromHistory(poke) || this.homebattlePokemon.hp || this.homebattlePokemon.stats[0].base_stat;
+        console.log('home pokemon initial hp:');
+        console.log(this.gameState.homePokemonHP);
         this.gameState.currentState = this.getNextState();
       } else console.log('You cannot choose another pokemon right now!');
     },
