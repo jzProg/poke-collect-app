@@ -77,7 +77,7 @@ const battleMixin = {
             this.gameState.homePokemonHP = this.getHPFromHistory(gameState.targetPokemon, true) || this.homebattlePokemon.hp || this.homebattlePokemon.stats[0].base_stat;
           } else {
             this.gameState.enemyPokemonIndex = this.enemyPokemon.findIndex(poke => poke.name === gameState.targetPokemon);
-            this.gameState.enemyPokemonHP = this.getHPFromHistory(gameState.targetPokemon, false) || this.enemybattlePokemon.hp || || this.enemybattlePokemon.stats[0].base_stat;
+            this.gameState.enemyPokemonHP = this.getHPFromHistory(gameState.targetPokemon, false) || this.enemybattlePokemon.hp || this.enemybattlePokemon.stats[0].base_stat;
             this.gameState.enemyFaint = false;
           }
 
