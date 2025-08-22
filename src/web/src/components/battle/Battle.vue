@@ -128,7 +128,7 @@ export default {
       getEnemyPokemon() {
         return this.getPokemonInfoFromList(this.getEnemyBattlePokemon, this.enemyPokemon).then(() => {
           this.setLoad({ value: false });
-          this.enemyPokemon.map(p => {
+          this.enemyPokemon = this.enemyPokemon.map(p => {
             const lvl = Math.floor(this.getUserStarters.reduce((acc, s) => acc + s.level, 0) / 3);
             return { ...p, hp: this.calcNewHp(this.enemyPokemon[this.gameState.enemyPokemonIndex].stats[0].base_stat, lvl), level: lvl };
           });
