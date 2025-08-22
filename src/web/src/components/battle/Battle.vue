@@ -128,6 +128,10 @@ export default {
       getEnemyPokemon() {
         return this.getPokemonInfoFromList(this.getEnemyBattlePokemon, this.enemyPokemon).then(() => {
           this.setLoad({ value: false });
+          this.enemyPokemon.map(p => {
+            const lvl = Math.floor(this.getUserStarters.reduce((acc, s) => acc + s.level, 0) / 3);
+            return { ...p, hp: this.calcNewHp(this.enemyPokemon[this.gameState.enemyPokemonIndex].stats[0].base_stat, lvl), level: lvl };
+          });
         });
       },
       animateDamage(isHome) {
@@ -168,8 +172,7 @@ export default {
     enemybattlePokemon() {
       if (this.gameState.enemyPokemonIndex === -1) return {};
       if (!this.enemyPokemon[this.gameState.enemyPokemonIndex]) return {};
-      const lvl = Math.floor(this.getUserStarters.reduce((acc, s) => acc + s.level, 0) / 3);
-      return { ...this.enemyPokemon[this.gameState.enemyPokemonIndex], hp: this.calcNewHp(this.enemyPokemon[this.gameState.enemyPokemonIndex].stats[0].base_stat, lvl), level: lvl  };
+      return this.enemyPokemon[this.gameState.enemyPokemonIndex];
     }
   },
   }
