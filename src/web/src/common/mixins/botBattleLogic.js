@@ -37,13 +37,13 @@ const battleMixin = {
   watch: {
     getUserStarters(newValue, oldValue) {
       this.getEnemyPokemon().then(() => {
-        this.gameState.enemyPokemonHP = this.enemybattlePokemon.stats[0].base_stat;
+        this.gameState.enemyPokemonHP = this.enemybattlePokemon.hp;
       });
     }
  },
   mounted() {
     this.getEnemyPokemon().then(() => {
-        this.gameState.enemyPokemonHP = this.enemybattlePokemon.stats[0].base_stat;
+        this.gameState.enemyPokemonHP = this.enemybattlePokemon.hp;
     });
   },
   beforeRouteEnter(to, from, next) {
@@ -128,7 +128,7 @@ const battleMixin = {
       this.gameState.enemyPokemonIndex = this.gameState.availableEnemyPokemon[randomIndex]; // choose next pokemon
       this.gameState.availableEnemyPokemon.splice(randomIndex, 1); // remove from available pokemon
        console.log(this.enemybattlePokemon);
-      this.gameState.enemyPokemonHP = this.enemybattlePokemon.stats[0].base_stat;
+      this.gameState.enemyPokemonHP = this.enemybattlePokemon.hp;
       console.log('enemy pokemon initial hp');
       console.log(this.gameState.enemyPokemonHP);
       this.gameState.enemyFaint = false;
@@ -216,7 +216,7 @@ const battleMixin = {
     onPokemonChoosed(poke) {
       if (this.gameState.currentState === 'HOME_OPTION') {
         this.homebattlePokemon = this.getHomePokemon.filter(starter => starter.name === poke)[0];
-        this.gameState.homePokemonHP = this.getHPFromHistory(poke) || this.homebattlePokemon.hp || this.homebattlePokemon.stats[0].base_stat;
+        this.gameState.homePokemonHP = this.getHPFromHistory(poke) || this.homebattlePokemon.hp;
         console.log('home pokemon initial hp:');
         console.log(this.gameState.homePokemonHP);
         this.gameState.currentState = this.getNextState();
