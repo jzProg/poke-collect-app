@@ -16,8 +16,8 @@ const battleHelper = {
     haveAllMovesUsed() {
       const pokemonAbilitiesEntries = this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name];
       if (!pokemonAbilitiesEntries) return false;
-      const notUsed = Object.keys(pokemonAbilitiesEntries).filter(k => pokemonAbilitiesEntries[k] !== 4)
-      return !notUsed.length;
+      const notUsed = Object.keys(pokemonAbilitiesEntries).filter(k => pokemonAbilitiesEntries[k] === 4);
+      return notUsed.length && notUsed.length === 4;
     },
     isAbilityUsedTooMuch(ability) {
       const pokemonAbilitiesEntries = this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name];
