@@ -4,14 +4,19 @@
           {{ message }}
       </div>
       <div id="options" class="col-md-6 col-xs-6" style="width: 50%;float:right">
-          <div v-for="(move,index) in getMoves"
-                class="move"
-                :key="index"
-                :class="[isAbilityUsedTooMuch(move) ? 'disabledbutton' : '']"
-                @click.prevent="attack(move.move)"
-                v-show="isHomePlayerBattlePhase()"
-                v-if="Object.keys(homebattlePokemon).length && index < 4">
-                 {{ move.move.name }}
+         <template v-if="!haveAllMovesUsed()">
+            <div v-for="(move,index) in getMoves"
+                  class="move"
+                  :key="index"
+                  :class="[isAbilityUsedTooMuch(move) ? 'disabledbutton' : '']"
+                  @click.prevent="attack(move.move)"
+                  v-show="isHomePlayerBattlePhase()"
+                  v-if="Object.keys(homebattlePokemon).length && index < 4">
+                   {{ move.move.name }}
+            </div>
+          </template>
+          <div class="move" @click.prevent="attack({ name: 'struggle'})"  v-show="isHomePlayerBattlePhase()" v-else>
+            {{ 'struggle' }}
           </div>
           <span style="cursor: pointer; margin: 2%"
                 @click.prevent="onWalkAway()"
@@ -45,13 +50,13 @@
   import Pokemon from '@/components/pokemon/Pokemon';
 
   export default {
-    props: ['message', 'fullscreen', 'homebattlePokemon', 'getHomePokemon', 'disabled', 'onPokemonChoosed', 'changePokemon', 'isHomePlayerBattlePhase', 'onWalkAway', 'isAbilityUsedTooMuch', 'attack'],
-    components: { Pokemon },
     computed: {
       getMoves() {
         if (!this.homebattlePokemon) return []
         return this.homebattlePokemon.moves || []
       }
     }
+    props: ['message', 'fullscreen', 'homebattlePokemon', 'getHomePokemon', 'disabled', 'onPokemonChoosed', 'changePokemon', 'isHomePlayerBattlePhase', 'onWalkAway', 'isAbilityUsedTooMuch', 'attack', 'haveAllMovesUsed'],
+    components: { Pokemon }
   }
 </script>

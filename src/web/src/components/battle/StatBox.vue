@@ -19,11 +19,11 @@
 
 <script>
   export default {
-    props: ['battlePokemon', 'hp', 'defaultHP'],
+    props: ['battlePokemon', 'hp'],
     methods: {
       getScoreStyle(hp) {
         const score = hp;
-        const full = this.defaultHP;
+        const full = this.battlePokemon.hp || this.battlePokemon.stats[0].base_stat;
         const half = full/2;
         return { 'width': (score*100)/full + '%', 'height': '100%', 'background-color': score < half ?  'orange' : 'green' };
       },

@@ -2,14 +2,12 @@ const firebaseConfigProperties = {
   data() {
     return {
       config: {
-        apiKey: "AIzaSyAmaJ129uCaF2rplw612cTCw10FLVfTgKw",
-        authDomain: "pokecollectapp.firebaseapp.com",
-        databaseURL: "https://pokecollectapp.firebaseio.com",
-        projectId: "pokecollectapp",
-        storageBucket: "pokecollectapp.appspot.com",
-        messagingSenderId: "786200050727",
-        appId: "1:786200050727:web:a500dffba65e79f31ca202",
-        measurementId: "G-LPRNCV5EJ6"
+        apiKey: "AIzaSyCpKsZ_d0CjzxTFOy0OKbumJjKqi8y6ORA",
+        authDomain: "pokecollectapp-88362.firebaseapp.com",
+        projectId: "pokecollectapp-88362",
+        storageBucket: "pokecollectapp-88362.firebasestorage.app",
+        messagingSenderId: "227462813402",
+        appId: "1:227462813402:web:0b23604b3bb6571612f7e3"
 
       }
     }

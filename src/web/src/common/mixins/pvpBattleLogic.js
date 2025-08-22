@@ -5,7 +5,6 @@ const battleMixin = {
   data() {
     return {
       homebattlePokemon: {},
-      defaultHP: 300,
       enemy: {
         name: '',
         avatarImg: ''
@@ -79,10 +78,10 @@ const battleMixin = {
          case 'POKEMON_CHOSED': {
           if (isHome) {
             this.homebattlePokemon = this.getHomePokemon.find(starter => starter.name === gameState.targetPokemon);
-            this.gameState.homePokemonHP = this.getHPFromHistory(gameState.targetPokemon, true) || this.defaultHP;
+            this.gameState.homePokemonHP = this.getHPFromHistory(gameState.targetPokemon, true) || this.homebattlePokemon.hp || this.homebattlePokemon.stats[0].base_stat;
           } else {
             this.gameState.enemyPokemonIndex = this.enemyPokemon.findIndex(poke => poke.name === gameState.targetPokemon);
-            this.gameState.enemyPokemonHP = this.getHPFromHistory(gameState.targetPokemon, false) || this.defaultHP;
+            this.gameState.enemyPokemonHP = this.getHPFromHistory(gameState.targetPokemon, false) || this.enemybattlePokemon.hp || this.enemybattlePokemon.stats[0].base_stat;
             this.gameState.enemyFaint = false;
           }
 
@@ -139,7 +138,8 @@ const battleMixin = {
          }
          case 'DAMAGE_DONE': {
           const stateMessage = this.gameState.statesInfo[currentState].message;
-          this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.defaultHP/10 ? stateMessage[2] : stateMessage[1];
+          const defHp = isHome ? this.enemybattlePokemon.hp : this.homebattlePokemon.hp; 
+          this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= 0.4 * defHp ? stateMessage[2] : stateMessage[1];
 
           if (!isHome) {
             delayCall(() => {

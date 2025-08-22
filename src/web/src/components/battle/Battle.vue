@@ -15,14 +15,12 @@
           <div :class="['gameDiv', 'row', (fullscreen) ? 'fullscreen': '']" id="game">
             <BattlePokemon :battlePokemon="enemybattlePokemon"
                            :styleClass="'opponent'"
-                           :defaultHP="defaultHP"
                            :hp="gameState.enemyPokemonHP"
                            :faint="gameState.enemyFaint"
                            :isHome="false" />
             <BattlePokemon :battlePokemon="homebattlePokemon"
                            :styleClass="'player'"
                            :hp="gameState.homePokemonHP"
-                           :defaultHP="defaultHP"
                            :isHome="true" />
           </div>
           <MessageBox :message="message"
@@ -34,6 +32,7 @@
                       :changePokemon="changePokemon"
                       :isHomePlayerBattlePhase="isHomePlayerBattlePhase"
                       :onWalkAway="onWalkAway"
+                      :haveAllMovesUsed="haveAllMovesUsed"
                       :isAbilityUsedTooMuch="isAbilityUsedTooMuch"
                       :attack="attack" />
         </div>
@@ -127,7 +126,7 @@ export default {
         return require(`@/assets/profileAvatar/${this.getUserImage}`);
       },
       getEnemyPokemon() {
-        this.getPokemonInfoFromList(this.getEnemyBattlePokemon, this.enemyPokemon).then(() => {
+        return this.getPokemonInfoFromList(this.getEnemyBattlePokemon, this.enemyPokemon).then(() => {
           this.setLoad({ value: false });
         });
       },
@@ -168,7 +167,9 @@ export default {
     },
     enemybattlePokemon() {
       if (this.gameState.enemyPokemonIndex === -1) return {};
-      return this.enemyPokemon[this.gameState.enemyPokemonIndex];
+      if (!this.enemyPokemon[this.gameState.enemyPokemonIndex]) return {};
+      const lvl = Math.floor(this.getUserStarters.reduce((acc, s) => acc + s.level, 0) / 3);
+      return { ...this.enemyPokemon[this.gameState.enemyPokemonIndex], hp: this.calcNewHp(this.enemyPokemon[this.gameState.enemyPokemonIndex].stats[0].base_stat, lvl), level: lvl  };
     }
   },
   }

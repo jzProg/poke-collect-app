@@ -5,7 +5,6 @@ const battleMixin = {
   data() {
     return {
       homebattlePokemon: {},
-      defaultHP: 300,
       gameState: {
         faintedInfo: { totalPokemonFainted: 0, xp: 0, level: 0  },
         homeScore: 0,
@@ -37,11 +36,15 @@ const battleMixin = {
   },
   watch: {
     getUserStarters(newValue, oldValue) {
-      this.getEnemyPokemon();
+      this.getEnemyPokemon().then(() => {
+        this.gameState.enemyPokemonHP = this.enemybattlePokemon.hp;
+      });
     }
  },
   mounted() {
-    this.getEnemyPokemon();
+    this.getEnemyPokemon().then(() => {
+        this.gameState.enemyPokemonHP = this.enemybattlePokemon.hp;
+    });
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
@@ -72,14 +75,14 @@ const battleMixin = {
                           return 'HOME_BATTLE';
       case 'HOME_BATTLE': this.message = this.homebattlePokemon.name + stateMessage + this.gameState.currentAttack;
                           return 'HOME_DAMAGE_DONE';
-      case 'HOME_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.defaultHP/10 ? stateMessage[2] : stateMessage[1];
+      case 'HOME_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= 0.4 * this.enemybattlePokemon.hp ? stateMessage[2] : stateMessage[1];
                           if (this.gameState.enemyPokemonHP <= 0) this.gameState.homeScore++;
                           return  this.gameState.enemyPokemonHP > 0 ? 'ENEMY_BATTLE' : 'HOME_WINNER';
       case 'ENEMY_CHOOSE': this.message = this.enemyName + stateMessage + this.enemybattlePokemon.name;
                           return 'HOME_OPTION';
       case 'ENEMY_BATTLE': this.message = this.enemybattlePokemon.name + stateMessage + this.gameState.currentAttack;
                           return 'ENEMY_DAMAGE_DONE';
-      case 'ENEMY_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= this.defaultHP/10 ? stateMessage[2] : stateMessage[1];
+      case 'ENEMY_DAMAGE_DONE': this.message = this.gameState.currentDamage === 0 ? stateMessage[0] : this.gameState.currentDamage >= 0.4 * this.homebattlePokemon.hp ? stateMessage[2] : stateMessage[1];
                                 if (this.gameState.homePokemonHP <= 0) this.gameState.enemyScore++;
                                 return  this.gameState.homePokemonHP > 0 ? 'HOME_OPTION' : 'ENEMY_WINNER';
       case 'HOME_WINNER': this.message = this.enemybattlePokemon.name + stateMessage;
@@ -107,7 +110,10 @@ const battleMixin = {
         this.gameState.currentState = this.getNextState(); // attacks with ability -> HOME_DAMAGE_DONE
         const attackerObj = this.prepareBattleObject(this.homebattlePokemon);
         const defenderObj = this.prepareBattleObject(this.enemybattlePokemon);
+        console.log(defenderObj);
         this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
+        console.log('current damage:');
+        console.log(this.gameState.currentDamage);
         if (this.gameState.currentDamage) this.animateDamage(false);
         delayCall(() => {
           this.updateScore();
@@ -117,10 +123,14 @@ const battleMixin = {
       }
     },
     enemyChoose() {
+      console.log('enemyChoose');
       const randomIndex = this.getRandomInt(0, this.gameState.availableEnemyPokemon.length - 1);
       this.gameState.enemyPokemonIndex = this.gameState.availableEnemyPokemon[randomIndex]; // choose next pokemon
       this.gameState.availableEnemyPokemon.splice(randomIndex, 1); // remove from available pokemon
-      this.gameState.enemyPokemonHP = this.defaultHP;
+       console.log(this.enemybattlePokemon);
+      this.gameState.enemyPokemonHP = this.enemybattlePokemon.hp;
+      console.log('enemy pokemon initial hp');
+      console.log(this.gameState.enemyPokemonHP);
       this.gameState.enemyFaint = false;
       this.gameState.currentState = this.getNextState(); // chooses next pokemon -> HOME_OPTION
       if (this.gameState.currentState === 'HOME_OPTION') {
@@ -135,7 +145,10 @@ const battleMixin = {
        this.gameState.currentState = this.getNextState(); // attacks with ability -> ENEMY_DAMAGE_DONE
        const defenderObj = this.prepareBattleObject(this.homebattlePokemon);
        const attackerObj = this.prepareBattleObject(this.enemybattlePokemon);
+       console.log(attackerObj);
        this.gameState.currentDamage = this.calcDamage(attackerObj, defenderObj, this.gameState.currentAttack).damage[0] || 0;
+        console.log('current damage:');
+        console.log(this.gameState.currentDamage);
        if (this.gameState.currentDamage) this.animateDamage(true);
        delayCall(() => {
          this.updateScore();
@@ -161,6 +174,8 @@ const battleMixin = {
         if (this.gameState.currentDamage > this.gameState.enemyPokemonHP) this.gameState.enemyPokemonHP = 0;
         else this.gameState.enemyPokemonHP -= this.gameState.currentDamage;
       }
+      console.log(this.gameState.homePokemonHP);
+      console.log(this.gameState.enemyPokemonHP);
       this.gameState.currentState = this.getNextState(); // effective -> ENEMY_BATTLE or HOME_WINNER
     },
     announceRoundWinner() {
@@ -201,7 +216,9 @@ const battleMixin = {
     onPokemonChoosed(poke) {
       if (this.gameState.currentState === 'HOME_OPTION') {
         this.homebattlePokemon = this.getHomePokemon.filter(starter => starter.name === poke)[0];
-        this.gameState.homePokemonHP = this.getHPFromHistory(poke) || this.defaultHP;
+        this.gameState.homePokemonHP = this.getHPFromHistory(poke) || this.homebattlePokemon.hp;
+        console.log('home pokemon initial hp:');
+        console.log(this.gameState.homePokemonHP);
         this.gameState.currentState = this.getNextState();
       } else console.log('You cannot choose another pokemon right now!');
     },

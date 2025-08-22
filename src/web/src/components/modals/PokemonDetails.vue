@@ -16,7 +16,7 @@
              v-for="(row,ind) in Object.keys(info.stats).length/2"
              :key="ind">
           <div class="col-md-6" v-if="info.stats[ind*2]">
-             {{ normalizeStat(info.stats[ind*2].stat.name) }} <span :style="getTypeStyle()">{{ info.stats[ind*2].base_stat}}</span>
+             {{ normalizeStat(info.stats[ind*2].stat.name) }} <span :style="getTypeStyle()">{{ normalizeStat(info.stats[ind*2].stat.name) === 'hp' ? info.hp : info.stats[ind*2].base_stat}}</span>
           </div>
           <div class="col-md-6" v-if="info.stats[ind*2 + 1]">
              {{ normalizeStat(info.stats[ind*2 + 1].stat.name) }} <span :style="getTypeStyle()">{{ info.stats[ind*2 + 1].base_stat}}</span>
