@@ -15,7 +15,7 @@
                    {{ move.move.name }}
             </div>
           </template>
-          <div class="move" @click.prevent="attack('struggle')"  v-show="isHomePlayerBattlePhase()" v-else>
+          <div class="move" @click.prevent="attack({ name: 'struggle'})"  v-show="isHomePlayerBattlePhase()" v-else>
             {{ 'struggle' }}
           </div>  
           <span style="cursor: pointer; margin: 2%"
