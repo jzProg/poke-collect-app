@@ -36,6 +36,7 @@ A simple Pokemon web app game written in Vue.js. Users can create account, chat,
 - **Version 3**
   - Support for PvP gameplay.
   - Reset/Forgot password functionality (via Firebase).
+  - Dynamic HP based on level.
 
 ## Setup Instructions
 
