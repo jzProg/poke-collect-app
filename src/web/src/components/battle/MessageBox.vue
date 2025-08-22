@@ -55,7 +55,7 @@
         if (!this.homebattlePokemon) return []
         return this.homebattlePokemon.moves || []
       }
-    }
+    },
     props: ['message', 'fullscreen', 'homebattlePokemon', 'getHomePokemon', 'disabled', 'onPokemonChoosed', 'changePokemon', 'isHomePlayerBattlePhase', 'onWalkAway', 'isAbilityUsedTooMuch', 'attack', 'haveAllMovesUsed'],
     components: { Pokemon }
   }
