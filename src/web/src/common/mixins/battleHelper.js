@@ -68,7 +68,7 @@ const battleHelper = {
     prepareBattleObject(statObj) {
       return  {
           name: statObj.name, //species name AS IT IS IN THE POKEDEX  [REQUIRED]
-          hp: statObj.stats[0].base_stat,
+          hp: statObj.hp,
           atk: statObj.stats[1].base_stat,
           def: statObj.stats[2].base_stat,
           spa: statObj.stats[3].base_stat,
