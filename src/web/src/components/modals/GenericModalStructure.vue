@@ -1,6 +1,6 @@
 <template>
   <transition name = "modal">
-    <div class = "modal-mask">
+    <div class = "modal-mask" :style="{ zIndex: isImportant ? 9999: 9998 }">
       <div class = "modal-wrapper">
         <div class = "modal-container" :style="{ width: (width && !isMobile() ? width: '300px')}">
          <slot name = "close"></slot>
@@ -22,7 +22,7 @@
 <script>
   export default {
     name: 'GenericModal',
-    props: ['width'],
+    props: ['width', 'isImportant'],
     methods: {
       isMobile() {
         return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
@@ -40,7 +40,6 @@
   }
   .modal-mask {
     position: fixed;
-    z-index: 9998;
     top: 0;
     left: 0;
     width: 100%;

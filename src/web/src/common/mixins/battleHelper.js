@@ -13,6 +13,71 @@ const battleHelper = {
        'updateXPs',
        'awardPokemon'
     ]),
+    checkPauseStatus(gameState) {
+      if(!gameState.pauseStatus) return false;
+
+      if (gameState.pauseStatus === 'PAUSED') {
+        if (gameState.pausePlayer !== localStorage.getItem('userId')) {
+          this.showPause = true;
+          this.setLoad({ value: true });
+        }
+
+        return true;
+      } else if (gameState.pauseStatus === 'RESTART') {
+        if (gameState.pausePlayer !== localStorage.getItem('userId')) {
+          this.showPause = false;
+          this.setLoad({ value: false });
+        }
+
+        return false;
+      }
+    },
+    loadGameState() {
+      console.log('check if load game state');
+
+      const gameStateJson = sessionStorage.getItem('gameState');
+      if (!gameStateJson) return;
+
+      console.log('has game to load');
+
+      const { gameState, homebattlePokemon, enemy, message, enemyName, enemyPokemon } = JSON.parse(gameStateJson);
+
+      this.gameState = gameState;
+      this.homebattlePokemon = homebattlePokemon;
+      this.enemy = enemy;
+      this.getAvatarImage();
+      this.enemyName = enemyName;
+      this.message = message;
+      this.enemyPokemon = enemyPokemon;
+      this.setLoad({ value: false });
+
+      sessionStorage.removeItem('gameState'); // clear pending game
+
+      this.playGameMove({ gameId: this.$route.params.gameId, gameObject: {
+        pauseStatus: 'RESTART'
+     }});
+    },
+    storeGameState() {
+      console.log('check if should store game state');
+
+      if (this.gameState.currentState === 'ENDED') return;
+
+      console.log('not in ended state --> about to store');
+
+      sessionStorage.setItem('gameState', JSON.stringify({
+        gameState: this.gameState,
+        homebattlePokemon: this.homebattlePokemon,
+        enemy: this.enemy,
+        message: this.message,
+        enemyName: this.enemyName,
+        enemyPokemon: this.enemyPokemon
+      }));
+
+      this.playGameMove({ gameId: this.$route.params.gameId, gameObject: {
+        pauseStatus: 'PAUSED',
+        pausePlayer: localStorage.getItem('userId')
+     }});
+    },
     haveAllMovesUsed() {
       const pokemonAbilitiesEntries = this.gameState.homeUsedAbilitiesCount[this.homebattlePokemon.name];
       if (!pokemonAbilitiesEntries) return false;
